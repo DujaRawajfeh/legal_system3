@@ -277,8 +277,8 @@ protected function redirectByRole($user)
     switch ($user->role) {
         case 'writer':
             return redirect()->route('writer.dashboard');
-        case 'printer':
-            return redirect()->route('printer.dashboard');
+        case 'typist':
+            return redirect()->route('typist.index');
         case 'clerk':
             return redirect()->route('clerk.dashboard');
         default:
