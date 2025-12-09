@@ -1488,7 +1488,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 tbody.innerHTML += `
                     <tr>
                         <td>${item.national_id       ?? '-'}</td>
-                        <td>${item.full_name         ?? '-'}</td>
+                        <td>${item.first_name         ?? '-'}</td>
                         <td>${item.father_name       ?? '-'}</td>
                         <td>${item.mother_name       ?? '-'}</td>
                         <td>${item.grandfather_name  ?? '-'}</td>
