@@ -1679,9 +1679,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         try {
-        const type = document.getElementById("caseType").value;
-            const res = await axios.post("/court-cases/store", {
-                type: type,
+            const res = await axios.post("/participants/store", {
                 case_id: currentCaseId,
                 parties: parties
             });
