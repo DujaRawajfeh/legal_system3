@@ -1679,7 +1679,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         try {
-            const res = await axios.post("/writer/case/store-parties", {
+            const res = await axios.post("/participants/store", {
                 case_id: currentCaseId,
                 parties: parties
             });
