@@ -1574,9 +1574,10 @@ document.addEventListener("DOMContentLoaded", () => {
                 });
                 const d = response.data;
 
+                console.log("📥 Generated Case Data:", d);
                 currentCaseId = d.id;
 
-                document.getElementById("caseNumber").value = d.case_number;
+                document.getElementById("caseNumber").value = d.number;
                 document.getElementById("judge_name").value = d.judge_name;
                 document.getElementById("judge_id").value = d.judge_id;
                 document.getElementById("session_date").value = d.session_date;
