@@ -1679,10 +1679,19 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         try {
-            const res = await axios.post("/participants/store", {
-                case_id: currentCaseId,
-                parties: parties
-            });
+            // ⭐ حفظ كل طرف على حدة
+            for (const party of parties) {
+                await axios.post("/participants/store", {
+                    court_case_id: currentCaseId,
+                    type:          party.type,
+                    name:          party.name,
+                    national_id:   party.national_id,
+                    phone:         party.phone,
+                    residence:     party.residence,
+                    job:           party.job,
+                    charge:        party.charge
+                });
+            }
 
             alert("✔ تم حفظ الدعوى بنجاح");
 
