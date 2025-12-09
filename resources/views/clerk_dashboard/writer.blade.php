@@ -287,7 +287,7 @@
           <form id="requestForm">
 
             <!-- رقم الطلب -->
-            <div class="section-title">رقم الطلب</div>
+            <!-- <div class="section-title">رقم الطلب</div> -->
             <div class="row g-3 mb-4">
               <div class="col-md-3">
                 <label class="form-label">رقم المحكمة</label>
@@ -406,10 +406,7 @@
                     <label class="form-label">رقم الهاتف</label>
                     <input type="text" class="form-control request-party-phone">
                   </div>
-                  <div class="col-md-12">
-                    <label class="form-label">العنوان</label>
-                    <input type="text" class="form-control request-party-address">
-                  </div>
+                 
                 </div>
               </div>
             </template>
@@ -439,7 +436,6 @@
         <div class="action-buttons">
           <button type="button" id="saveAndFinishRequest">حفظ وإنهاء</button>
           <button type="button" id="clearRequest">مسح الكل</button>
-          <button type="button" id="saveRequest">حفظ ومتابعة</button>
         </div>
       </div>
 
