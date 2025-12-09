@@ -1307,7 +1307,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 residence:  block.querySelector(".request-party-residence").value,
                 job:        block.querySelector(".request-party-job").value,
                 phone:      block.querySelector(".request-party-phone").value,
-                address:    block.querySelector(".request-party-address")?.value || '',
             };
 
             if (p.type && p.name) {
@@ -1324,7 +1323,6 @@ document.addEventListener("DOMContentLoaded", () => {
             const res = await axios.post("/requests/store-parties", {
                 request_id: currentRequestId,
                 parties: parties,
-                description: document.getElementById("requestDescription").value
             });
 
             alert("✔ تم حفظ الطلب بنجاح");
