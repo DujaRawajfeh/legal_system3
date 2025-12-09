@@ -1542,6 +1542,15 @@ document.addEventListener("DOMContentLoaded", () => {
             modal.show();
             currentCaseId = null;
         });
+
+        // ✅ تنظيف الـ backdrop عند إغلاق النافذة
+        caseModalEl.addEventListener('hidden.bs.modal', () => {
+            const backdrops = document.querySelectorAll('.modal-backdrop');
+            backdrops.forEach(backdrop => backdrop.remove());
+            document.body.classList.remove('modal-open');
+            document.body.style.overflow = '';
+            document.body.style.paddingRight = '';
+        });
     }
 
     // ⭐ توليد رقم الدعوى
@@ -1680,7 +1689,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
             if (closeModal) {
                 const modal = bootstrap.Modal.getInstance(caseModalEl);
-                if (modal) modal.hide();
+                if (modal) {
+                    modal.hide();
+                    
+                    // ✅ تنظيف الـ backdrop مباشرة بعد الإغلاق
+                    setTimeout(() => {
+                        const backdrops = document.querySelectorAll('.modal-backdrop');
+                        backdrops.forEach(backdrop => backdrop.remove());
+                        document.body.classList.remove('modal-open');
+                        document.body.style.overflow = '';
+                        document.body.style.paddingRight = '';
+                    }, 300);
+                }
             }
 
         } catch (err) {
