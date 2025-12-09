@@ -764,17 +764,25 @@
                     <thead>
                         <tr>
                             <th>الرقم الوطني</th>
-                            <th>الاسم (الأول - الأب - الجد - العائلة) واسم الأم</th>
+                            <th>الاسم الأول</th>
+                            <th>اسم الأب</th>
+                            <th>اسم الأم</th>
+                            <th>اسم الجد</th>
+                            <th>اسم العائلة</th>
                             <th>تاريخ الميلاد</th>
                             <th>العمر</th>
                             <th>الجنس</th>
-                            <th>المهنة</th>
+                            <th>الديانة</th>
                             <th>الجنسية</th>
+                            <th>مكان الولادة</th>
+                            <th>المهنة</th>
+                            <th>المستوى التعليمي</th>
+                            <th>رقم الهاتف</th>
                             <th>مكان السجل</th>
                         </tr>
                     </thead>
                     <tbody id="civilResults">
-                        <tr id="emptyRow"><td class="empty" colspan="8">لا توجد نتائج — اضغط "بحث" بعد إدخال شروط البحث</td></tr>
+                        <tr id="emptyRow"><td class="empty" colspan="16">لا توجد نتائج — اضغط "بحث" بعد إدخال شروط البحث</td></tr>
                     </tbody>
                 </table>
 
@@ -1013,30 +1021,36 @@ document.addEventListener("DOMContentLoaded", function () {
             tbody.innerHTML = "";
 
             if (!Array.isArray(data) || data.length === 0) {
-                tbody.innerHTML = `<tr id="emptyRow"><td class="empty" colspan="8">لا توجد نتائج مطابقة</td></tr>`;
+                tbody.innerHTML = `<tr id="emptyRow"><td class="empty" colspan="16">لا توجد نتائج مطابقة</td></tr>`;
                 return;
             }
 
             data.forEach(item => {
                 const tr = document.createElement('tr');
                 
-                const firstName = item["first_name"] ? String(item["first_name"]).trim() : '';
-                const fatherName = item["father_name"] ? String(item["father_name"]).trim() : '';
-                const grandName = item["grandfather_name"] ? String(item["grandfather_name"]).trim() : '';
-                const familyName = item["family_name"] ? String(item["family_name"]).trim() : '';
-                const motherName = item["mother_name"] ? String(item["mother_name"]).trim() : '';
-                
-                const nameCell = `${firstName} - ${fatherName} - ${grandName || ''} - ${familyName}<br><small>اسم الأم: ${motherName}</small>`;
+                // Format birth_date to show only date part (YYYY-MM-DD)
+                let birthDate = '-';
+                if (item.birth_date) {
+                    birthDate = item.birth_date.substring(0, 10);
+                }
 
                 tr.innerHTML = `
-                    <td>${item["national_id"] ?? '-'}</td>
-                    <td style="text-align:left;padding-left:10px">${nameCell}</td>
-                    <td>${item["birth_date"] ?? '-'}</td>
-                    <td>${item["age"] ?? '-'}</td>
-                    <td>${item["gender"] ?? '-'}</td>
-                    <td>${item["occupation"] ?? '-'}</td>
-                    <td>${item["nationality"] ?? '-'}</td>
-                    <td>${item["record_location"] ?? '-'}</td>
+                    <td>${item.national_id ?? '-'}</td>
+                    <td>${item.first_name ?? '-'}</td>
+                    <td>${item.father_name ?? '-'}</td>
+                    <td>${item.mother_name ?? '-'}</td>
+                    <td>${item.grandfather_name ?? '-'}</td>
+                    <td>${item.family_name ?? '-'}</td>
+                    <td>${birthDate}</td>
+                    <td>${item.age ?? '-'}</td>
+                    <td>${item.gender ?? '-'}</td>
+                    <td>${item.religion ?? '-'}</td>
+                    <td>${item.nationality ?? '-'}</td>
+                    <td>${item.place_of_birth ?? '-'}</td>
+                    <td>${item.occupation ?? '-'}</td>
+                    <td>${item.education_level ?? '-'}</td>
+                    <td>${item.phone_number ?? '-'}</td>
+                    <td>${item.record_location ?? '-'}</td>
                 `;
 
                 tbody.appendChild(tr);
