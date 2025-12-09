@@ -177,170 +177,270 @@
 
 
 <!--  نافذة تسجيل طلب -->
-<!--  نافذة تسجيل طلب -->
+<style>
+#registerRequestModal .modal-dialog {
+    max-width: 900px;
+}
+#registerRequestModal .modal-content {
+    background: #f5f5f5;
+    border-radius: 8px;
+}
+#registerRequestModal .form-container {
+    background: white;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+#registerRequestModal .section-title {
+    background: black;
+    color: white;
+    padding: 12px 20px;
+    border-radius: 6px;
+    font-size: 18px;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 20px;
+}
+#registerRequestModal .form-label {
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 5px;
+}
+#registerRequestModal .form-control,
+#registerRequestModal .form-select {
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 8px 12px;
+}
+#registerRequestModal .party-block {
+    background: #f9f9f9;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 15px;
+    position: relative;
+}
+#registerRequestModal .party-block .remove-party {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    font-size: 18px;
+    cursor: pointer;
+}
+#registerRequestModal .btn-add-party {
+    background: black;
+    color: white;
+    border: none;
+    padding: 10px 30px;
+    border-radius: 6px;
+    font-weight: bold;
+    margin-top: 10px;
+}
+#registerRequestModal .btn-add-party:hover {
+    background: #333;
+}
+#registerRequestModal .evidence-block {
+    background: #fff;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 15px;
+    margin-bottom: 10px;
+    position: relative;
+}
+#registerRequestModal .action-buttons {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    margin-top: 30px;
+}
+#registerRequestModal .action-buttons button {
+    background: black;
+    color: white;
+    border: none;
+    padding: 12px 40px;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+}
+#registerRequestModal .action-buttons button:hover {
+    background: #333;
+}
+</style>
+
 <div class="modal fade" id="registerRequestModal" tabindex="-1" aria-labelledby="registerRequestLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg" style="margin-top:80px;">
+  <div class="modal-dialog modal-xl" style="margin-top:80px;">
     <div class="modal-content">
 
-      <div class="modal-header">
-        <h5 class="modal-title">تسجيل طلب</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      <div class="modal-header" style="background: black; color: white;">
+        <h5 class="modal-title">تسجيل طلب جديد</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
       </div>
 
       <div class="modal-body">
+        <div class="form-container">
+          <form id="requestForm">
 
-        <form id="requestForm" class="row g-3">
-
-          <!-- رقم المحكمة -->
-          <div class="col-md-3">
-            <label class="form-label">رقم المحكمة</label>
-            <input type="text" class="form-control form-control-sm" id="reqCourtNumber" readonly>
-          </div>
-
-          <!-- رقم القلم -->
-          <div class="col-md-3">
-            <label class="form-label">رقم القلم</label>
-            <input type="text" class="form-control form-control-sm" id="reqDepartmentNumber" readonly>
-          </div>
-
-          <!-- السنة -->
-          <div class="col-md-3">
-            <label class="form-label">السنة</label>
-            <input type="text" class="form-control form-control-sm" id="reqYear" readonly>
-          </div>
-
-          <!-- رقم الطلب -->
-          <div class="col-md-3">
-            <label class="form-label">رقم الطلب</label>
-            <input type="text" class="form-control form-control-sm" id="requestNumber" placeholder="اضغط Enter">
-          </div>
-
-          <!-- نوع الطلب -->
-          <div class="col-md-4">
-            <label class="form-label">نوع الطلب</label>
-            <select class="form-select form-select-sm" id="requestType">
-              <option value="">اختر نوع الطلب...</option>
-              <option value="طلب تنفيذ">طلب تنفيذ</option>
-              <option value="طلب إثبات حالة">طلب إثبات حالة</option>
-              <option value="طلب مستعجل">طلب مستعجل</option>
-              <option value="طلب تعليق">طلب تعليق</option>
-            </select>
-          </div>
-
-          <!-- 🟦 الطرف الأول (ظاهر افتراضياً) -->
-          <div class="request-party row g-3 mt-2">
-
-              <div class="col-md-4">
-                  <label class="form-label">نوع الطرف</label>
-                  <select class="form-select form-select-sm request-party-type">
-                    <option value="">اختر...</option>
-                    <option value="مشتكي">مشتكي</option>
-                    <option value="مشتكى عليه">مشتكى عليه</option>
-                    <option value="شاهد">شاهد</option>
-                    <option value="محامي">محامي</option>
-                  </select>
-              </div>
-
-              <div class="col-md-4">
-                  <label class="form-label">اسم الطرف</label>
-                  <input type="text" class="form-control form-control-sm request-party-name">
-              </div>
-
-              <div class="col-md-4">
-                  <label class="form-label">الرقم الوطني</label>
-                  <input type="text" class="form-control form-control-sm request-party-nid">
-              </div>
-
-              <div class="col-md-4">
-                  <label class="form-label">مكان السكن</label>
-                  <input type="text" class="form-control form-control-sm request-party-residence">
-              </div>
-
-              <div class="col-md-4">
-                  <label class="form-label">الوظيفة / مكان العمل</label>
-                  <input type="text" class="form-control form-control-sm request-party-job">
-              </div>
-
-              <div class="col-md-4">
-                  <label class="form-label">رقم الهاتف</label>
-                  <input type="text" class="form-control form-control-sm request-party-phone">
-              </div>
-
-          </div>
-
-          <!-- 🟨 قالب طرف مخفي (يستخدم للنسخ فقط) -->
-          <div id="partyTemplate" class="request-party d-none row g-3 mt-2">
-
-              <div class="col-md-4">
-                  <select class="form-select form-select-sm request-party-type">
-                    <option value="">اختر...</option>
-                    <option value="مشتكي">مشتكي</option>
-                    <option value="مشتكى عليه">مشتكى عليه</option>
-                    <option value="شاهد">شاهد</option>
-                    <option value="محامي">محامي</option>
-                  </select>
-              </div>
-
-              <div class="col-md-4">
-                  <input type="text" class="form-control form-control-sm request-party-name" placeholder="اسم الطرف">
-              </div>
-
-              <div class="col-md-4">
-                  <input type="text" class="form-control form-control-sm request-party-nid" placeholder="الرقم الوطني">
-              </div>
-
-              <div class="col-md-4">
-                  <input type="text" class="form-control form-control-sm request-party-residence" placeholder="مكان السكن">
-              </div>
-
-              <div class="col-md-4">
-                  <input type="text" class="form-control form-control-sm request-party-job" placeholder="الوظيفة / مكان العمل">
-              </div>
-
+            <!-- رقم الطلب -->
+            <div class="section-title">رقم الطلب</div>
+            <div class="row g-3 mb-4">
               <div class="col-md-3">
-                  <input type="text" class="form-control form-control-sm request-party-phone" placeholder="رقم الهاتف">
+                <label class="form-label">رقم المحكمة</label>
+                <input type="text" class="form-control" id="reqCourtNumber" readonly>
               </div>
-
-              <div class="col-md-1">
-                  <button type="button" class="btn btn-danger btn-sm remove-party">X</button>
+              <div class="col-md-3">
+                <label class="form-label">رقم القلم</label>
+                <input type="text" class="form-control" id="reqDepartmentNumber" readonly>
               </div>
+              <div class="col-md-3">
+                <label class="form-label">رقم الطلب</label>
+                <input type="text" class="form-control" id="requestNumber" placeholder="اضغط Enter">
+              </div>
+              <div class="col-md-3">
+                <label class="form-label">السنة</label>
+                <input type="text" class="form-control" id="reqYear" readonly>
+              </div>
+            </div>
 
-          </div>
+            <!-- نوع الطلب والقاضي -->
+            <div class="section-title">معلومات الطلب</div>
+            <div class="row g-3 mb-4">
+              <div class="col-md-6">
+                <label class="form-label">نوع الطلب</label>
+                <select class="form-select" id="requestType">
+                  <option value="">اختر نوع الطلب...</option>
+                  <option value="طلب تنفيذ">طلب تنفيذ</option>
+                  <option value="طلب إثبات حالة">طلب إثبات حالة</option>
+                  <option value="طلب مستعجل">طلب مستعجل</option>
+                  <option value="طلب تعليق">طلب تعليق</option>
+                </select>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">القاضي المعيّن تلقائيًا</label>
+                <input type="text" id="reqJudgeName" class="form-control" readonly>
+                <input type="hidden" id="reqJudgeId">
+              </div>
+            </div>
 
-          <!-- زر إضافة طرف -->
-          <div class="col-12">
-            <button type="button" id="addRequestParty" class="btn btn-secondary btn-sm">
-              ➕ إضافة طرف آخر
-            </button>
-          </div>
+            <!-- الأطراف -->
+            <div class="section-title">الأطراف</div>
+            <div id="partiesContainer">
+              <!-- الطرف الأول -->
+              <div class="party-block request-party">
+                <div class="row g-3">
+                  <div class="col-md-4">
+                    <label class="form-label">نوع الطرف</label>
+                    <select class="form-select request-party-type">
+                      <option value="">اختر...</option>
+                      <option value="مشتكي">مشتكي</option>
+                      <option value="مشتكى عليه">مشتكى عليه</option>
+                      <option value="شاهد">شاهد</option>
+                      <option value="محامي">محامي</option>
+                    </select>
+                  </div>
+                  <div class="col-md-4">
+                    <label class="form-label">اسم الطرف</label>
+                    <input type="text" class="form-control request-party-name">
+                  </div>
+                  <div class="col-md-4">
+                    <label class="form-label">الرقم الوطني</label>
+                    <input type="text" class="form-control request-party-nid">
+                  </div>
+                  <div class="col-md-4">
+                    <label class="form-label">مكان السكن</label>
+                    <input type="text" class="form-control request-party-residence">
+                  </div>
+                  <div class="col-md-4">
+                    <label class="form-label">الوظيفة / مكان العمل</label>
+                    <input type="text" class="form-control request-party-job">
+                  </div>
+                  <div class="col-md-4">
+                    <label class="form-label">رقم الهاتف</label>
+                    <input type="text" class="form-control request-party-phone">
+                  </div>
+                  <div class="col-md-12">
+                    <label class="form-label">العنوان</label>
+                    <input type="text" class="form-control request-party-address">
+                  </div>
+                </div>
+              </div>
+            </div>
 
-          <!-- حاوية الأطراف الإضافية -->
-          <div id="extraRequestParties"></div>
+            <!-- قالب طرف مخفي -->
+            <template id="partyTemplate">
+              <div class="party-block request-party">
+                <button type="button" class="remove-party">×</button>
+                <div class="row g-3">
+                  <div class="col-md-4">
+                    <label class="form-label">نوع الطرف</label>
+                    <select class="form-select request-party-type">
+                      <option value="">اختر...</option>
+                      <option value="مشتكي">مشتكي</option>
+                      <option value="مشتكى عليه">مشتكى عليه</option>
+                      <option value="شاهد">شاهد</option>
+                      <option value="محامي">محامي</option>
+                    </select>
+                  </div>
+                  <div class="col-md-4">
+                    <label class="form-label">اسم الطرف</label>
+                    <input type="text" class="form-control request-party-name">
+                  </div>
+                  <div class="col-md-4">
+                    <label class="form-label">الرقم الوطني</label>
+                    <input type="text" class="form-control request-party-nid">
+                  </div>
+                  <div class="col-md-4">
+                    <label class="form-label">مكان السكن</label>
+                    <input type="text" class="form-control request-party-residence">
+                  </div>
+                  <div class="col-md-4">
+                    <label class="form-label">الوظيفة / مكان العمل</label>
+                    <input type="text" class="form-control request-party-job">
+                  </div>
+                  <div class="col-md-4">
+                    <label class="form-label">رقم الهاتف</label>
+                    <input type="text" class="form-control request-party-phone">
+                  </div>
+                  <div class="col-md-12">
+                    <label class="form-label">العنوان</label>
+                    <input type="text" class="form-control request-party-address">
+                  </div>
+                </div>
+              </div>
+            </template>
 
-          <hr>
+            <div class="text-center">
+              <button type="button" id="addRequestParty" class="btn-add-party">➕ إضافة طرف آخر</button>
+            </div>
 
-          <!-- القاضي -->
-          <div class="col-md-6">
-            <label class="form-label">القاضي المعيّن تلقائيًا</label>
-            <input type="text" id="reqJudgeName" class="form-control" readonly>
-            <input type="hidden" id="reqJudgeId">
-          </div>
+         
 
-          <!-- موعد الجلسة -->
-          <div class="col-md-6">
-            <label class="form-label">موعد الجلسة</label>
-            <input type="text" id="reqSessionDate" class="form-control" readonly>
-          </div>
+            <!-- الوصف -->
+       
 
-        </form>
+            <!-- موعد الجلسة -->
+            <div class="row g-3">
+              <div class="col-md-12">
+                <label class="form-label">موعد الجلسة</label>
+                <input type="text" id="reqSessionDate" class="form-control" readonly>
+              </div>
+            </div>
 
+          </form>
+        </div>
       </div>
 
-      <div class="modal-footer">
-        <!-- ✳ مهم جداً: type="button" عشان ما يعمل submit للفورم -->
-        <button type="button" class="btn btn-primary btn-sm" id="saveRequest">
-          حفظ الطلب
-        </button>
+      <div class="modal-footer" style="background: #f5f5f5;">
+        <div class="action-buttons">
+          <button type="button" id="saveAndFinishRequest">حفظ وإنهاء</button>
+          <button type="button" id="clearRequest">مسح الكل</button>
+          <button type="button" id="saveRequest">حفظ ومتابعة</button>
+        </div>
       </div>
 
     </div>
@@ -928,57 +1028,134 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // ⭐ توليد رقم الطلب
-    document.getElementById("requestNumber").addEventListener("keydown", async (e) => {
+    const requestNumberInput = document.getElementById("requestNumber");
+    if (requestNumberInput) {
+        requestNumberInput.addEventListener("keydown", async (e) => {
 
-        if (e.key !== "Enter") return;
-        e.preventDefault();
+            if (e.key !== "Enter") return;
+            e.preventDefault();
 
-        const type = document.getElementById("requestType").value;
+            const type = document.getElementById("requestType").value;
 
-        if (!type) {
-            alert("❌ اختر نوع الطلب أولاً");
-            return;
-        }
+            if (!type) {
+                alert("❌ اختر نوع الطلب أولاً");
+                return;
+            }
 
-        try {
-            const response = await axios.post("/writer/request/store-number", { type });
-            const d = response.data;
+            try {
+                const response = await axios.post("/writer/request/store-number", { type });
+                const d = response.data;
 
-            currentRequestId = d.id;
+                currentRequestId = d.id;
 
-            document.getElementById("requestNumber").value = d.request_number;
-            document.getElementById("reqJudgeName").value  = d.judge_name;
-            document.getElementById("reqJudgeId").value    = d.judge_id;
-            document.getElementById("reqSessionDate").value = d.session_date;
+                document.getElementById("requestNumber").value = d.request_number;
+                document.getElementById("reqJudgeName").value  = d.judge_name;
+                document.getElementById("reqJudgeId").value    = d.judge_id;
+                document.getElementById("reqSessionDate").value = d.session_date;
 
-        } catch (err) {
-            console.error(err);
-        }
-    });
+            } catch (err) {
+                console.error(err);
+            }
+        });
+    }
 
     // ⭐ إضافة طرف
     const addPartyBtn = document.getElementById("addRequestParty");
-    const partyTemplate = document.getElementById("partyTemplate");
-    const partyContainer = document.getElementById("extraRequestParties");
+    
+    if (addPartyBtn) {
+        addPartyBtn.addEventListener("click", () => {
+            
+            const partyTemplate = document.getElementById("partyTemplate");
+            const partiesContainer = document.getElementById("partiesContainer");
+            
+            if (!partyTemplate || !partiesContainer) {
+                console.error("❌ Template or container not found");
+                return;
+            }
 
-    addPartyBtn.addEventListener("click", () => {
+            // استخدام template.content للحصول على المحتوى
+            let clone = partyTemplate.content.cloneNode(true);
 
-        let clone = partyTemplate.cloneNode(true);
-        clone.classList.remove("d-none");
-        clone.removeAttribute("id");
+            // البحث عن زر الحذف في النسخة المستنسخة
+            const removeBtn = clone.querySelector(".remove-party");
+            if (removeBtn) {
+                removeBtn.addEventListener("click", function() {
+                    // حذف العنصر الأب (party-block)
+                    this.closest('.party-block').remove();
+                });
+            }
 
-        clone.querySelectorAll("input").forEach(el => el.value = "");
-        clone.querySelectorAll("select").forEach(el => el.value = "");
-
-        clone.querySelector(".remove-party").addEventListener("click", () => {
-            clone.remove();
+            partiesContainer.appendChild(clone);
         });
+    }
 
-        partyContainer.appendChild(clone);
-    });
+    // ⭐ إضافة مستند
+    const addEvidenceBtn = document.getElementById("addEvidence");
+    const evidenceContainer = document.getElementById("evidenceContainer");
 
-    // ⭐ حفظ الطلب بالكامل
-    document.getElementById("saveRequest").addEventListener("click", async () => {
+    if (addEvidenceBtn && evidenceContainer) {
+        addEvidenceBtn.addEventListener("click", () => {
+            const newEvidence = document.createElement("div");
+            newEvidence.className = "evidence-block";
+            newEvidence.innerHTML = `
+                <button type="button" class="remove-party" onclick="this.parentElement.remove()">×</button>
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label">نوع المستند</label>
+                        <input type="text" class="form-control evidence-type">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">رفع الملف</label>
+                        <input type="file" class="form-control evidence-file">
+                    </div>
+                </div>
+            `;
+            evidenceContainer.appendChild(newEvidence);
+        });
+    }
+
+    // ⭐ مسح الكل
+    const clearBtn = document.getElementById("clearRequest");
+    if (clearBtn) {
+        clearBtn.addEventListener("click", () => {
+            if (confirm("هل أنت متأكد من مسح جميع البيانات؟")) {
+                document.getElementById("requestForm").reset();
+                
+                // حذف الأطراف المضافة (ماعدا الأول)
+                const allParties = partiesContainer.querySelectorAll(".party-block");
+                allParties.forEach((party, index) => {
+                    if (index > 0) party.remove();
+                });
+
+                // حذف المستندات المضافة (ماعدا الأول)
+                const allEvidence = evidenceContainer.querySelectorAll(".evidence-block");
+                allEvidence.forEach((evidence, index) => {
+                    if (index > 0) evidence.remove();
+                });
+
+                currentRequestId = null;
+            }
+        });
+    }
+
+    // ⭐ حفظ ومتابعة
+    const saveBtn = document.getElementById("saveRequest");
+    if (saveBtn) {
+        saveBtn.addEventListener("click", async () => {
+            await saveRequestData(false);
+        });
+    }
+
+    // ⭐ حفظ وإنهاء
+    const saveAndFinishBtn = document.getElementById("saveAndFinishRequest");
+    if (saveAndFinishBtn) {
+        saveAndFinishBtn.addEventListener("click", async () => {
+            await saveRequestData(true);
+        });
+    }
+
+    // ⭐ دالة حفظ الطلب
+    async function saveRequestData(closeModal = false) {
 
         if (!currentRequestId) {
             alert("❌ اضغط Enter لتوليد رقم الطلب أولاً");
@@ -987,8 +1164,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
         let parties = [];
 
-        // الطرف الأول + الأطراف المضافة
-        document.querySelectorAll(".request-party:not(#partyTemplate)").forEach(block => {
+        // جمع بيانات جميع الأطراف
+        document.querySelectorAll("#partiesContainer .request-party").forEach(block => {
 
             const p = {
                 type:       block.querySelector(".request-party-type").value,
@@ -997,6 +1174,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 residence:  block.querySelector(".request-party-residence").value,
                 job:        block.querySelector(".request-party-job").value,
                 phone:      block.querySelector(".request-party-phone").value,
+                address:    block.querySelector(".request-party-address")?.value || '',
             };
 
             if (p.type && p.name) {
@@ -1013,17 +1191,22 @@ document.addEventListener("DOMContentLoaded", () => {
 
             const res = await axios.post("/requests/store-parties", {
                 request_id: currentRequestId,
-                parties: parties
+                parties: parties,
+                description: document.getElementById("requestDescription").value
             });
 
             alert("✔ تم حفظ الطلب بنجاح");
+
+            if (closeModal) {
+                const modal = bootstrap.Modal.getInstance(modalEl);
+                if (modal) modal.hide();
+            }
 
         } catch (err) {
             console.error(err);
             alert("❌ خطأ أثناء حفظ الأطراف");
         }
-
-    });
+    }
 
 });
 </script>
@@ -1190,15 +1373,15 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     /* 📌 إخفاء القائمة */
-    document.addEventListener('hideWriterCasesMenu', () => {
+    // document.addEventListener('hideWriterCasesMenu', () => {
 
-        setTimeout(() => {
-            if (!menu.matches(':hover') && !trigger.matches(':hover')) {
-                menu.style.display = "none";
-                console.log("📌 القائمة اختفت");
-            }
-        }, 150);
-    });
+    //     setTimeout(() => {
+    //         if (!menu.matches(':hover') && !trigger.matches(':hover')) {
+    //             menu.style.display = "none";
+    //             console.log("📌 القائمة اختفت");
+    //         }
+    //     }, 150);
+    // });
 
     /* 📌 إخفاء عند خروج الماوس */
     menu.addEventListener('mouseleave', () => {

@@ -16,6 +16,10 @@ Route::get('/', function () {return redirect()->route('login');});
 
 
 
+Route::get('/writer', function () {
+    return redirect()->route('writer.dashboard');
+})->middleware('auth');
+
 Route::get('/writer/dashboard', [WriterController::class, 'dashboard'])->middleware('auth')->name('writer.dashboard');
 //تسجيل دعوى
 Route::post('/court-cases/store', [WriterController::class, 'storeCourtCase'])->name('courtCases.store');
