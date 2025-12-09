@@ -1566,7 +1566,7 @@ document.addEventListener("DOMContentLoaded", () => {
             }
 
             try {
-                const response = await axios.post("/writer/case/store-number", { 
+                const response = await axios.post("/court-cases/store", { 
                     type: type,
                     tribunal_number: document.getElementById("courtNumber").value,
                     department_number: document.getElementById("departmentNumber").value,
