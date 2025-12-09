@@ -18,7 +18,8 @@
      ">
     <ul style="list-style:none; margin:0; padding:0;">
         <li id="open-register-case"
-    style="padding:10px; border-bottom:1px solid #ddd; cursor:pointer;">
+    style="padding:10px; border-bottom:1px solid #ddd; cursor:pointer;"
+    data-bs-toggle="modal" data-bs-target="#registerCaseModal">
     تسجيل دعوى
 </li>
 
@@ -44,131 +45,267 @@
     </ul>
 </div>
 <!--نافذه تسجيل دعوى -->
+<style>
+#registerCaseModal .modal-dialog {
+    max-width: 1000px;
+}
+#registerCaseModal .modal-content {
+    background: #f5f5f5;
+    border-radius: 8px;
+}
+#registerCaseModal .form-container {
+    background: white;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+#registerCaseModal .section-title {
+    background: black;
+    color: white;
+    padding: 12px 20px;
+    border-radius: 6px;
+    font-size: 18px;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 20px;
+}
+#registerCaseModal .form-label {
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 5px;
+}
+#registerCaseModal .form-control,
+#registerCaseModal .form-select {
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 8px 12px;
+}
+#registerCaseModal .party-block {
+    background: #f9f9f9;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 15px;
+    position: relative;
+}
+#registerCaseModal .party-block .remove-party {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    background: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    font-size: 18px;
+    cursor: pointer;
+}
+#registerCaseModal .btn-add-party {
+    background: black;
+    color: white;
+    border: none;
+    padding: 10px 30px;
+    border-radius: 6px;
+    font-weight: bold;
+    margin-top: 10px;
+}
+#registerCaseModal .btn-add-party:hover {
+    background: #333;
+}
+#registerCaseModal .action-buttons {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    margin-top: 30px;
+}
+#registerCaseModal .action-buttons button {
+    background: black;
+    color: white;
+    border: none;
+    padding: 12px 40px;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+}
+#registerCaseModal .action-buttons button:hover {
+    background: #333;
+}
+</style>
+
 <div class="modal fade" id="registerCaseModal" tabindex="-1" aria-labelledby="registerCaseLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg" style="margin-top: 80px;">
+  <div class="modal-dialog modal-xl" style="margin-top:80px;">
     <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="registerCaseLabel">تسجيل الدعوى</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="إغلاق"></button>
+
+      <div class="modal-header" style="background: black; color: white;">
+        <h5 class="modal-title">تسجيل دعوى جديدة</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
       </div>
 
       <div class="modal-body">
-        <form class="row g-3" method="POST" action="/writer/store-case">
-  @csrf
+        <div class="form-container">
+          <form id="caseForm">
 
-          <!-- ✅ نوع الدعوى -->
-          <div class="col-md-3">
-            <label class="form-label">نوع الدعوى</label>
-            <select class="form-select form-select-sm" id="caseType">
-              <option value="">اختر نوع القضية...</option>
-              <option value="القتل العمد">القتل العمد</option>
-              <option value="القتل العمد مع سبق الإصرار">القتل العمد مع سبق الإصرار</option>
-              <option value="القتل الخطأ">القتل الخطأ</option>
-              <option value="السرقة">السرقة</option>
-              <option value="الاغتصاب">الاغتصاب</option>
-              <option value="الاعتداء الجسدي">الاعتداء الجسدي</option>
-              <option value="المخدرات - تعاطي">المخدرات - تعاطي</option>
-              <option value="المخدرات - اتجار">المخدرات - اتجار</option>
-              <option value="المخدرات - ترويج">المخدرات - ترويج</option>
-              <option value="الخطف">الخطف</option>
-              <option value="الجرائم الإلكترونية">الجرائم الإلكترونية</option>
-              <option value="الجرائم ضد أمن الدولة">الجرائم ضد أمن الدولة</option>
-            </select>
-          </div>
+            <!-- نوع الدعوى -->
+            <div class="section-title">نوع الدعوى</div>
+            <div class="row g-3 mb-4">
+              <div class="col-md-12">
+                <label class="form-label">نوع الدعوى</label>
+                <select class="form-select" id="caseType">
+                  <option value="">اختر نوع القضية...</option>
+                  <option value="القتل العمد">القتل العمد</option>
+                  <option value="القتل العمد مع سبق الإصرار">القتل العمد مع سبق الإصرار</option>
+                  <option value="القتل الخطأ">القتل الخطأ</option>
+                  <option value="السرقة">السرقة</option>
+                  <option value="الاغتصاب">الاغتصاب</option>
+                  <option value="الاعتداء الجسدي">الاعتداء الجسدي</option>
+                  <option value="المخدرات - تعاطي">المخدرات - تعاطي</option>
+                  <option value="المخدرات - اتجار">المخدرات - اتجار</option>
+                  <option value="المخدرات - ترويج">المخدرات - ترويج</option>
+                  <option value="الخطف">الخطف</option>
+                  <option value="الجرائم الإلكترونية">الجرائم الإلكترونية</option>
+                  <option value="الجرائم ضد أمن الدولة">الجرائم ضد أمن الدولة</option>
+                </select>
+              </div>
+            </div>
 
-          <!-- ✅ رقم المحكمة -->
-          <div class="col-md-3">
-            <label class="form-label">رقم المحكمة</label>
-            <input type="text" class="form-control form-control-sm" id="courtNumber" value="{{ auth()->user()->tribunal->number }}" readonly>
-          </div>
+            <!-- رقم الدعوى -->
+            <div class="section-title">رقم الدعوى</div>
+            <div class="row g-3 mb-4">
+              <div class="col-md-3">
+                <label class="form-label">رقم الدعوى</label>
+                <input type="text" class="form-control" id="caseNumber" placeholder="اضغط Enter">
+              </div>
+              <div class="col-md-3">
+                <label class="form-label">رقم المحكمة</label>
+                <input type="text" class="form-control" id="courtNumber" value="{{ auth()->user()->tribunal->number }}" readonly>
+              </div>
+              <div class="col-md-3">
+                <label class="form-label">رقم القلم</label>
+                <input type="text" class="form-control" id="departmentNumber" value="{{ auth()->user()->department->number }}" readonly>
+              </div>
+              <div class="col-md-3">
+                <label class="form-label">السنة</label>
+                <input type="text" class="form-control" id="caseYear" value="{{ date('Y') }}" readonly>
+              </div>
+            </div>
 
-          <!-- ✅ رقم القلم -->
-          <div class="col-md-3">
-            <label class="form-label">رقم القلم</label>
-            <input type="text" class="form-control form-control-sm" id="departmentNumber" value="{{ auth()->user()->department->number }}" readonly>
-          </div>
+            <!-- القاضي -->
+            <div class="section-title">القاضي</div>
+            <div class="row g-3 mb-4">
+              <div class="col-md-12">
+                <label class="form-label">القاضي المعيّن تلقائيًا</label>
+                <input type="text" id="judge_name" class="form-control" readonly>
+                <input type="hidden" name="judge_id" id="judge_id">
+              </div>
+            </div>
 
-          <!-- ✅ رقم الدعوى -->
-          <div class="col-md-3">
-            <label class="form-label">رقم الدعوى</label>
-            <input type="text" class="form-control form-control-sm" id="caseNumber" placeholder="اضغط Enter">
-          </div>
+            <!-- أطراف الدعوى -->
+            <div class="section-title">أطراف الدعوى</div>
+            <div id="partiesContainerCase">
+              <div class="party-block case-party">
+                <div class="row g-3">
+                  <div class="col-md-4">
+                    <label class="form-label">نوع الطرف</label>
+                    <select class="form-select case-party-type">
+                      <option value="">اختر...</option>
+                      <option value="مشتكي">مشتكي</option>
+                      <option value="مشتكى عليه">مشتكى عليه</option>
+                      <option value="شاهد">شاهد</option>
+                    </select>
+                  </div>
+                  <div class="col-md-4">
+                    <label class="form-label">اسم الطرف</label>
+                    <input type="text" class="form-control case-party-name">
+                  </div>
+                  <div class="col-md-4">
+                    <label class="form-label">الرقم الوطني</label>
+                    <input type="text" class="form-control case-party-nid">
+                  </div>
+                  <div class="col-md-4">
+                    <label class="form-label">رقم الهاتف</label>
+                    <input type="text" class="form-control case-party-phone">
+                  </div>
+                  <div class="col-md-4">
+                    <label class="form-label">مكان السكن</label>
+                    <input type="text" class="form-control case-party-residence">
+                  </div>
+                  <div class="col-md-4">
+                    <label class="form-label">الوظيفة / مكان العمل</label>
+                    <input type="text" class="form-control case-party-job">
+                  </div>
+                  <div class="col-md-12">
+                    <label class="form-label">التهمة</label>
+                    <input type="text" class="form-control case-party-charge">
+                  </div>
+                </div>
+              </div>
+            </div>
 
-          <!-- ✅ السنة -->
-          <div class="col-md-3">
-            <label class="form-label">السنة</label>
-            <input type="text" class="form-control form-control-sm" id="caseYear" placeholder="اضغط Enter">
-          </div>
+            <template id="casePartyTemplate">
+              <div class="party-block case-party">
+                <button type="button" class="remove-party">×</button>
+                <div class="row g-3">
+                  <div class="col-md-4">
+                    <label class="form-label">نوع الطرف</label>
+                    <select class="form-select case-party-type">
+                      <option value="">اختر...</option>
+                      <option value="مشتكي">مشتكي</option>
+                      <option value="مشتكى عليه">مشتكى عليه</option>
+                      <option value="شاهد">شاهد</option>
+                    </select>
+                  </div>
+                  <div class="col-md-4">
+                    <label class="form-label">اسم الطرف</label>
+                    <input type="text" class="form-control case-party-name">
+                  </div>
+                  <div class="col-md-4">
+                    <label class="form-label">الرقم الوطني</label>
+                    <input type="text" class="form-control case-party-nid">
+                  </div>
+                  <div class="col-md-4">
+                    <label class="form-label">رقم الهاتف</label>
+                    <input type="text" class="form-control case-party-phone">
+                  </div>
+                  <div class="col-md-4">
+                    <label class="form-label">مكان السكن</label>
+                    <input type="text" class="form-control case-party-residence">
+                  </div>
+                  <div class="col-md-4">
+                    <label class="form-label">الوظيفة / مكان العمل</label>
+                    <input type="text" class="form-control case-party-job">
+                  </div>
+                  <div class="col-md-12">
+                    <label class="form-label">التهمة</label>
+                    <input type="text" class="form-control case-party-charge">
+                  </div>
+                </div>
+              </div>
+            </template>
 
-          <!-- ✅ نوع الطرف -->
-          <div class="col-md-3">
-            <label class="form-label">نوع الطرف</label>
-            <select class="form-select form-select-sm" id="partyType">
-              <option value="">اختر...</option>
-              <option value="مشتكي">مشتكي</option>
-              <option value="مشتكى عليه">مشتكى عليه</option>
-              <option value="شاهد">شاهد</option>
-            </select>
-          </div>
+            <div class="text-center">
+              <button type="button" id="addCaseParty" class="btn-add-party">➕ إضافة طرف آخر</button>
+            </div>
 
-          <!-- ✅ اسم الطرف -->
-          <div class="col-md-3">
-            <label class="form-label">اسم الطرف</label>
-            <input type="text" class="form-control form-control-sm" id="partyName">
-          </div>
+            <!-- موعد الجلسة -->
+            <div class="row g-3 mt-3">
+              <div class="col-md-12">
+                <label class="form-label">موعد الجلسة</label>
+                <input type="text" id="session_date" class="form-control" readonly>
+              </div>
+            </div>
 
-          <!-- ✅ الرقم الوطني -->
-          <div class="col-md-3">
-            <label class="form-label">الرقم الوطني</label>
-            <input type="text" class="form-control form-control-sm" id="nationalId">
-          </div>
-
-          <!-- ✅ مكان السكن -->
-          <div class="col-md-3">
-            <label class="form-label">مكان السكن</label>
-            <input type="text" class="form-control form-control-sm" id="residence">
-          </div>
-
-          <!-- ✅ الوظيفة / مكان العمل -->
-          <div class="col-md-3">
-            <label class="form-label">الوظيفة / مكان العمل</label>
-            <input type="text" class="form-control form-control-sm" id="job">
-          </div>
-
-          <!-- ✅ رقم الهاتف -->
-          <div class="col-md-3">
-            <label class="form-label">رقم الهاتف</label>
-            <input type="text" class="form-control form-control-sm" id="phone">
-          </div>
-          
-
-        <!-- التهمة -->
-<div class="col-md-3">
-    <label class="form-label">التهمة</label>
-    <input type="text" class="form-control form-control-sm" id="charge" placeholder="أدخل التهمة">
-</div>
-
-
-          <div class="mb-3">
-  <label class="form-label">القاضي المعيّن تلقائيًا</label>
-  <input type="text" id="judge_name" class="form-control" readonly>
-  <input type="hidden" name="judge_id" id="judge_id">
-</div>
-<div class="mb-3">
-  <label class="form-label">موعد الجلسة</label>
-  <input type="text" id="session_date" class="form-control" readonly>
-
-</div>
-        </form>
-      </div>
-      <!-- ✅ أزرار التحكم -->
-      <div class="modal-footer d-flex justify-content-between">
-        <div>
-          <button type="button" class="btn btn-success btn-sm" id="saveParty">حفظ</button>
-          <button type="submit" class="btn btn-primary btn-sm" id="saveAndFinish">حفظ وإنهاء</button>
+          </form>
         </div>
-        <button type="button" class="btn btn-danger btn-sm" data-bs-dismiss="modal">إنهاء المدخلات</button>
       </div>
+
+      <div class="modal-footer" style="background: #f5f5f5;">
+        <div class="action-buttons">
+          <button type="button" id="saveAndFinishCase">حفظ وإنهاء</button>
+          <button type="button" id="clearCase">مسح الكل</button>
+        </div>
+      </div>
+
     </div>
   </div>
 </div>
@@ -1184,7 +1321,6 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         try {
-
             const res = await axios.post("/requests/store-parties", {
                 request_id: currentRequestId,
                 parties: parties,
@@ -1385,6 +1521,173 @@ document.addEventListener('DOMContentLoaded', function () {
             menu.style.display = "none";
         }
     });
+
+});
+</script>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+
+    console.log("📌 JS تسجيل الدعوى يعمل...");
+
+    let currentCaseId = null;
+
+    // فتح نافذة تسجيل الدعوى
+    const openCaseBtn = document.getElementById("open-register-case");
+    const caseModalEl = document.getElementById("registerCaseModal");
+
+    if (openCaseBtn && caseModalEl) {
+        openCaseBtn.addEventListener("click", () => {
+            const modal = new bootstrap.Modal(caseModalEl);
+            modal.show();
+            currentCaseId = null;
+        });
+    }
+
+    // ⭐ توليد رقم الدعوى
+    const caseNumberInput = document.getElementById("caseNumber");
+    if (caseNumberInput) {
+        caseNumberInput.addEventListener("keydown", async (e) => {
+            if (e.key !== "Enter") return;
+            e.preventDefault();
+
+            const type = document.getElementById("caseType").value;
+
+            if (!type) {
+                alert("❌ اختر نوع الدعوى أولاً");
+                return;
+            }
+
+            try {
+                const response = await axios.post("/writer/case/store-number", { 
+                    type: type,
+                    tribunal_number: document.getElementById("courtNumber").value,
+                    department_number: document.getElementById("departmentNumber").value,
+                    year: document.getElementById("caseYear").value
+                });
+                const d = response.data;
+
+                currentCaseId = d.id;
+
+                document.getElementById("caseNumber").value = d.case_number;
+                document.getElementById("judge_name").value = d.judge_name;
+                document.getElementById("judge_id").value = d.judge_id;
+                document.getElementById("session_date").value = d.session_date;
+
+            } catch (err) {
+                console.error("❌ خطأ:", err);
+                alert("❌ خطأ أثناء توليد رقم الدعوى");
+            }
+        });
+    }
+
+    // ⭐ إضافة طرف للدعوى
+    const addCasePartyBtn = document.getElementById("addCaseParty");
+    
+    if (addCasePartyBtn) {
+        addCasePartyBtn.addEventListener("click", () => {
+            
+            const casePartyTemplate = document.getElementById("casePartyTemplate");
+            const partiesContainerCase = document.getElementById("partiesContainerCase");
+            
+            if (!casePartyTemplate || !partiesContainerCase) {
+                console.error("❌ Template or container not found");
+                return;
+            }
+
+            // استخدام template.content للحصول على المحتوى
+            let clone = casePartyTemplate.content.cloneNode(true);
+
+            // البحث عن زر الحذف في النسخة المستنسخة
+            const removeBtn = clone.querySelector(".remove-party");
+            if (removeBtn) {
+                removeBtn.addEventListener("click", function() {
+                    this.closest('.party-block').remove();
+                });
+            }
+
+            partiesContainerCase.appendChild(clone);
+        });
+    }
+
+    // ⭐ مسح الكل
+    const clearCaseBtn = document.getElementById("clearCase");
+    if (clearCaseBtn) {
+        clearCaseBtn.addEventListener("click", () => {
+            if (confirm("هل أنت متأكد من مسح جميع البيانات؟")) {
+                document.getElementById("caseForm").reset();
+                
+                const partiesContainerCase = document.getElementById("partiesContainerCase");
+                // حذف الأطراف المضافة (ماعدا الأول)
+                const allParties = partiesContainerCase.querySelectorAll(".party-block");
+                allParties.forEach((party, index) => {
+                    if (index > 0) party.remove();
+                });
+
+                currentCaseId = null;
+            }
+        });
+    }
+
+    // ⭐ حفظ وإنهاء
+    const saveAndFinishCaseBtn = document.getElementById("saveAndFinishCase");
+    if (saveAndFinishCaseBtn) {
+        saveAndFinishCaseBtn.addEventListener("click", async () => {
+            await saveCaseData(true);
+        });
+    }
+
+    // ⭐ دالة حفظ الدعوى
+    async function saveCaseData(closeModal = false) {
+
+        if (!currentCaseId) {
+            alert("❌ اضغط Enter لتوليد رقم الدعوى أولاً");
+            return;
+        }
+
+        let parties = [];
+
+        // جمع بيانات جميع الأطراف
+        document.querySelectorAll("#partiesContainerCase .case-party").forEach(block => {
+
+            const p = {
+                type:       block.querySelector(".case-party-type").value,
+                name:       block.querySelector(".case-party-name").value,
+                national_id:block.querySelector(".case-party-nid").value,
+                phone:      block.querySelector(".case-party-phone").value,
+                residence:  block.querySelector(".case-party-residence").value,
+                job:        block.querySelector(".case-party-job").value,
+                charge:     block.querySelector(".case-party-charge").value
+            };
+
+            if (p.type && p.name) {
+                parties.push(p);
+            }
+        });
+
+        if (parties.length === 0) {
+            alert("❌ يجب إدخال طرف واحد على الأقل");
+            return;
+        }
+
+        try {
+            const res = await axios.post("/writer/case/store-parties", {
+                case_id: currentCaseId,
+                parties: parties
+            });
+
+            alert("✔ تم حفظ الدعوى بنجاح");
+
+            if (closeModal) {
+                const modal = bootstrap.Modal.getInstance(caseModalEl);
+                if (modal) modal.hide();
+            }
+
+        } catch (err) {
+            console.error("❌ خطأ:", err);
+            alert("❌ خطأ أثناء حفظ الدعوى");
+        }
+    }
 
 });
 </script>
