@@ -718,27 +718,27 @@
                 <div class="grid">
                     <div class="field">
                         <label for="first_name">الاسم الأول</label>
-                        <input type="text" id="first_name" placeholder="مثال: محمد">
+                        <input type="text" id="first_name">
                     </div>
                     <div class="field">
                         <label for="father_name">اسم الأب</label>
-                        <input type="text" id="father_name" placeholder="مثال: علي">
+                        <input type="text" id="father_name">
                     </div>
                     <div class="field">
-                        <label for="grandfather_name">اسم الجد (اختياري)</label>
-                        <input type="text" id="grandfather_name" placeholder="مثال: حمد">
+                        <label for="grandfather_name">اسم الجد </label>
+                        <input type="text" id="grandfather_name">
                     </div>
                     <div class="field">
                         <label for="family_name">اسم العائلة</label>
-                        <input type="text" id="family_name" placeholder="مثال: الخطيب">
+                        <input type="text" id="family_name" >
                     </div>
                     <div class="field">
                         <label for="mother_name">اسم الأم</label>
-                        <input type="text" id="mother_name" placeholder="مثال: سعاد">
+                        <input type="text" id="mother_name">
                     </div>
                     <div class="field">
                         <label for="occupation">المهنة</label>
-                        <input type="text" id="occupation" placeholder="مثال: مهندس">
+                        <input type="text" id="occupation">
                     </div>
                     <div class="field">
                         <label for="gender">الجنس</label>
@@ -750,13 +750,12 @@
                     </div>
                     <div class="field">
                         <label for="nationality">الجنسية</label>
-                        <input type="text" id="nationality" placeholder="مثال: أردني">
+                        <input type="text" id="nationality">
                     </div>
                 </div>
 
                 <div class="controls">
-                    <button class="search-btn" onclick="searchCivilRegistry()">بحث</button>
-                    <div style="margin-left:8px;color:#555">اضغط بحث لعرض نتائج في الجدول أدناه</div>
+                    <button class="search-btn" onclick="searchCivilRegistry()">بحث الأحول المدينة</button>
                 </div>
 
                 <!-- جدول النتائج -->
