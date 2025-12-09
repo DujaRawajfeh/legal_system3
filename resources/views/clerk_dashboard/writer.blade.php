@@ -621,100 +621,162 @@
   </div>
 </div>
 <!-- نافذة المشاركين / البحث في الأحوال المدنية -->
+<style>
+#participantsModal .modal-content {
+    background: #f3f5f8;
+}
+#participantsModal .modal-body {
+    background: #fff;
+    border-radius: 10px;
+    padding: 18px;
+    box-shadow: 0 6px 18px rgba(0,0,0,.08);
+}
+#participantsModal h2 {
+    text-align: center;
+    margin: 0 0 14px;
+}
+#participantsModal .grid {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 12px;
+}
+#participantsModal .field {
+    flex: 1;
+    min-width: 170px;
+    display: flex;
+    flex-direction: column;
+}
+#participantsModal label {
+    font-weight: 700;
+    margin-bottom: 6px;
+}
+#participantsModal input,
+#participantsModal select {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 14px;
+}
+#participantsModal .controls {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    margin-bottom: 8px;
+}
+#participantsModal .search-btn {
+    background: #2d9f6f;
+    color: #fff;
+    padding: 9px 14px;
+    border-radius: 6px;
+    border: 0;
+    cursor: pointer;
+    font-weight: 700;
+}
+#participantsModal .exit-btn {
+    background: #e74c3c;
+    color: #fff;
+}
+#participantsModal table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 12px;
+}
+#participantsModal th,
+#participantsModal td {
+    border: 1px solid #e1e4e8;
+    padding: 8px;
+    text-align: center;
+    font-size: 14px;
+}
+#participantsModal th {
+    background: #f6f8fa;
+    font-weight: 700;
+}
+#participantsModal tbody tr:hover {
+    background: #f0fbf8;
+}
+#participantsModal .empty {
+    color: #777;
+    padding: 18px;
+    text-align: center;
+}
+</style>
+
 <div class="modal fade" id="participantsModal" tabindex="-1" aria-labelledby="participantsModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-xl modal-dialog-scrollable">
         <div class="modal-content">
 
             <div class="modal-header">
-                <h5 class="modal-title">البحث في الأحوال المدنية</h5>
+                <h5 class="modal-title">صفحة المشاركين</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
 
             <div class="modal-body">
 
-                <!-- نموذج البحث -->
-                <div class="row g-3">
-
-                    <div class="col-md-3">
-                        <label class="form-label">الاسم الأول</label>
-                        <input type="text" id="first_name" class="form-control form-control-sm">
+                <!-- مدخلات البحث -->
+                <div class="grid">
+                    <div class="field">
+                        <label for="first_name">الاسم الأول</label>
+                        <input type="text" id="first_name" placeholder="مثال: محمد">
                     </div>
-
-                    <div class="col-md-3">
-                        <label class="form-label">اسم الأب</label>
-                        <input type="text" id="father_name" class="form-control form-control-sm">
+                    <div class="field">
+                        <label for="father_name">اسم الأب</label>
+                        <input type="text" id="father_name" placeholder="مثال: علي">
                     </div>
-
-                    <div class="col-md-3">
-                        <label class="form-label">اسم الأم</label>
-                        <input type="text" id="mother_name" class="form-control form-control-sm">
+                    <div class="field">
+                        <label for="grandfather_name">اسم الجد (اختياري)</label>
+                        <input type="text" id="grandfather_name" placeholder="مثال: حمد">
                     </div>
-
-                    <div class="col-md-3">
-                        <label class="form-label">اسم الجد</label>
-                        <input type="text" id="grandfather_name" class="form-control form-control-sm">
+                    <div class="field">
+                        <label for="family_name">اسم العائلة</label>
+                        <input type="text" id="family_name" placeholder="مثال: الخطيب">
                     </div>
-
-                    <div class="col-md-3">
-                        <label class="form-label">اسم العائلة</label>
-                        <input type="text" id="family_name" class="form-control form-control-sm">
+                    <div class="field">
+                        <label for="mother_name">اسم الأم</label>
+                        <input type="text" id="mother_name" placeholder="مثال: سعاد">
                     </div>
-
-                    <div class="col-md-3">
-                        <label class="form-label">الوظيفة</label>
-                        <input type="text" id="occupation" class="form-control form-control-sm">
+                    <div class="field">
+                        <label for="occupation">المهنة</label>
+                        <input type="text" id="occupation" placeholder="مثال: مهندس">
                     </div>
-
-                    <div class="col-md-3">
-                        <label class="form-label">الجنسية</label>
-                        <input type="text" id="nationality" class="form-control form-control-sm">
-                    </div>
-
-                    <div class="col-md-3">
-                        <label class="form-label">الجنس</label>
-                        <select id="gender" class="form-select form-select-sm">
-                            <option value="">اختر...</option>
-                            <option value="ذكر">ذكر</option>
-                            <option value="أنثى">أنثى</option>
+                    <div class="field">
+                        <label for="gender">الجنس</label>
+                        <select id="gender">
+                            <option value="">-- الكل --</option>
+                            <option>ذكر</option>
+                            <option>أنثى</option>
                         </select>
                     </div>
-
+                    <div class="field">
+                        <label for="nationality">الجنسية</label>
+                        <input type="text" id="nationality" placeholder="مثال: أردني">
+                    </div>
                 </div>
 
-                <div class="mt-3 text-end">
-                    <button class="btn btn-primary btn-sm" onclick="searchCivilRegistry()">بحث الأحوال المدنية</button>
+                <div class="controls">
+                    <button class="search-btn" onclick="searchCivilRegistry()">بحث</button>
+                    <div style="margin-left:8px;color:#555">اضغط بحث لعرض نتائج في الجدول أدناه</div>
                 </div>
 
-                <hr>
-
-                <!-- جدول عرض نتائج السجل المدني -->
-                <div class="table-responsive">
-                    <table class="table table-bordered table-sm">
-                        <thead class="table-light">
-                            <tr>
-                                <th>الرقم الوطني</th>
-                                <th>الاسم الأول</th>  <!-- ⭐ فقط first_name -->
-                                <th>اسم الأب</th>
-                                <th>اسم الأم</th>
-                                <th>اسم الجد</th>
-                                <th>اسم العائلة</th>
-                                <th>تاريخ الميلاد</th>
-                                <th>العمر</th>
-                                <th>الجنس</th>
-                                <th>الديانة</th>
-                                <th>الجنسية</th>
-                                <th>مكان الولادة</th>
-                                <th>الوظيفة</th>
-                                <th>التعليم</th>
-                                <th>رقم الهاتف</th>
-                                <th>مكان السجل</th>
-                            </tr>
-                        </thead>
-                        <tbody id="civilResults">
-                            <!-- يتم تعبئته من JS -->
-                        </tbody>
-                    </table>
-                </div>
+                <!-- جدول النتائج -->
+                <table aria-label="نتائج البحث">
+                    <thead>
+                        <tr>
+                            <th>الرقم الوطني</th>
+                            <th>الاسم (الأول - الأب - الجد - العائلة) واسم الأم</th>
+                            <th>تاريخ الميلاد</th>
+                            <th>العمر</th>
+                            <th>الجنس</th>
+                            <th>المهنة</th>
+                            <th>الجنسية</th>
+                            <th>مكان السجل</th>
+                        </tr>
+                    </thead>
+                    <tbody id="civilResults">
+                        <tr id="emptyRow"><td class="empty" colspan="8">لا توجد نتائج — اضغط "بحث" بعد إدخال شروط البحث</td></tr>
+                    </tbody>
+                </table>
 
             </div> <!-- /modal-body -->
 
@@ -951,30 +1013,33 @@ document.addEventListener("DOMContentLoaded", function () {
             tbody.innerHTML = "";
 
             if (!Array.isArray(data) || data.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="16" class="text-center text-muted">لا توجد نتائج</td></tr>`;
+                tbody.innerHTML = `<tr id="emptyRow"><td class="empty" colspan="8">لا توجد نتائج مطابقة</td></tr>`;
                 return;
             }
 
             data.forEach(item => {
-                const firstName = item["first_name"] ? String(item["first_name"]).trim() : '-';
-                tbody.innerHTML += "<tr>"
-                    + "<td>" + (item["national_id"] ?? '-') + "</td>"
-                    + "<td style='direction: rtl; unicode-bidi: embed;'>" + firstName + "</td>"
-                    + "<td>" + (item["father_name"] ?? '-') + "</td>"
-                    + "<td>" + (item["mother_name"] ?? '-') + "</td>"
-                    + "<td>" + (item["grandfather_name"] ?? '-') + "</td>"
-                    + "<td>" + (item["family_name"] ?? '-') + "</td>"
-                    + "<td>" + (item["birth_date"] ?? '-') + "</td>"
-                    + "<td>" + (item["age"] ?? '-') + "</td>"
-                    + "<td>" + (item["gender"] ?? '-') + "</td>"
-                    + "<td>" + (item["religion"] ?? '-') + "</td>"
-                    + "<td>" + (item["nationality"] ?? '-') + "</td>"
-                    + "<td>" + (item["place_of_birth"] ?? '-') + "</td>"
-                    + "<td>" + (item["occupation"] ?? '-') + "</td>"
-                    + "<td>" + (item["education_level"] ?? '-') + "</td>"
-                    + "<td>" + (item["phone_number"] ?? '-') + "</td>"
-                    + "<td>" + (item["record_location"] ?? '-') + "</td>"
-                    + "</tr>";
+                const tr = document.createElement('tr');
+                
+                const firstName = item["first_name"] ? String(item["first_name"]).trim() : '';
+                const fatherName = item["father_name"] ? String(item["father_name"]).trim() : '';
+                const grandName = item["grandfather_name"] ? String(item["grandfather_name"]).trim() : '';
+                const familyName = item["family_name"] ? String(item["family_name"]).trim() : '';
+                const motherName = item["mother_name"] ? String(item["mother_name"]).trim() : '';
+                
+                const nameCell = `${firstName} - ${fatherName} - ${grandName || ''} - ${familyName}<br><small>اسم الأم: ${motherName}</small>`;
+
+                tr.innerHTML = `
+                    <td>${item["national_id"] ?? '-'}</td>
+                    <td style="text-align:left;padding-left:10px">${nameCell}</td>
+                    <td>${item["birth_date"] ?? '-'}</td>
+                    <td>${item["age"] ?? '-'}</td>
+                    <td>${item["gender"] ?? '-'}</td>
+                    <td>${item["occupation"] ?? '-'}</td>
+                    <td>${item["nationality"] ?? '-'}</td>
+                    <td>${item["record_location"] ?? '-'}</td>
+                `;
+
+                tbody.appendChild(tr);
             });
 
         })
