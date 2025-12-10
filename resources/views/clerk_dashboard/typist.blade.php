@@ -3010,7 +3010,7 @@ document.addEventListener('DOMContentLoaded', function () {
     <div class="modal-dialog modal-lg modal-dialog-scrollable">
         <div class="modal-content">
 
-            <div class="modal-header bg-primary text-white">
+            <div class="modal-header bg-dark text-white">
                 <h5 class="modal-title">أحكام الطلب</h5>
                 <button class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
