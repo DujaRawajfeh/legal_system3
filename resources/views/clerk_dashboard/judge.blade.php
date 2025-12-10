@@ -205,6 +205,44 @@ button:hover, .btn:hover {
 <!-- تبويبات المحتوى -->
 <div class="container">
   <div id="casesTab">
+    <section class="sessions">
+      <h3>جلسات اليوم (<span id="todayDate">{{ date('Y-m-d') }}</span>)</h3>
+      <table border="1" cellspacing="0" cellpadding="5">
+        <thead>
+          <tr>
+            <th>رقم الدعوى</th>
+            <th>عنوان الدعوى</th>
+            <th>التاريخ الأصلي</th>
+            <th>وقت الجلسة</th>
+            <th>نوع الجلسة</th>
+            <th>الحالة</th>
+            <th>سبب التأجيل</th>
+          </tr>
+        </thead>
+        <tbody id="todaySessionsTable">
+          @forelse ($sessions as $session)
+            <tr>
+              <td>{{ $session->courtCase->number ?? '-' }}</td>
+              <td>{{ $session->courtCase->type ?? '-' }}</td>
+              <td>{{ $session->courtCase->created_at->format('Y-m-d') }}</td>
+              <td>{{ \Carbon\Carbon::parse($session->session_date)->format('H:i') }}</td>
+              <td>{{ $session->session_type }}</td>
+              <td>{{ $session->status }}</td>
+              <td>
+                @if($session->status === 'مؤجلة')
+                  {{ $session->postponed_reason }}
+                @else
+                  -
+                @endif
+              </td>
+            </tr>
+          @empty
+            <tr><td colspan="7" style="text-align: center;">لا توجد جلسات اليوم</td></tr>
+          @endforelse
+        </tbody>
+      </table>
+    </section>
+
     <h3>القضايا المرتبطة بالقاضي</h3>
     <table border="1" cellspacing="0" cellpadding="5">
       <thead>
@@ -271,47 +309,29 @@ button:hover, .btn:hover {
         @endforelse
       </tbody>
     </table>
-
-    <section class="sessions">
-      <h3>جلسات اليوم (<span id="todayDate">{{ date('Y-m-d') }}</span>)</h3>
-      <table border="1" cellspacing="0" cellpadding="5">
-        <thead>
-          <tr>
-            <th>رقم الدعوى</th>
-            <th>عنوان الدعوى</th>
-            <th>التاريخ الأصلي</th>
-            <th>وقت الجلسة</th>
-            <th>نوع الجلسة</th>
-            <th>الحالة</th>
-            <th>سبب التأجيل</th>
-          </tr>
-        </thead>
-        <tbody id="todaySessionsTable">
-          @forelse ($sessions as $session)
-            <tr>
-              <td>{{ $session->courtCase->number ?? '-' }}</td>
-              <td>{{ $session->courtCase->type ?? '-' }}</td>
-              <td>{{ $session->courtCase->created_at->format('Y-m-d') }}</td>
-              <td>{{ \Carbon\Carbon::parse($session->session_date)->format('H:i') }}</td>
-              <td>{{ $session->session_type }}</td>
-              <td>{{ $session->status }}</td>
-              <td>
-                @if($session->status === 'مؤجلة')
-                  {{ $session->postponed_reason }}
-                @else
-                  -
-                @endif
-              </td>
-            </tr>
-          @empty
-            <tr><td colspan="7" style="text-align: center;">لا توجد جلسات اليوم</td></tr>
-          @endforelse
-        </tbody>
-      </table>
-    </section>
   </div>
 
   <div id="requestsTab" style="display:none;">
+    <section class="sessions">
+      <h3>جلسات الطلبات</h3>
+      <table border="1" cellspacing="0" cellpadding="5">
+        <thead>
+          <tr>
+            <th>رقم الطلب</th>
+            <th>عنوان الطلب</th>
+            <th>التاريخ الأصلي</th>
+            <th>وقت الجلسة</th>
+            <th>نوع الجلسة</th>
+            <th>حالة الجلسة</th>
+            <th>سبب التأجيل</th>
+          </tr>
+        </thead>
+        <tbody id="requestsSessionsTable">
+          <tr><td colspan="7" style="text-align: center;">جاري التحميل...</td></tr>
+        </tbody>
+      </table>
+    </section>
+
     <h3>الطلبات المرتبطة بالقاضي</h3>
     <table border="1" cellspacing="0" cellpadding="5">
       <thead>
@@ -332,26 +352,6 @@ button:hover, .btn:hover {
         <tr><td colspan="10" style="text-align: center;">جاري التحميل...</td></tr>
       </tbody>
     </table>
-
-    <section class="sessions">
-      <h3>جلسات الطلبات</h3>
-      <table border="1" cellspacing="0" cellpadding="5">
-        <thead>
-          <tr>
-            <th>رقم الطلب</th>
-            <th>عنوان الطلب</th>
-            <th>التاريخ الأصلي</th>
-            <th>وقت الجلسة</th>
-            <th>نوع الجلسة</th>
-            <th>حالة الجلسة</th>
-            <th>سبب التأجيل</th>
-          </tr>
-        </thead>
-        <tbody id="requestsSessionsTable">
-          <tr><td colspan="7" style="text-align: center;">جاري التحميل...</td></tr>
-        </tbody>
-      </table>
-    </section>
   </div>
 
 </div>
