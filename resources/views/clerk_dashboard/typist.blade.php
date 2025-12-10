@@ -1,131 +1,312 @@
 
-@extends('layouts.app')
-
-@section('title', 'صفحة الطابعة')
-
-@section('content')
-{{-- ✅ قائمة الجلسات الخاصة بالطابعة (تظهر عند المرور على الكلمة الموجودة في layouts.app) --}}
-<div id="sessions-menu-typist" class="position-absolute bg-white border rounded shadow-sm px-2 py-1"
-     style="display: none; top: 38px; right: 12px; z-index: 1000; min-width: 220px;">
-    <div class="dropdown-item" role="button" tabindex="0" onclick="openCourtScheduleModal()">
-  جدول أعمال المحكمة
-</div>
-    <div class="dropdown-item" data-bs-toggle="modal" data-bs-target="#judgeScheduleModal">جدول أعمال القاضي</div>
-    <div class="dropdown-item" role="button" data-bs-toggle="modal" data-bs-target="#caseScheduleModal">
-    جدول الدعوى
-</div>
-    <div class="dropdown-item" data-bs-toggle="modal" data-bs-target="#setCaseSessionModal">
-  تحديد جلسات الدعوى
-</div>
-   <div class="dropdown-item" data-bs-toggle="modal" data-bs-target="#rescheduleSessionModal">
-    إعادة تحديد جلسات الدعوى
-</div>
-    <div class="dropdown-item" data-bs-toggle="modal" data-bs-target="#cancelSessionModal"> إلغاء جلسات الدعوى</div>
-    <div class="dropdown-item" data-bs-toggle="modal" data-bs-target="#judgmentModal">أحكام الدعوى</div>
-  
-</div>
-
-
-
-<!-- قسم عرض القضايا المرتبطة بالقاضي -->
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="csrf-token" content="{{ csrf_token() }}">
+<title>صفحة الطابعة</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
 <style>
-    .case-box {
-        font-size: 14px;          /* تصغير الخط */
-        line-height: 1.3;         /* تقليل المسافات بين السطور */
-        padding: 12px !important;
-    }
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap');
 
-    .case-box h4 {
-        font-size: 16px;          
-        margin-bottom: 6px;
-    }
+body {
+  font-family: "Cairo", sans-serif;
+  background-color: #f8f9fa;
+  margin: 0;
+  padding: 0;
+}
 
-    .case-box p {
-        margin: 2px 0;            /* تصغير المسافات */
-    }
+.court-bar {
+  background-color: #717172;
+  color: #fff;
+  text-align: right;
+  font-size: 1rem;
+  padding: 12px 20px;
+}
 
-    .case-box .btn {
-        padding: 4px 10px;
-        font-size: 13px;
-        margin-right: 5px;
-    }
+.navbar {
+  background-color: #000;
+  padding: 12px 20px;
+  display: flex;
+  align-items: center;
+  font-weight: bold;
+  font-size: small;
+  gap: 40px;
+}
 
-    #judge-cases-section h2 {
-        font-size: 18px;
-        margin-bottom: 15px;
-    }
+.navbar .user-info { 
+  color: white; 
+  white-space: nowrap; 
+}
+
+.navbar ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  gap: 20px;
+}
+
+.navbar ul li { 
+  position: relative; 
+}
+
+.navbar ul li a {
+  color: white;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.navbar ul li a:hover { 
+  text-decoration: underline; 
+}
+
+.navbar ul li ul {
+  display: none;
+  position: absolute;
+  right: 0;
+  top: 100%;
+  background: #fff;
+  border: 1px solid #ccc;
+  min-width: 180px;
+  z-index: 100;
+  padding: 0;
+  list-style: none;
+}
+
+.navbar ul li:hover > ul { 
+  display: block; 
+}
+
+.navbar ul li ul li a {
+  color: #000;
+  display: block;
+  padding: 6px 10px;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.navbar ul li ul li a:hover { 
+  background: #e7f1ff; 
+}
+
+.secondary-navbar {
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #ddd;
+  padding: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.secondary-navbar form {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.secondary-navbar label { 
+  margin: 0 5px; 
+}
+
+.secondary-navbar input[type="radio"] {
+  margin: 0 5px;
+}
+
+.container-custom {
+   width: 90%;
+   max-width: 1200px;
+   margin: 20px auto;
+   padding: 25px;
+   direction: rtl;
+   text-align: right;
+}
+
+.cases-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 40px;
+}
+
+.case-strip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  direction: rtl;
+  border-radius: 8px;
+  padding: 10px 15px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.08);
+}
+
+.case-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  text-align: right;
+}
+
+.case-info h3 {
+  margin: 3px 0;
+  color: #333;
+  font-size: 15px;
+}
+
+.case-info p {
+  margin: 3px 0;
+  color: #555;
+  font-size: 12px;
+}
+
+.case-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  direction: ltr;
+}
+
+.action-btn {
+  font-family: "Cairo", sans-serif;
+  font-weight: bold;
+  background-color: #37678e;
+  border: none;
+  color: white;
+  cursor: pointer;
+  transition: 0.2s;
+  font-size: 10px;
+  padding: 6px 10px;
+  border-radius: 5px;
+  white-space: nowrap;
+}
+
+.action-btn:hover {
+  background-color: #2f5574;
+}
+
+#main-title {
+  margin-top: 1px;
+  margin-bottom: 0;
+}
+
+.title-line {
+  border: none;
+  height: 2px;
+  background-color: #000;
+  margin: 4px 0 15px 0;
+  width: 100%;
+}
+
+.modal-header {
+  background-color: #000;
+  color: #fff;
+}
+
+.btn-close-white {
+  filter: invert(1);
+}
 </style>
+</head>
+<body>
 
-<!-- قسم عرض القضايا المرتبطة بالقضاة -->
-<div id="judge-cases-section" class="mt-3">
+<div class="court-bar">محكمة بداية عمان</div>
 
+<nav class="navbar">
+  <div class="user-info">الطابعة / {{ Auth::user()->full_name ?? 'مستخدم' }}</div>
+  <ul>
+    <li><a href="#">الدعوى ▾</a>
+      <ul>
+        <li><a onclick="$('#judgmentModal').modal('show')">أحكام الدعوى</a></li>
+        <li><a onclick="$('#setCaseSessionModal').modal('show')">تحديد جلسات الدعوى</a></li>
+        <li><a onclick="$('#rescheduleSessionModal').modal('show')">إعادة تحديد جلسات الدعوى</a></li>
+        <li><a onclick="$('#cancelSessionModal').modal('show')">إلغاء جلسات الدعوى</a></li>
+      </ul>
+    </li>
+    <li><a href="#">الطلب ▾</a>
+      <ul>
+        <li><a onclick="openRequestSetSessionModal()">تحديد جلسات الطلبات</a></li>
+        <li><a onclick="openRequestRescheduleModal()">إعادة تحديد جلسات الطلبات</a></li>
+        <li><a onclick="openCancelRequestModal()">إلغاء جلسات الطلبات</a></li>
+        <li><a onclick="openRequestJudgmentModal()">أحكام الطلبات</a></li>
+      </ul>
+    </li>
+    <li><a href="#">الجلسات ▾</a>
+      <ul>
+        <li><a onclick="openCourtScheduleModal()">جدول أعمال المحكمة</a></li>
+        <li><a onclick="$('#judgeScheduleModal').modal('show')">جدول أعمال القاضي</a></li>
+        <li><a onclick="$('#caseScheduleModal').modal('show')">جدول الدعوى</a></li>
+        <li><a onclick="$('#requestScheduleModal').modal('show')">جدول الطلبات</a></li>
+      </ul>
+    </li>
+    <li><a href="{{ route('2fa.setup') }}" target="_blank">إعدادات الحماية</a></li>
+  </ul>
+</nav>
+
+<div class="secondary-navbar">
+  <form>
+    <div>
+      <input type="radio" id="request" name="entry_type" value="request" checked>
+      <label for="request">طلب</label>
+      <input type="radio" id="case" name="entry_type" value="case">
+      <label for="case">دعوى</label>
+    </div>
+  </form>
+</div>
+
+
+
+<div class="container-custom">
+  <section>
+    <h2 id="main-title">القضايا التي يمكن متابعتها</h2>
+    <hr class="title-line">
+    
     {{-- عرض أسماء القضاة المرتبطين --}}
     @if(!empty($judgeNames))
-        <h2>
-                      القاضي:
-            {{ implode(' ، ', $judgeNames) }}
-        </h2>
+        <p style="margin-bottom: 20px; font-weight: bold;">
+            القاضي: {{ implode(' ، ', $judgeNames) }}
+        </p>
     @else
-        <p>لا يوجد قضاة مرتبطون بهذه الطابعة.</p>
+        <p style="color: #999; text-align: center;">لا يوجد قضاة مرتبطون بهذه الطابعة.</p>
     @endif
-
-
-    <hr>
-
-    {{-- عرض القضايا --}}
-    @forelse($cases as $case)
-        <div class="case-box mb-3 p-3 border rounded">
-
-            {{-- رقم القضية --}}
-            <h4>رقم الدعوى: {{ $case->number }}</h4>
-
-            {{-- عنوان القضية --}}
-            <p>عنوان الدعوى: {{ $case->type }}</p>
-
+    
+    <div class="cases-grid">
+        @forelse($cases as $case)
             @php 
-                // جلب أول جلسة
                 $session = $case->sessions->first(); 
             @endphp
-
-            @if($session)
-
-                {{-- تاريخ الجلسة --}}
-                <p>تاريخ الجلسة: {{ $session->session_date }}</p>
-
-                {{-- حالة الجلسة --}}
-                <p>حالة الجلسة: {{ $session->status }}</p>
-
-                {{-- الأزرار حسب الحالة --}}
-                @if($session->status === 'محددة')
+            
+            <div class="case-strip">
+                <div class="case-info">
+                    <h3>القضية رقم: {{ $case->number }}</h3>
+                    <p><strong>عنوان الدعوى:</strong> {{ $case->type }}</p>
                     
-                    <a href="{{ route('trial.report', $session->id) }}"
-                       class="btn btn-primary">
-                        محضر المحاكمة
-                    </a>
-
-                @elseif(in_array($session->status, ['مستمرة','مكتملة']))
-
-                    <a href="{{ route('trial.report', $session->id) }}"
-                       class="btn btn-primary">
-                        محضر المحاكمة
-                    </a>
-
-                    <a href="{{ route('after.trial.report', $session->id) }}"
-                       class="btn btn-secondary">
-                        محضر المحاكمة/ما بعد
-                    </a>
-
+                    @if($session)
+                        <p><strong>تاريخ الجلسة:</strong> {{ $session->session_date }}</p>
+                        <p><strong>حالة الجلسة:</strong> {{ $session->status }}</p>
+                    @else
+                        <p style="color: #999;">لا توجد جلسة محددة</p>
+                    @endif
+                </div>
+                
+                @if($session)
+                    <div class="case-actions">
+                        @if($session->status === 'محددة')
+                            <a href="{{ route('trial.report', $session->id) }}" class="action-btn">محضر المحاكمة</a>
+                        @elseif(in_array($session->status, ['مستمرة','مكتملة']))
+                            <a href="{{ route('trial.report', $session->id) }}" class="action-btn">محضر المحاكمة</a>
+                            <a href="{{ route('after.trial.report', $session->id) }}" class="action-btn">ما بعد</a>
+                        @endif
+                    </div>
                 @endif
-
-            @else
-                <p>لا توجد جلسة لهذه القضية.</p>
-            @endif
-
-        </div>
-    @empty
-        <p class="text-danger">لا يوجد قضايا مرتبطة بأي قاضي.</p>
-    @endforelse
-
+            </div>
+        @empty
+            <p style="color: #999; text-align: center; padding: 20px;">لا يوجد قضايا مرتبطة بأي قاضي.</p>
+        @endforelse
+    </div>
+  </section>
 </div>
 
 
@@ -2809,7 +2990,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
 });
 </script>
-@endsection
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</body>
+</html>
 
 
 
