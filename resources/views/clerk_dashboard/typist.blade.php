@@ -2248,41 +2248,42 @@ document.addEventListener('DOMContentLoaded', function () {
 </script>
 <!-- ✅ نافذة جدول الطلبات -->
 <div class="modal fade" id="requestScheduleModal" tabindex="-1" aria-labelledby="requestScheduleLabel" aria-hidden="true">
-  <div class="modal-dialog modal-xl">
+  <div class="modal-dialog modal-xl modal-dialog-scrollable">
     <div class="modal-content">
 
-      <!-- رأس النافذة -->
-      <div class="modal-header">
+      <div class="modal-header bg-dark text-white">
         <h5 class="modal-title" id="requestScheduleLabel">جدول الطلبات</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="إغلاق"></button>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
       </div>
 
-      <!-- جسم النافذة -->
       <div class="modal-body">
 
-        <!-- معلومات المحكمة -->
-        <div class="mb-3">
-          <label class="form-label">رقم المحكمة:</label>
-          <span id="courtNumber">-</span>
-        </div>
-        <div class="mb-3">
-          <label class="form-label">القلم:</label>
-          <span id="courtDesk">-</span>
-        </div>
-        <div class="mb-3">
-          <label class="form-label">السنة:</label>
-          <span id="courtYear">-</span>
+        <div class="row mb-3">
+          
+          <div class="col-md-3">
+            <label class="form-label">رقم المحكمة</label>
+            <input type="text" id="courtNumber" class="form-control form-control-sm" value="---" readonly>
+          </div>
+
+          <div class="col-md-3">
+            <label class="form-label">القلم</label>
+            <input type="text" id="courtDesk" class="form-control form-control-sm" value="---" readonly>
+          </div>
+
+          <div class="col-md-3">
+            <label class="form-label">السنة</label>
+            <input type="text" id="courtYear" class="form-control form-control-sm" value="---" readonly>
+          </div>
+
+          <div class="col-md-3">
+            <label class="form-label">رقم الطلب</label>
+            <input type="text" class="form-control form-control-sm" id="requestNumberInput" placeholder="أدخل رقم الطلب" onkeydown="if(event.key === 'Enter') fetchRequestSchedule()">
+          </div>
+
         </div>
 
-        <!-- إدخال رقم الطلب -->
-        <div class="mb-4">
-          <label for="requestNumberInput" class="form-label">رقم الطلب:</label>
-          <input type="text" class="form-control" id="requestNumberInput" placeholder="أدخل رقم الطلب" onkeydown="if(event.key === 'Enter') fetchRequestSchedule()">
-        </div>
-
-        <!-- جدول الجلسات -->
-        <div class="table-responsive">
-          <table class="table table-bordered text-center">
+        <div class="table-responsive mt-3">
+          <table class="table table-bordered text-center align-middle">
             <thead class="table-light">
               <tr>
                 <th>تاريخ الجلسة</th>
@@ -2295,7 +2296,7 @@ document.addEventListener('DOMContentLoaded', function () {
             </thead>
             <tbody id="requestSessionsBody">
               <tr>
-                <td colspan="6">-</td>
+                <td colspan="6">يرجى إدخال رقم الطلب لعرض الجلسات</td>
               </tr>
             </tbody>
           </table>
@@ -2303,7 +2304,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
       </div>
 
-      <!-- زر الإغلاق -->
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إغلاق</button>
       </div>
