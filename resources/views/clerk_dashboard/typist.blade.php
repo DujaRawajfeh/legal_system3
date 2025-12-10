@@ -1199,22 +1199,12 @@ function closeCaseSchedule() {
     cursor: pointer;
     font-size: 14px;
     transition: 0.2s;
+    background-color: #000;
+    color: white;
   }
   
-  .judgment-modal .modal-footer .btn-secondary {
-    background-color: #777;
-  }
-  
-  .judgment-modal .modal-footer .btn-secondary:hover {
-    background-color: #555;
-  }
-  
-  .judgment-modal .modal-footer .btn-primary {
-    background-color: #0078d7;
-  }
-  
-  .judgment-modal .modal-footer .btn-primary:hover {
-    background-color: #005fa3;
+  .judgment-modal .modal-footer button:hover {
+    background-color: #333;
   }
 </style>
 
