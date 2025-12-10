@@ -1082,7 +1082,7 @@ function saveCaseSession() {
 
       </div>
 
-      <div class="modal-footer justify-content-between">
+      <div class="modal-footer justify-end">
         <!-- <button type="button" class="btn btn-danger" onclick="closeCaseSchedule()">خروج</button> -->
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إغلاق</button>
       </div>
@@ -2332,6 +2332,7 @@ function fetchRequestSchedule() {
     .then(response => response.json())
     .then(data => {
         if (data.success) {
+          console.log('Request Schedule Data:', data.data);
             updateScheduleTable(data.data);
 
             if (data.data.length > 0) {
