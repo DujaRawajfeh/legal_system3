@@ -392,7 +392,7 @@ document.addEventListener('DOMContentLoaded', function () {
         </div>
 
         <div class="text-center mb-3">
-          <button class="btn btn-primary" onclick="loadCourtSchedule()">بحث</button>
+          <button class="btn btn-dark" onclick="loadCourtSchedule()">بحث</button>
         </div>
 
         <!-- 🔹 جدول النتائج -->
