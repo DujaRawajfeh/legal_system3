@@ -1105,152 +1105,286 @@ function closeCaseSchedule() {
 <!-- =========================== -->
 <!-- 🔶 نافذة أحكام الدعوى -->
 <!-- =========================== -->
-<div class="modal fade" id="judgmentModal" tabindex="-1" aria-labelledby="judgmentModalLabel" aria-hidden="true">
+<style>
+  .judgment-modal .modal-body {
+    background-color: #f4f6f8;
+  }
+  
+  .judgment-modal .judgment-container {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    padding: 25px;
+  }
+  
+  .judgment-modal .tabs, .judgment-modal .sub-tabs {
+    display: flex;
+    margin-bottom: 10px;
+    border-bottom: 2px solid #ccc;
+  }
+  
+  .judgment-modal .tab, .judgment-modal .sub-tab {
+    padding: 10px 20px;
+    cursor: pointer;
+    border-radius: 6px 6px 0 0;
+    background-color: #eee;
+    margin-left: 5px;
+    font-weight: bold;
+    transition: 0.3s;
+    border: none;
+  }
+  
+  .judgment-modal .tab.active, .judgment-modal .sub-tab.active {
+    background-color: #0078d7;
+    color: white;
+  }
+  
+  .judgment-modal .tab-content, .judgment-modal .sub-tab-content {
+    background-color: #fafafa;
+    border: 1px solid #ccc;
+    border-radius: 0 0 8px 8px;
+    padding: 20px;
+  }
+  
+  .judgment-modal .box {
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 15px;
+    background-color: #fdfdfd;
+  }
+  
+  .judgment-modal textarea {
+    width: 100%;
+    height: 120px;
+    border-radius: 6px;
+    border: 1px solid #aaa;
+    resize: none;
+    padding: 10px;
+    font-family: inherit;
+  }
+  
+  .judgment-modal .form-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+  
+  .judgment-modal .form-group {
+    display: flex;
+    flex-direction: column;
+    margin: 5px;
+  }
+  
+  .judgment-modal label {
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: #444;
+  }
+  
+  .judgment-modal input, .judgment-modal select {
+    padding: 8px;
+    border: 1px solid #aaa;
+    border-radius: 6px;
+    box-sizing: border-box;
+  }
+  
+  .judgment-modal .modal-footer button {
+    font-family: "Cairo", sans-serif;
+    padding: 8px 16px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: 0.2s;
+  }
+  
+  .judgment-modal .modal-footer .btn-secondary {
+    background-color: #777;
+  }
+  
+  .judgment-modal .modal-footer .btn-secondary:hover {
+    background-color: #555;
+  }
+  
+  .judgment-modal .modal-footer .btn-primary {
+    background-color: #0078d7;
+  }
+  
+  .judgment-modal .modal-footer .btn-primary:hover {
+    background-color: #005fa3;
+  }
+</style>
+
+<div class="modal fade judgment-modal" id="judgmentModal" tabindex="-1" aria-labelledby="judgmentModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-xl">
     <div class="modal-content">
 
-      <div class="modal-header">
-        <h5 class="modal-title">أحكام الدعوى</h5>
+      <div class="modal-header" style="background-color: #f4f6f8; border-bottom: none;">
+        <h5 class="modal-title" style="color: #333;">أحكام الدعوى</h5>
         <button class="btn-close" data-bs-dismiss="modal"></button>
       </div>
 
       <div class="modal-body">
+        <div class="judgment-container">
+          
+          <!-- الفورم الأول -->
+          <div class="form-row">
+            <div class="form-group">
+              <label>رقم الدعوى:</label>
+              <input type="text" id="caseNumberInputJudgment" class="form-control" placeholder="أدخل الرقم واضغط Enter" style="width: 220px;">
+            </div>
 
-        <!-- =========================== -->
-        <!-- 🔹 البيانات الأساسية -->
-        <!-- =========================== -->
-        <div class="row mb-3">
+            <div class="form-group">
+              <button class="btn btn-primary" onclick="fetchCaseDataFromInput()" style="background-color: #0078d7; color: white; margin-top: 23px;">بحث</button>
+            </div>
 
-          <div class="col-md-3">
-            <label>رقم المحكمة:</label>
-            <input type="text" id="tribunalNumber" class="form-control" readonly>
+            <div class="form-group">
+              <label>تاريخ الحكم:</label>
+              <input type="date" id="judgmentDate" class="form-control" style="width: 220px;">
+            </div>
+
+            <div class="form-group">
+              <label>تاريخ الإغلاق:</label>
+              <input type="date" id="closureDate" class="form-control" style="width: 220px;">
+            </div>
           </div>
 
-          <div class="col-md-3">
-            <label>القلم:</label>
-            <input type="text" id="departmentNumber" class="form-control" readonly>
+          <!-- التبويبات الرئيسية -->
+          <div class="tabs">
+            <div class="tab active" data-tab="tab1">الحكم ضد الأطراف</div>
+            <div class="tab" data-tab="tab2">الحكم الفاصل</div>
+            <div class="tab" data-tab="tab3">إسقاط الحق الشخصي</div>
           </div>
 
-          <div class="col-md-3">
-            <label>السنة:</label>
-            <input type="text" id="caseYear" class="form-control" readonly>
+          <!-- التبويب الأول -->
+          <div class="tab-content" id="tab1">
+            <div class="box">
+              <h3 style="font-size: 16px; margin-bottom: 15px;">أطراف الدعوى</h3>
+              <div class="form-row">
+                <div class="form-group">
+                  <label>اسم الطرف:</label>
+                  <select id="participantAgainst" class="form-select" style="width: 220px;">
+                    <option value="">-- اختر الطرف --</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <div class="sub-tabs">
+              <div class="sub-tab active" data-sub="sub1">فصل التهمة</div>
+              <div class="sub-tab" data-sub="sub2">الحكم</div>
+              <div class="sub-tab" data-sub="sub3">تفاصيل التنفيذ</div>
+            </div>
+
+            <div class="sub-tab-content" id="sub1">
+              <div class="box">
+                <p>التهمة: <strong id="chargeText">—</strong></p>
+                
+                <br>
+                <label>فصل التهمة:</label>
+                <select id="chargeSplitType" class="form-select">
+                  <option value="">اختر</option>
+                  <option>إحالة الدعوى الجزائية</option>
+                  <option>إدانة</option>
+                  <option>إدانة - إعفاء من العقوبة</option>
+                  <option>إدانة - وقف التنفيذ</option>
+                  <option>إدانة و الحكم بالادعاء بالحق الشخصي</option>
+                  <option>إسقاط بالعفو</option>
+                  <option>إسقاط دعوى الحق العام</option>
+                  <option>إسقاط للغياب</option>
+                  <option>إعلان براءة</option>
+                  <option>إعلان عدم مسؤولية</option>
+                  <option>إيداع - المتهم في المركز الوطني للصحة النفسية</option>
+                  <option>احالة</option>
+                  <option>اسقاط الغرامة بالعفو العام والحكم بإزالة اسباب</option>
+                  <option>اسقاط الغرامة بالعفو العام والحكم بالاغلاق</option>
+                  <option>اسقاط بالتقادم</option>
+                  <option>اسقاط بالعفو و الحكم بالادعاء بالحق الشخصي</option>
+                  <option>اسقاط بالعفو و رد الادعاء بالحق الشخصي</option>
+                  <option>افراج - الحدث</option>
+                  <option>ايداع - الحدث</option>
+                  <option>تعديل وصف التهمة</option>
+                  <option>ضم قضية الى اخرى</option>
+                  <option>وقف سير قضائي</option>
+                  <option>وقف الملاحقة</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="sub-tab-content" id="sub2" style="display:none;">
+              <div class="box">
+                <label>نص الحكم:</label>
+                <textarea id="judgmentTextInput" placeholder="أدخل تفاصيل الحكم..."></textarea>
+              </div>
+            </div>
+
+            <div class="sub-tab-content" id="sub3" style="display:none;">
+              <div class="box">
+                <label>تفاصيل التنفيذ:</label>
+                <textarea id="executionDetailsInput" placeholder="أدخل تفاصيل التنفيذ..."></textarea>
+              </div>
+            </div>
           </div>
 
-          <div class="col-md-3">
-            <label>رقم الدعوى:</label>
-            <input type="text" id="caseNumberInputJudgment" class="form-control" placeholder="أدخل الرقم واضغط Enter">
+          <!-- التبويب الثاني - الحكم الفاصل -->
+          <div class="tab-content" id="tab2" style="display:none;">
+            <!-- كيفية انتهاء الدعوى -->
+            <div class="box">
+              <label>كيفية انتهاء الدعوى:</label>
+              <select id="terminationType" class="form-select">
+                <option value="">اختر</option>
+                <option>احالة الى محكمة اخرى</option>
+                <option>الفصل بالموضوع</option>
+                <option>عدم اختصاص</option>
+                <option>إسقاط الدعوى</option>
+                <option>انسحاب الطرف</option>
+                <option>رفض المحكمة</option>
+              </select>
+            </div>
+
+            <!-- اختيار الطرف -->
+            <div class="box">
+              <label>اختر الطرف:</label>
+              <select id="participantFinal" class="form-select">
+                <option value="">-- اختر الطرف --</option>
+              </select>
+            </div>
+
+            <!-- نوع الحكم -->
+            <div class="box">
+              <label>نوع الحكم:</label>
+              <select id="judgmentType" class="form-select">
+                <option value="">اختر</option>
+                <option>وجاهي</option>
+                <option>تدقيقا</option>
+                <option>غيابي</option>
+              </select>
+            </div>
+
+            <!-- خلاصة الحكم -->
+            <div class="box">
+              <label>خلاصة الحكم:</label>
+              <textarea id="judgmentSummary" placeholder="أدخل خلاصة الحكم هنا..."></textarea>
+            </div>
+          </div>
+
+          <!-- التبويب الثالث -->
+          <div class="tab-content" id="tab3" style="display:none;">
+            <div class="box">
+              <label>نص اسقاط الحق الشخصي:</label>
+              <textarea id="personalDropText" placeholder="أدخل نص إسقاط الحق الشخصي..."></textarea>
+            </div>
           </div>
 
         </div>
-
-        <!-- =========================== -->
-        <!-- 🔹 تواريخ الحكم -->
-        <!-- =========================== -->
-        <div class="row mb-3">
-          <div class="col-md-6">
-            <label>تاريخ الحكم:</label>
-            <input type="date" id="judgmentDate" class="form-control">
-          </div>
-
-          <div class="col-md-6">
-            <label>تاريخ الإغلاق:</label>
-            <input type="date" id="closureDate" class="form-control">
-          </div>
-        </div>
-
-        <!-- =========================== -->
-        <!-- 🔘 أزرار الأقسام -->
-        <!-- =========================== -->
-        <div class="d-flex justify-content-between mb-4">
-          <button class="btn btn-outline-primary" onclick="showSection('againstParties')">الحكم ضد الأطراف</button>
-          <button class="btn btn-outline-success" onclick="showSection('finalJudgment')">الحكم الفاصل</button>
-          <button class="btn btn-outline-danger" onclick="showSection('personalDrop')">إسقاط الحق الشخصي</button>
-        </div>
-
-        <!-- =========================== -->
-        <!-- القسم الأول: الحكم ضد الأطراف -->
-        <!-- =========================== -->
-        <div id="againstParties" class="judgment-section" style="display:none;">
-
-          <label>اختر الطرف:</label>
-          <select id="participantAgainst" class="form-select mb-3">
-            <option value="">-- اختر الطرف --</option>
-          </select>
-
-          <div class="d-flex justify-content-between mb-3">
-            <button class="btn btn-secondary" onclick="showSubSection('chargeSplit')">فصل التهمة</button>
-            <button class="btn btn-secondary" onclick="showSubSection('judgmentText')">الحكم</button>
-            <button class="btn btn-secondary" onclick="showSubSection('executionDetails')">تفاصيل التنفيذ</button>
-          </div>
-
-          <div id="chargeSplit" class="sub-section" style="display:none;">
-            <p>التهمة: <strong id="chargeText">—</strong></p>
-
-            <label>فصل التهمة:</label>
-            <select id="chargeSplitType" class="form-select">
-              <option value="">اختر</option>
-              <option value="إدانة">إدانة</option>
-              <option value="إحالة">إحالة</option>
-              <option value="إسقاط بالعفو">إسقاط بالعفو</option>
-            </select>
-          </div>
-
-          <div id="judgmentText" class="sub-section" style="display:none;">
-            <label>نص الحكم:</label>
-            <textarea id="judgmentTextInput" class="form-control" rows="3"></textarea>
-          </div>
-
-          <div id="executionDetails" class="sub-section" style="display:none;">
-            <label>تفاصيل التنفيذ:</label>
-            <textarea id="executionDetailsInput" class="form-control" rows="3"></textarea>
-          </div>
-
-        </div>
-
-        <!-- =========================== -->
-        <!-- القسم الثاني: الحكم الفاصل -->
-        <!-- =========================== -->
-        <div id="finalJudgment" class="judgment-section" style="display:none;">
-
-          <label>كيفية إنهاء الدعوى:</label>
-          <select id="terminationType" class="form-select mb-3">
-            <option value="">اختر</option>
-            <option>إحالة</option>
-            <option>إدانة</option>
-            <option>إسقاط بالعفو</option>
-          </select>
-
-          <label>اختر الطرف:</label>
-          <select id="participantFinal" class="form-select mb-3">
-            <option value="">-- اختر الطرف --</option>
-          </select>
-
-          <label>نوع الحكم:</label>
-          <select id="judgmentType" class="form-select mb-3">
-            <option value="">اختر</option>
-            <option>بمثابة الوجاهي</option>
-            <option>تدقيقيا</option>
-            <option>غيابي</option>
-            <option>وجاهي</option>
-          </select>
-
-          <label>خلاصة الحكم:</label>
-          <textarea id="judgmentSummary" class="form-control" rows="3"></textarea>
-        </div>
-
-        <!-- =========================== -->
-        <!-- القسم الثالث: إسقاط الحق الشخصي -->
-        <!-- =========================== -->
-        <div id="personalDrop" class="judgment-section" style="display:none;">
-          <label>نص إسقاط الحق الشخصي:</label>
-          <textarea id="personalDropText" class="form-control" rows="3"></textarea>
-        </div>
-
       </div>
 
-      <div class="modal-footer">
-        <button class="btn btn-secondary" data-bs-dismiss="modal">إغلاق</button>
-        <button class="btn btn-primary" onclick="saveJudgment()">حفظ</button>
+      <div class="modal-footer" style="background-color: #f4f6f8;">
+        <button class="btn btn-secondary" onclick="saveJudgment()">حفظ الحكم</button>
+        <button class="btn btn-secondary" data-bs-dismiss="modal">اغلاق</button>
       </div>
 
     </div>
@@ -1259,6 +1393,40 @@ function closeCaseSchedule() {
 
 <input type="hidden" id="courtCaseId">
 <script>
+// ===========================
+// 🔥 تهيئة سلوك التبويبات الرئيسية
+// ===========================
+const tabs = document.querySelectorAll('.judgment-modal .tab');
+const contents = document.querySelectorAll('.judgment-modal .tab-content');
+tabs.forEach(tab => {
+  tab.addEventListener('click', () => {
+    tabs.forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    contents.forEach(c => c.style.display = 'none');
+    document.getElementById(tab.dataset.tab).style.display = 'block';
+  });
+});
+
+// ===========================
+// 🔥 تهيئة التبويبات الفرعية
+// ===========================
+const subTabs = document.querySelectorAll('.judgment-modal .sub-tab');
+const subContents = document.querySelectorAll('.judgment-modal .sub-tab-content');
+subTabs.forEach(tab => {
+  tab.addEventListener('click', () => {
+    const parent = tab.parentElement;
+    const container = parent.parentElement;
+    const tabsInContainer = container.querySelectorAll('.sub-tab');
+    const contentsInContainer = container.querySelectorAll('.sub-tab-content');
+    tabsInContainer.forEach(t => t.classList.remove('active'));
+    tab.classList.add('active');
+    contentsInContainer.forEach(c => c.style.display = 'none');
+    const targetId = tab.dataset.sub;
+    const target = container.querySelector('#' + targetId);
+    if (target) target.style.display = 'block';
+  });
+});
+
 // ===========================
 // 🔥 جلب بيانات الدعوى
 // ===========================
@@ -1269,12 +1437,7 @@ function fetchCaseData(caseNumber) {
             if (data.error) return alert(data.error);
 
             window.loadedParticipants = data.participants || [];
-
             document.getElementById('courtCaseId').value = data.case.id;
-
-            document.getElementById('tribunalNumber').value = data.case.tribunal?.number || '';
-            document.getElementById('departmentNumber').value = data.case.department?.number || '';
-            document.getElementById('caseYear').value = data.case.year || '';
 
             const selects = [document.getElementById('participantAgainst'), document.getElementById('participantFinal')];
 
@@ -1284,23 +1447,20 @@ function fetchCaseData(caseNumber) {
                     sel.innerHTML += `<option value="${p.id}">${p.type} - ${p.name}</option>`;
                 });
             });
-
         });
 }
 
 // ===========================
-// 🔥 إظهار الأقسام
+// 🔥 زر البحث
 // ===========================
-window.showSection = function (id) {
-    document.querySelectorAll('.judgment-section').forEach(el => el.style.display = 'none');
-    document.getElementById(id).style.display = 'block';
-    document.querySelectorAll('.sub-section').forEach(el => el.style.display = 'none');
-};
-
-window.showSubSection = function (id) {
-    document.querySelectorAll('.sub-section').forEach(el => el.style.display = 'none');
-    document.getElementById(id).style.display = 'block';
-};
+function fetchCaseDataFromInput() {
+    const caseNumber = document.getElementById('caseNumberInputJudgment').value.trim();
+    if (!caseNumber) {
+        alert('الرجاء إدخال رقم الدعوى');
+        return;
+    }
+    fetchCaseData(caseNumber);
+}
 
 // ===========================
 // 🔥 اختيار طرف → التهمة
@@ -1308,7 +1468,7 @@ window.showSubSection = function (id) {
 document.addEventListener("change", function(e) {
     if (e.target.id === "participantAgainst") {
         const id = e.target.value;
-        const p = window.loadedParticipants.find(x => x.id == id);
+        const p = window.loadedParticipants?.find(x => x.id == id);
         document.getElementById('chargeText').textContent = p ? (p.charge || "—") : "—";
     }
 });
@@ -1317,31 +1477,22 @@ document.addEventListener("change", function(e) {
 // 🔥 زر الحفظ النهائي
 // ===========================
 function saveJudgment() {
-
     const payload = {
         court_case_id: document.getElementById('courtCaseId').value,
-
         participant_id:
             document.getElementById('participantAgainst').value ||
             document.getElementById('participantFinal').value ||
             null,
-
         judgment_date: document.getElementById('judgmentDate').value,
         closure_date: document.getElementById('closureDate').value,
-
         charge_split_type: document.getElementById('chargeSplitType')?.value,
         charge_text: document.getElementById('judgmentTextInput')?.value,
         execution_details: document.getElementById('executionDetailsInput')?.value,
-
         termination_type: document.getElementById('terminationType')?.value,
         judgment_type: document.getElementById('judgmentType')?.value,
         judgment_summary: document.getElementById('judgmentSummary')?.value,
-
-        // 🔥 الجديد
         personal_drop_text: document.getElementById('personalDropText')?.value,
     };
-
-    console.log("📤 PAYLOAD:", payload);
 
     fetch("/typist/judgment/save", {
         method: "POST",
@@ -1366,7 +1517,7 @@ function saveJudgment() {
 // Enter لتحميل الدعوى
 // ===========================
 document.getElementById('caseNumberInputJudgment').addEventListener("keydown", function(e) {
-    if (e.key === "Enter") fetchCaseData(this.value.trim());
+    if (e.key === "Enter") fetchCaseDataFromInput();
 });
 </script>
 
