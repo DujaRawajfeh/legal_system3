@@ -244,6 +244,10 @@ button:hover, .btn:hover {
     </section>
 
     <h3>القضايا المرتبطة بالقاضي</h3>
+    <div style="margin: 10px auto; width: 98%;">
+      <input type="text" id="searchCases" placeholder="بحث في القضايا (رقم الدعوى، نوع الدعوى، اسم الطرف، التهمة...)" 
+             style="width: 100%; padding: 8px; font-family: Cairo; border: 1px solid #ddd; border-radius: 4px; font-size: 13px;">
+    </div>
     <table border="1" cellspacing="0" cellpadding="5">
       <thead>
         <tr>
@@ -349,6 +353,10 @@ button:hover, .btn:hover {
     </section>
 
     <h3>الطلبات المرتبطة بالقاضي</h3>
+    <div style="margin: 10px auto; width: 98%;">
+      <input type="text" id="searchRequests" placeholder="بحث في الطلبات (رقم الطلب، العنوان، اسم الطرف، الحكم...)" 
+             style="width: 100%; padding: 8px; font-family: Cairo; border: 1px solid #ddd; border-radius: 4px; font-size: 13px;">
+    </div>
     <table border="1" cellspacing="0" cellpadding="5">
       <thead>
         <tr>
@@ -537,6 +545,42 @@ function openWindow(page){
   let top = (screen.height - height) / 2;
   window.open(page + '.html', '_blank', `width=${width},height=${height},top=${top},left=${left}`);
 }
+
+// البحث في جدول القضايا
+document.getElementById('searchCases')?.addEventListener('input', function(e) {
+    const searchText = e.target.value.toLowerCase().trim();
+    const table = document.getElementById('casesTable');
+    const rows = table.getElementsByTagName('tr');
+    
+    for (let i = 0; i < rows.length; i++) {
+        const row = rows[i];
+        const text = row.textContent.toLowerCase();
+        
+        if (text.includes(searchText)) {
+            row.style.display = '';
+        } else {
+            row.style.display = 'none';
+        }
+    }
+});
+
+// البحث في جدول الطلبات
+document.getElementById('searchRequests')?.addEventListener('input', function(e) {
+    const searchText = e.target.value.toLowerCase().trim();
+    const table = document.getElementById('requestsTable');
+    const rows = table.getElementsByTagName('tr');
+    
+    for (let i = 0; i < rows.length; i++) {
+        const row = rows[i];
+        const text = row.textContent.toLowerCase();
+        
+        if (text.includes(searchText)) {
+            row.style.display = '';
+        } else {
+            row.style.display = 'none';
+        }
+    }
+});
 </script>
 
 </body>
