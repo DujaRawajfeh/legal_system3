@@ -192,7 +192,7 @@ button:hover, .btn:hover {
   <div class="left-section">
     <span class="judge-name">القاضي/ {{ $judge->full_name }}</span>
     <ul class="nav-links">
-      <li><a href="{{ route('2fa.setup') }}" class="security-link">اعدادات الحماية</a></li>
+      <li><a href="#" class="security-link" onclick="openWindow('securitysettings')">اعدادات الحماية</a></li>
     </ul>
     <ul class="nav-tabs">
       <li><a href="#" class="active" onclick="showTab('casesTab', this)">الدعاوى</a></li>
