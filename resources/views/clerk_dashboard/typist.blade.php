@@ -2231,7 +2231,7 @@ function rescheduleSession() {
 
 <div class="modal fade" id="cancelSessionModal" tabindex="-1" aria-labelledby="cancelSessionModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-xl modal-dialog-scrollable">
-    <div class="modal-content">
+    <div class="modal-content" style="background: white;">
       <div class="modal-header bg-dark text-white">
         <h5 class="modal-title">إلغاء جلسات الدعوى</h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="إغلاق"></button>
