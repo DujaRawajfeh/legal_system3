@@ -1938,32 +1938,32 @@ function rescheduleSession() {
 <div class="modal fade" id="cancelSessionModal" tabindex="-1" aria-labelledby="cancelSessionModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-xl modal-dialog-scrollable">
     <div class="modal-content">
-      <div class="modal-header">
-        <div class="w-100">
-          <h5 class="modal-title mb-3">إلغاء جلسات الدعوى</h5>
-          <div class="row g-3">
-            <div class="col-md-3">
-              <label>رقم المحكمة:</label>
-              <input type="text" id="tribunalNumberCancel" class="form-control" disabled>
-            </div>
-            <div class="col-md-3">
-              <label>رقم القلم:</label>
-              <input type="text" id="departmentNumberCancel" class="form-control" disabled>
-            </div>
-            <div class="col-md-3">
-              <label>السنة:</label>
-              <input type="text" id="caseYearCancel" class="form-control" disabled>
-            </div>
-            <div class="col-md-3">
-              <label>رقم الدعوى:</label>
-              <input type="text" id="caseNumberInputCancel" class="form-control" placeholder="أدخل رقم الدعوى واضغط Enter">
-            </div>
-          </div>
-        </div>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="إغلاق"></button>
+      <div class="modal-header bg-dark text-white">
+        <h5 class="modal-title">إلغاء جلسات الدعوى</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="إغلاق"></button>
       </div>
 
       <div class="modal-body">
+        
+        <!-- معلومات رأس الصفحة -->
+        <div class="row g-3 mb-4">
+          <div class="col-md-3">
+            <label>رقم المحكمة:</label>
+            <input type="text" id="tribunalNumberCancel" class="form-control" disabled>
+          </div>
+          <div class="col-md-3">
+            <label>رقم القلم:</label>
+            <input type="text" id="departmentNumberCancel" class="form-control" disabled>
+          </div>
+          <div class="col-md-3">
+            <label>السنة:</label>
+            <input type="text" id="caseYearCancel" class="form-control" disabled>
+          </div>
+          <div class="col-md-3">
+            <label>رقم الدعوى:</label>
+            <input type="text" id="caseNumberInputCancel" class="form-control" placeholder="أدخل رقم الدعوى واضغط Enter">
+          </div>
+        </div>
 
         <!-- جدول تفاصيل الدعوى -->
         <div id="caseDetailsTableCancel" class="mb-4">
