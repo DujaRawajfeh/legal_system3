@@ -870,18 +870,15 @@ function loadJudgeSchedule() {
 </div>
 @push('scripts')
 <script>
-document.addEventListener('DOMContentLoaded', function() {
 
-    console.log("🔥 JS Loaded Correctly");
+/* ============================================================
+   🔹 تحميل تفاصيل الدعوى
+============================================================ */
+function loadCaseDetails() {
 
-    /* ============================================================
-       🔹 تحميل تفاصيل الدعوى
-    ============================================================ */
-    window.loadCaseDetails = function () {
+    console.log("🔥 loadCaseDetails() called!");
 
-        console.log("🔥 loadCaseDetails() called!");
-
-        const caseNumber = document.getElementById("caseNumberInput").value;
+    const caseNumber = document.getElementById("caseNumberInput").value;
 
         if (!caseNumber) {
             alert("يرجى إدخال رقم الدعوى");
@@ -945,90 +942,86 @@ document.addEventListener('DOMContentLoaded', function() {
                 document.getElementById("saveCaseSessionBtn").disabled = false;
 
             })
-            .catch(err => {
-                console.error("❌ Fetch Error:", err);
-                alert("حدث خطأ أثناء تحميل تفاصيل الدعوى");
-            });
-    };
-
-
-    /* ============================================================
-       🔹 حفظ الجلسة
-    ============================================================ */
-    window.saveCaseSession = function () {
-
-        console.log("🔥 saveCaseSession() called!");
-
-        // 🔥 فحص وصول المعرّفات
-        if (!window.selectedCaseId) {
-            alert("❌ لم يتم تحميل بيانات الدعوى بعد");
-            return;
-        }
-
-        if (!window.selectedJudgeId) {
-            alert("❌ لا يوجد قاضي مربوط بهذه الدعوى");
-            return;
-        }
-
-        const sessionDate   = document.getElementById("sessionDate").value;
-        const sessionTime   = document.getElementById("sessionTime").value;
-        const sessionGoal   = document.getElementById("sessionGoal").value;
-        const judgmentType  = document.getElementById("judgmentType").value;
-        const sessionStatus = document.getElementById("sessionStatus").value;
-
-        if (!sessionDate || !sessionTime || !sessionGoal) {
-            alert("يرجى تعبئة جميع الحقول");
-            return;
-        }
-
-        const payload = {
-            court_case_id: window.selectedCaseId,
-            judge_id: window.selectedJudgeId,
-            session_date: `${sessionDate} ${sessionTime}:00`,
-            session_time: sessionTime,
-            session_goal: sessionGoal,
-            judgment_type: judgmentType,
-            status: sessionStatus
-        };
-
-        console.log("📤 Sending payload:", payload);
-
-        fetch('/typist/set-session', {
-            method: 'POST',
-            headers: {
-                "Content-Type": "application/json",
-                "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content
-            },
-            body: JSON.stringify(payload)
-        })
-        .then(res => {
-            console.log("📥 Raw Response from save:", res);
-            return res.json();
-        })
-        .then(data => {
-
-            console.log("📥 Parsed JSON from save:", data);
-
-            if (data.errors) {
-                alert("هناك أخطاء في البيانات");
-                console.log(data.errors);
-                return;
-            }
-
-            alert(data.message);
-        })
         .catch(err => {
-            console.error("❌ Save Error:", err);
-            alert("حدث خطأ أثناء حفظ الجلسة");
+            console.error("❌ Fetch Error:", err);
+            alert("حدث خطأ أثناء تحميل تفاصيل الدعوى");
         });
+}
+
+
+/* ============================================================
+   🔹 حفظ الجلسة
+============================================================ */
+function saveCaseSession() {
+
+    console.log("🔥 saveCaseSession() called!");
+
+    // 🔥 فحص وصول المعرّفات
+    if (!window.selectedCaseId) {
+        alert("❌ لم يتم تحميل بيانات الدعوى بعد");
+        return;
+    }
+
+    if (!window.selectedJudgeId) {
+        alert("❌ لا يوجد قاضي مربوط بهذه الدعوى");
+        return;
+    }
+
+    const sessionDate   = document.getElementById("sessionDate").value;
+    const sessionTime   = document.getElementById("sessionTime").value;
+    const sessionGoal   = document.getElementById("sessionGoal").value;
+    const judgmentType  = document.getElementById("judgmentType").value;
+    const sessionStatus = document.getElementById("sessionStatus").value;
+
+    if (!sessionDate || !sessionTime || !sessionGoal) {
+        alert("يرجى تعبئة جميع الحقول");
+        return;
+    }
+
+    const payload = {
+        court_case_id: window.selectedCaseId,
+        judge_id: window.selectedJudgeId,
+        session_date: `${sessionDate} ${sessionTime}:00`,
+        session_time: sessionTime,
+        session_goal: sessionGoal,
+        judgment_type: judgmentType,
+        status: sessionStatus
     };
 
-});
+    console.log("📤 Sending payload:", payload);
+
+    fetch('/typist/set-session', {
+        method: 'POST',
+        headers: {
+            "Content-Type": "application/json",
+            "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content
+        },
+        body: JSON.stringify(payload)
+    })
+    .then(res => {
+        console.log("📥 Raw Response from save:", res);
+        return res.json();
+    })
+    .then(data => {
+
+        console.log("📥 Parsed JSON from save:", data);
+
+        if (data.errors) {
+            alert("هناك أخطاء في البيانات");
+            console.log(data.errors);
+            return;
+        }
+
+        alert(data.message);
+    })
+    .catch(err => {
+        console.error("❌ Save Error:", err);
+        alert("حدث خطأ أثناء حفظ الجلسة");
+    });
+}
 
 </script>
 @endpush
-
-
 
 
 {{-- ✅ نافذة جدول الدعوى --}}
