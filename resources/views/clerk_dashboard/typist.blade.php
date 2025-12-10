@@ -538,7 +538,7 @@ function loadCourtSchedule() {
         </div>
 
         <div class="text-center mb-3">
-          <button class="btn btn-primary" onclick="loadJudgeSchedule()">عرض الجدول</button>
+          <button class="btn btn-dark" onclick="loadJudgeSchedule()">عرض الجدول</button>
         </div>
 
         <!-- 🔹 جدول النتائج -->
@@ -1083,7 +1083,7 @@ function saveCaseSession() {
       </div>
 
       <div class="modal-footer justify-content-between">
-        <button type="button" class="btn btn-danger" onclick="closeCaseSchedule()">خروج</button>
+        <!-- <button type="button" class="btn btn-danger" onclick="closeCaseSchedule()">خروج</button> -->
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إغلاق</button>
       </div>
 
