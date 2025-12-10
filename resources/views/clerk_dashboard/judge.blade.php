@@ -202,7 +202,7 @@ button:hover, .btn:hover {
   <span class="department-name">القلم/ {{ $judge->department->name ?? '-' }}</span>
 </nav>
 
-@include('components.entry-search-bar')
+
 
 <!-- تبويبات المحتوى -->
 <div class="container">

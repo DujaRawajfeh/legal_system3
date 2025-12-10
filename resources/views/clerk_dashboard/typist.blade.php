@@ -245,16 +245,7 @@ body {
   </ul>
 </nav>
 
-<div class="secondary-navbar">
-  <form>
-    <div>
-      <input type="radio" id="request" name="entry_type" value="request" checked>
-      <label for="request">طلب</label>
-      <input type="radio" id="case" name="entry_type" value="case">
-      <label for="case">دعوى</label>
-    </div>
-  </form>
-</div>
+  @include('components.entry-search-bar')
 
 
 
