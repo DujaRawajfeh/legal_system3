@@ -1222,13 +1222,10 @@ function closeCaseSchedule() {
           
           <!-- الفورم الأول -->
           <div class="form-row">
-            <div class="form-group">
-              <label>رقم الدعوى:</label>
-              <input type="text" id="caseNumberInputJudgment" class="form-control" placeholder="أدخل الرقم واضغط Enter" style="width: 220px;">
-            </div>
-
-            <div class="form-group">
-              <button class="btn btn-primary" onclick="fetchCaseDataFromInput()" style="background-color: #0078d7; color: white; margin-top: 23px;">بحث</button>
+            <div class="form-group" style="flex-direction: row; align-items: center; gap: 10px;">
+              <label style="margin-bottom: 0;">رقم الدعوى:</label>
+              <input type="text" id="caseNumberInputJudgment" class="form-control" placeholder="أدخل الرقم واضغط Enter" style="width: 180px;">
+              <button class="btn btn-primary" onclick="fetchCaseDataFromInput()" style="background-color: #0078d7; color: white;">بحث</button>
             </div>
 
             <div class="form-group">
