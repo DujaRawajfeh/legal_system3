@@ -868,7 +868,7 @@ function loadJudgeSchedule() {
     </div>
   </div>
 </div>
-@push('scripts')
+
 <script>
 
 /* ============================================================
@@ -1021,7 +1021,6 @@ function saveCaseSession() {
 }
 
 </script>
-@endpush
 
 
 {{-- ✅ نافذة جدول الدعوى --}}
