@@ -264,16 +264,30 @@ button:hover, .btn:hover {
         </tr>
       </thead>
       <tbody id="casesTable">
+        @php
+          $previousCaseNumber = null;
+          $caseRowCount = [];
+          
+          // First pass: count rows per case
+          foreach ($cases as $case) {
+            $caseRowCount[$case->number] = count($case->participants);
+          }
+        @endphp
+        
         @forelse ($cases as $case)
           @foreach ($case->participants as $index => $participant)
             @php
               $memo = $case->arrestMemos->firstWhere('participant_name', $participant->name);
               $notification = $case->notifications->firstWhere('participant_name', $participant->name);
               $firstSession = $case->sessions->first();
+              $isFirstParticipant = ($index === 0);
+              $rowspan = $caseRowCount[$case->number];
             @endphp
             <tr>
-              <td>{{ $case->number }}</td>
-              <td>{{ $case->type }}</td>
+              @if($isFirstParticipant)
+                <td rowspan="{{ $rowspan }}">{{ $case->number }}</td>
+                <td rowspan="{{ $rowspan }}">{{ $case->type }}</td>
+              @endif
               <td>طرف {{ $index + 1 }} - {{ $participant->type }}</td>
               <td>{{ $participant->name }}</td>
               <td>{{ $participant->charge }}</td>
@@ -283,25 +297,27 @@ button:hover, .btn:hover {
               <td>{{ $memo->detention_center ?? '-' }}</td>
               <td>{{ $notification->method ?? '-' }}</td>
               <td>{{ $notification && $notification->notified_at ? \Carbon\Carbon::parse($notification->notified_at)->format('Y-m-d') : '-' }}</td>
-              <td>
-                <div class="case-actions">
-                  @if($firstSession)
-                    @if(\App\Models\CourtSessionReport::where('case_session_id', $firstSession->id)->where('report_mode','trial')->exists())
-                      <a href="{{ route('judge.trial.report', $firstSession->id) }}" class="btn action-btn">محضر المحاكمة</a>
+              @if($isFirstParticipant)
+                <td rowspan="{{ $rowspan }}">
+                  <div class="case-actions">
+                    @if($firstSession)
+                      @if(\App\Models\CourtSessionReport::where('case_session_id', $firstSession->id)->where('report_mode','trial')->exists())
+                        <a href="{{ route('judge.trial.report', $firstSession->id) }}" class="btn action-btn">محضر المحاكمة</a>
+                      @endif
+                      @if(\App\Models\CourtSessionReport::where('case_session_id', $firstSession->id)->where('report_mode','after')->exists())
+                        <a href="{{ route('judge.after.report', $firstSession->id) }}" class="btn action-btn">ما بعد</a>
+                      @endif
+                      @if(!\App\Models\CourtSessionReport::where('case_session_id',$firstSession->id)->exists())
+                        <span style="color: #777;">لا يوجد محضر</span>
+                      @endif
+                    @else
+                      <span style="color: #777;">لا يوجد جلسة</span>
                     @endif
-                    @if(\App\Models\CourtSessionReport::where('case_session_id', $firstSession->id)->where('report_mode','after')->exists())
-                      <a href="{{ route('judge.after.report', $firstSession->id) }}" class="btn action-btn">ما بعد</a>
-                    @endif
-                    @if(!\App\Models\CourtSessionReport::where('case_session_id',$firstSession->id)->exists())
-                      <span style="color: #777;">لا يوجد محضر</span>
-                    @endif
-                  @else
-                    <span style="color: #777;">لا يوجد جلسة</span>
-                  @endif
-                </div>
-              </td>
-              <td>{{ $case->created_at ? $case->created_at->format('Y-m-d') : '-' }}</td>
-              <td>{{ $firstSession ? \Carbon\Carbon::parse($firstSession->session_date)->format('Y-m-d H:i') : '-' }}</td>
+                  </div>
+                </td>
+                <td rowspan="{{ $rowspan }}">{{ $case->created_at ? $case->created_at->format('Y-m-d') : '-' }}</td>
+                <td rowspan="{{ $rowspan }}">{{ $firstSession ? \Carbon\Carbon::parse($firstSession->session_date)->format('Y-m-d H:i') : '-' }}</td>
+              @endif
             </tr>
           @endforeach
         @empty
@@ -426,6 +442,20 @@ async function loadAllRequests() {
         }
 
         let html = "";
+        let previousRequestNumber = null;
+        let requestRowCounts = {};
+        
+        // First pass: count rows per request
+        data.forEach(r => {
+            const parties = [
+                {label: 'مشتكي', name: r.plaintiff_name},
+                {label: 'مشتكى عليه', name: r.defendant_name},
+                {label: 'طرف ثالث', name: r.third_party_name},
+                {label: 'محامي', name: r.lawyer_name},
+            ].filter(p => p.name); // Only count parties with names
+            
+            requestRowCounts[r.request_number] = parties.length || 1;
+        });
 
         data.forEach(r => {
             const parties = [
@@ -435,22 +465,49 @@ async function loadAllRequests() {
                 {label: 'محامي',        name: r.lawyer_name,      text: r.judgment_text_lawyer},
             ];
 
-            parties.forEach(p => {
+            const rowspan = requestRowCounts[r.request_number];
+            let isFirstRow = (previousRequestNumber !== r.request_number);
+            
+            parties.forEach((p, index) => {
+                const isFirstParty = (index === 0);
+                
+                html += '<tr>';
+                
+                if (isFirstRow && isFirstParty) {
+                    html += `
+                        <td rowspan="${rowspan}">${r.request_number ?? '-'}</td>
+                        <td rowspan="${rowspan}">${r.title ?? '-'}</td>
+                    `;
+                }
+                
                 html += `
-                    <tr>
-                        <td>${r.request_number ?? '-'}</td>
-                        <td>${r.title ?? '-'}</td>
-                        <td>${p.label}</td>
-                        <td>${p.name ?? '-'}</td>
-                        <td>${r.session_date && r.session_time ? r.session_date + ' / ' + r.session_time : '-'}</td>
-                        <td>${r.judgment_date ?? '-'}</td>
-                        <td>${r.closure_date ?? '-'}</td>
-                        <td>${p.text ?? '-'}</td>
-                        <td>${r.judgment_text_final ?? '-'}</td>
-                        <td>${r.judgment_text_waiver ?? '-'}</td>
-                    </tr>
+                    <td>${p.label}</td>
+                    <td>${p.name ?? '-'}</td>
                 `;
+                
+                if (isFirstRow && isFirstParty) {
+                    html += `
+                        <td rowspan="${rowspan}">${r.session_date && r.session_time ? r.session_date + ' / ' + r.session_time : '-'}</td>
+                        <td rowspan="${rowspan}">${r.judgment_date ?? '-'}</td>
+                        <td rowspan="${rowspan}">${r.closure_date ?? '-'}</td>
+                    `;
+                }
+                
+                html += `
+                    <td>${p.text ?? '-'}</td>
+                `;
+                
+                if (isFirstRow && isFirstParty) {
+                    html += `
+                        <td rowspan="${rowspan}">${r.judgment_text_final ?? '-'}</td>
+                        <td rowspan="${rowspan}">${r.judgment_text_waiver ?? '-'}</td>
+                    `;
+                }
+                
+                html += '</tr>';
             });
+            
+            previousRequestNumber = r.request_number;
         });
 
         body.innerHTML = html || `<tr><td colspan="10" style="text-align: center;">لا توجد طلبات</td></tr>`;
