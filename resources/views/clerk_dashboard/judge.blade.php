@@ -403,13 +403,13 @@ async function loadTodayRequests() {
         data.forEach(r => {
             html += `
                 <tr>
-                    <td>${r.request_number ?? '-'}</td>
-                    <td>${r.title ?? '-'}</td>
+                    <td>${r.request_number || '-'}</td>
+                    <td>${r.title || '-'}</td>
                     <td>${(r.created_at || '').toString().substring(0,10) || '-'}</td>
-                    <td>${r.session_time ?? '-'}</td>
-                    <td>${r.session_type ?? '-'}</td>
-                    <td>${r.session_status ?? '-'}</td>
-                    <td>${r.session_reason ?? '-'}</td>
+                    <td>${r.session_time || '-'}</td>
+                    <td>${r.session_type || '-'}</td>
+                    <td>${r.session_status || '-'}</td>
+                    <td>${r.session_reason || '-'}</td>
                 </tr>
             `;
         });
@@ -475,32 +475,32 @@ async function loadAllRequests() {
                 
                 if (isFirstRow && isFirstParty) {
                     html += `
-                        <td rowspan="${rowspan}">${r.request_number ?? '-'}</td>
-                        <td rowspan="${rowspan}">${r.title ?? '-'}</td>
+                        <td rowspan="${rowspan}">${r.request_number || '-'}</td>
+                        <td rowspan="${rowspan}">${r.title || '-'}</td>
                     `;
                 }
                 
                 html += `
-                    <td>${p.label}</td>
-                    <td>${p.name ?? '-'}</td>
+                    <td>${p.label || '-'}</td>
+                    <td>${p.name || '-'}</td>
                 `;
                 
                 if (isFirstRow && isFirstParty) {
                     html += `
                         <td rowspan="${rowspan}">${r.session_date && r.session_time ? r.session_date + ' / ' + r.session_time : '-'}</td>
-                        <td rowspan="${rowspan}">${r.judgment_date ?? '-'}</td>
-                        <td rowspan="${rowspan}">${r.closure_date ?? '-'}</td>
+                        <td rowspan="${rowspan}">${r.judgment_date || '-'}</td>
+                        <td rowspan="${rowspan}">${r.closure_date || '-'}</td>
                     `;
                 }
                 
                 html += `
-                    <td>${p.text ?? '-'}</td>
+                    <td>${p.text || '-'}</td>
                 `;
                 
                 if (isFirstRow && isFirstParty) {
                     html += `
-                        <td rowspan="${rowspan}">${r.judgment_text_final ?? '-'}</td>
-                        <td rowspan="${rowspan}">${r.judgment_text_waiver ?? '-'}</td>
+                        <td rowspan="${rowspan}">${r.judgment_text_final || '-'}</td>
+                        <td rowspan="${rowspan}">${r.judgment_text_waiver || '-'}</td>
                     `;
                 }
                 
