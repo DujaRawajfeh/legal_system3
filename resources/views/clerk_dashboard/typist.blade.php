@@ -2112,122 +2112,249 @@ function rescheduleSession() {
 
 
 <!-- نافذة إلغاء الجلسة -->
+<style>
+  #cancelSessionModal .modal-body {
+    background-color: #f4f4f4;
+    padding: 25px;
+  }
+  
+  #cancelSessionModal .session-container {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    padding: 25px;
+    margin-bottom: 20px;
+  }
+  
+  #cancelSessionModal h2 {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  #cancelSessionModal h3 {
+    text-align: right;
+    margin-top: 25px;
+    margin-bottom: 10px;
+    font-weight: bold;
+  }
+  
+  #cancelSessionModal label {
+    font-weight: bold;
+    margin-top: 10px;
+    display: block;
+    font-size: 14px;
+    color: #333;
+  }
+  
+  #cancelSessionModal input {
+    padding: 8px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    margin-top: 5px;
+    width: 100%;
+    font-size: 14px;
+  }
+  
+  #cancelSessionModal input:disabled {
+    background-color: #e9ecef;
+  }
+  
+  #cancelSessionModal .case-number-row {
+    display: flex;
+    gap: 10px;
+    margin-top: 5px;
+  }
+  
+  #cancelSessionModal .case-number-row input {
+    flex: 1;
+  }
+  
+  #cancelSessionModal table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+  }
+  
+  #cancelSessionModal th, 
+  #cancelSessionModal td {
+    border: 1px solid #ccc;
+    padding: 8px;
+    text-align: center;
+  }
+  
+  #cancelSessionModal th {
+    background: #1e1e1e;
+    color: white;
+  }
+  
+  #cancelSessionModal .old-session-block {
+    margin-top: 20px;
+    padding: 15px;
+    border-radius: 10px;
+    background: #eef7ff;
+    border: 1px solid #bcd5ff;
+  }
+  
+  #cancelSessionModal button {
+    font-family: "Cairo", sans-serif;
+    font-size: 13px;
+    padding: 6px 14px;
+    margin-top: 15px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    background-color: #37678e;
+    color: white;
+    transition: background-color 0.3s;
+  }
+  
+  #cancelSessionModal button:hover:not(:disabled) {
+    background-color: #28527a;
+  }
+  
+  #cancelSessionModal .delete-btn {
+    background: #a94442;
+    color: white;
+    padding: 4px 10px;
+    border-radius: 5px;
+    margin-top: 0;
+  }
+  
+  #cancelSessionModal .delete-btn:hover {
+    background: #922d2b;
+  }
+  
+  #cancelSessionModal .search-btn {
+    margin-top: 10px;
+  }
+</style>
+
 <div class="modal fade" id="cancelSessionModal" tabindex="-1" aria-labelledby="cancelSessionModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-xl modal-dialog-scrollable">
     <div class="modal-content">
-      <div class="modal-header">
-        <div class="w-100">
-          <h5 class="modal-title mb-3">إلغاء جلسات الدعوى</h5>
-          <div class="row g-3">
-            <div class="col-md-3">
-              <label>رقم المحكمة:</label>
-              <input type="text" id="tribunalNumberCancel" class="form-control" disabled>
-            </div>
-            <div class="col-md-3">
-              <label>رقم القلم:</label>
-              <input type="text" id="departmentNumberCancel" class="form-control" disabled>
-            </div>
-            <div class="col-md-3">
-              <label>السنة:</label>
-              <input type="text" id="caseYearCancel" class="form-control" disabled>
-            </div>
-            <div class="col-md-3">
-              <label>رقم الدعوى:</label>
-              <input type="text" id="caseNumberInputCancel" class="form-control" placeholder="أدخل رقم الدعوى واضغط Enter">
-            </div>
-          </div>
-        </div>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="إغلاق"></button>
+      <div class="modal-header bg-dark text-white">
+        <h5 class="modal-title">إلغاء جلسات الدعوى</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="إغلاق"></button>
       </div>
 
       <div class="modal-body">
+        <div class="session-container">
 
-        <!-- جدول تفاصيل الدعوى -->
-        <div id="caseDetailsTableCancel" class="mb-4">
-          <table class="table table-bordered table-sm">
-            <thead class="table-light">
+          <!-- رقم الدعوى -->
+          <label>رقم الدعوى</label>
+          <div class="case-number-row">
+            <input type="text" id="caseNumberInputCancel" placeholder="أدخل رقم الدعوى" required>
+            <input type="text" id="tribunalNumberCancel" placeholder="رقم المحكمة" readonly>
+            <input type="text" id="departmentNumberCancel" placeholder="رقم القلم" readonly>
+            <input type="text" id="caseYearCancel" placeholder="السنة" readonly>
+          </div>
+
+          <button class="search-btn" onclick="loadCancelCase()">عرض الدعوى</button>
+
+          <!-- تفاصيل الدعوى -->
+          <h3>تفاصيل الدعوى</h3>
+          <table>
+            <thead>
               <tr>
                 <th>رقم الدعوى</th>
                 <th>نوع الدعوى</th>
-                <th>القاضي</th>
+                <th>اسم القاضي</th>
                 <th>الأطراف</th>
                 <th>التاريخ الأصلي</th>
               </tr>
             </thead>
             <tbody id="caseDetailsBodyCancel">
-              <!-- يتم تعبئته من JavaScript -->
+              <tr><td colspan="5">لا يوجد دعوى بعد.</td></tr>
             </tbody>
           </table>
-        </div>
 
-        <!-- تفاصيل الجلسة الحالية -->
-        <div id="cancelSessionDetails">
-          <h6>موعد الجلسة</h6>
-          <table class="table table-bordered table-sm">
-            <thead class="table-light">
-              <tr>
-                <th>التاريخ</th>
-                <th>الوقت</th>
-                <th>السبب</th>
-                <th>إجراء</th>
-              </tr>
-            </thead>
-            <tbody id="cancelSessionBody">
-              <!-- يتم تعبئته من JavaScript -->
-            </tbody>
-          </table>
-        </div>
+          <!-- الجلسة الحالية -->
+          <h3>الجلسة الحالية</h3>
+          <div class="old-session-block">
+            <table>
+              <thead>
+                <tr>
+                  <th>تاريخ الجلسة</th>
+                  <th>وقت الجلسة</th>
+                  <th>سبب الجلسة</th>
+                  <th>إجراء</th>
+                </tr>
+              </thead>
+              <tbody id="cancelSessionBody">
+                <tr><td colspan="4">لا توجد جلسة حالية.</td></tr>
+              </tbody>
+            </table>
+          </div>
 
+          <button type="button" data-bs-dismiss="modal">إغلاق</button>
+
+        </div>
       </div>
+
     </div>
   </div>
 </div>
 <script>
-  let cancelCaseId = null;
+let cancelCaseId = null;
 let cancelSessionId = null;
 
-// إدخال رقم الدعوى
-document.getElementById('caseNumberInputCancel').addEventListener('keypress', function (e) {
-  if (e.key === 'Enter') {
-    e.preventDefault();
-    const caseNumber = this.value.trim();
-    if (caseNumber) {
-      fetchCancelCaseDetails(caseNumber);
-    }
+/* ===============================
+   🔹 تحميل بيانات الدعوى والجلسة
+================================= */
+function loadCancelCase() {
+  const caseNumber = document.getElementById('caseNumberInputCancel').value.trim();
+  
+  if (!caseNumber) {
+    alert('يرجى إدخال رقم الدعوى');
+    return;
   }
-});
+  
+  fetchCancelCaseDetails(caseNumber);
+}
 
-// ✅ جلب تفاصيل الدعوى
+/* ===============================
+   🔹 جلب تفاصيل الدعوى
+================================= */
 function fetchCancelCaseDetails(caseNumber) {
   fetch(`/typist/cancel-case-details/${caseNumber}`)
     .then(res => res.json())
     .then(caseData => {
       cancelCaseId = caseData.id;
-      document.getElementById('tribunalNumberCancel').value = caseData.tribunal_number || '';
-      document.getElementById('departmentNumberCancel').value = caseData.department_number || '';
-      document.getElementById('caseYearCancel').value = caseData.year || '';
+      
+      // ✅ تعبئة الحقول في الرأس
+      document.getElementById('tribunalNumberCancel').value = caseData.tribunal_number || '-';
+      document.getElementById('departmentNumberCancel').value = caseData.department_number || '-';
+      document.getElementById('caseYearCancel').value = caseData.year || '-';
+      
       renderCancelCaseDetails(caseData);
       fetchCancelSession(caseNumber);
     })
     .catch(() => alert('❌ رقم الدعوى غير موجود'));
 }
 
-// ✅ عرض تفاصيل الدعوى
+/* ===============================
+   🔹 عرض تفاصيل الدعوى
+================================= */
 function renderCancelCaseDetails(caseData) {
   const tbody = document.getElementById('caseDetailsBodyCancel');
-  const participants = caseData.participants.map(p => `${p.type}: ${p.name}`).join('<br>');
+  const participants = caseData.participants?.length
+    ? caseData.participants.map(p => `${p.type}: ${p.name}`).join('<br>')
+    : '-';
+  
   tbody.innerHTML = `
     <tr>
       <td>${caseData.case_number}</td>
-      <td>${caseData.case_type}</td>
-      <td>${caseData.judge_name}</td>
+      <td>${caseData.case_type ?? '-'}</td>
+      <td>${caseData.judge_name ?? '-'}</td>
       <td>${participants}</td>
-      <td>${caseData.created_at}</td>
+      <td>${caseData.created_at ?? '-'}</td>
     </tr>
   `;
 }
 
-// ✅ جلب الجلسة الحالية
+/* ===============================
+   🔹 جلب الجلسة الحالية
+================================= */
 function fetchCancelSession(caseNumber) {
   fetch(`/typist/cancel-session/${caseNumber}`)
     .then(res => res.json())
@@ -2242,7 +2369,9 @@ function fetchCancelSession(caseNumber) {
     });
 }
 
-// ✅ عرض الجلسة مع زر إلغاء
+/* ===============================
+   🔹 عرض الجلسة مع زر إلغاء
+================================= */
 function renderCancelSession(session) {
   const tbody = document.getElementById('cancelSessionBody');
   tbody.innerHTML = `
@@ -2250,13 +2379,20 @@ function renderCancelSession(session) {
       <td>${session.session_date}</td>
       <td>${session.session_time}</td>
       <td>${session.session_goal}</td>
-      <td><button class="btn btn-danger btn-sm" onclick="cancelSession()">إلغاء الجلسة</button></td>
+      <td><button class="delete-btn" onclick="cancelSession()">الغاء الجلسة</button></td>
     </tr>
   `;
 }
 
-// ✅ حذف الجلسة
+/* ===============================
+   🔹 إلغاء الجلسة
+================================= */
 function cancelSession() {
+  if (!cancelSessionId) {
+    alert('❌ لا توجد جلسة للإلغاء');
+    return;
+  }
+  
   fetch(`/typist/cancel-session-delete/${cancelSessionId}`, {
     method: 'DELETE',
     headers: {
@@ -2265,10 +2401,11 @@ function cancelSession() {
   })
     .then(res => res.json())
     .then(data => {
-      alert(data.message || '✅ تم إلغاء الجلسة');
+      alert(data.message || '✅ تم الغاء الجلسة');
       document.getElementById('cancelSessionBody').innerHTML = `
-        <tr><td colspan="4" class="text-center text-success">✅ تم إلغاء الجلسة</td></tr>
+        <tr><td colspan="4" class="text-center text-success">تم الغاء الجلسة.</td></tr>
       `;
+      cancelSessionId = null;
     })
     .catch(() => alert('❌ فشل إلغاء الجلسة'));
 }
