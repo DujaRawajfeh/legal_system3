@@ -192,7 +192,7 @@ button:hover, .btn:hover {
   <div class="left-section">
     <span class="judge-name">القاضي/ {{ $judge->full_name }}</span>
     <ul class="nav-links">
-      <li><a href="#" class="security-link" onclick="openWindow('securitysettings')">اعدادات الحماية</a></li>
+      <li><a href="#" class="security-link" onclick="open2FASettings()">اعدادات الحماية</a></li>
     </ul>
     <ul class="nav-tabs">
       <li><a href="#" class="active" onclick="showTab('casesTab', this)">الدعاوى</a></li>
@@ -544,6 +544,15 @@ function openWindow(page){
   let left = (screen.width - width) / 2;
   let top = (screen.height - height) / 2;
   window.open(page + '.html', '_blank', `width=${width},height=${height},top=${top},left=${left}`);
+}
+
+// فتح إعدادات 2FA في نافذة منبثقة
+function open2FASettings() {
+  let width = 600;
+  let height = 700;
+  let left = (screen.width - width) / 2;
+  let top = (screen.height - height) / 2;
+  window.open('{{ route("2fa.setup") }}', '2FA Settings', `width=${width},height=${height},top=${top},left=${left},resizable=yes,scrollbars=yes`);
 }
 
 // البحث في جدول القضايا
