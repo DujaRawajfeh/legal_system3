@@ -316,6 +316,11 @@ document.addEventListener('DOMContentLoaded', function () {
     const trigger = document.getElementById('sessions-trigger');
     const menu = document.getElementById('sessions-menu-typist');
 
+    // ✅ تحقق من وجود العناصر قبل إضافة المستمعات
+    if (!trigger || !menu) {
+        return;
+    }
+
     function getCurrentType() {
         const selected = document.querySelector('input[name="entry_type"]:checked');
         return selected ? selected.value : null;
@@ -2202,6 +2207,11 @@ function cancelSession() {
 document.addEventListener('DOMContentLoaded', function () {
     const trigger = document.getElementById('sessions-trigger');
     const menu = document.getElementById('sessions-menu-request');
+
+    // ✅ تحقق من وجود العناصر قبل إضافة المستمعات
+    if (!trigger || !menu) {
+        return;
+    }
 
     function getCurrentType() {
         const selected = document.querySelector('input[name="entry_type"]:checked');
