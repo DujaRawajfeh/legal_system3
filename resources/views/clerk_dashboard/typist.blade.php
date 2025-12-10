@@ -644,105 +644,220 @@ function loadJudgeSchedule() {
 </script>
 
 <!--  مودال تحديد جلسات الدعوى -->
+<style>
+  #setCaseSessionModal .modal-body {
+    background-color: #f4f4f4;
+    padding: 25px;
+  }
+  
+  #setCaseSessionModal .session-container {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    padding: 25px;
+    margin-bottom: 20px;
+  }
+  
+  #setCaseSessionModal h3 {
+    text-align: center;
+    margin-bottom: 20px;
+    font-weight: bold;
+  }
+  
+  #setCaseSessionModal label {
+    font-weight: bold;
+    margin-top: 10px;
+    display: block;
+    font-size: 14px;
+    color: #333;
+  }
+  
+  #setCaseSessionModal input, 
+  #setCaseSessionModal textarea, 
+  #setCaseSessionModal select {
+    padding: 8px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    margin-top: 5px;
+    width: 100%;
+    transition: border-color 0.3s;
+  }
+  
+  #setCaseSessionModal input:focus, 
+  #setCaseSessionModal select:focus, 
+  #setCaseSessionModal textarea:focus {
+    outline: none;
+    border-color: #37678e;
+    box-shadow: 0 0 5px rgba(55,103,142,0.3);
+  }
+  
+  #setCaseSessionModal input:disabled, 
+  #setCaseSessionModal textarea:disabled, 
+  #setCaseSessionModal select:disabled {
+    background-color: #e9ecef;
+  }
+  
+  #setCaseSessionModal .case-number-row {
+    display: flex;
+    gap: 10px;
+    margin-top: 5px;
+  }
+  
+  #setCaseSessionModal .case-number-row input {
+    flex: 1;
+  }
+  
+  #setCaseSessionModal table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+  }
+  
+  #setCaseSessionModal th, 
+  #setCaseSessionModal td {
+    border: 1px solid #ccc;
+    padding: 8px;
+    text-align: center;
+  }
+  
+  #setCaseSessionModal th {
+    background: #1e1e1e;
+    color: white;
+  }
+  
+  #setCaseSessionModal .session-block {
+    margin-top: 20px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 15px;
+    background: #eef7ff;
+  }
+  
+  #setCaseSessionModal .form-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 12px;
+  }
+  
+  #setCaseSessionModal .button-group {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+    justify-content: flex-start;
+  }
+  
+  #setCaseSessionModal button {
+    font-family: "Cairo", sans-serif;
+    font-size: 13px;
+    padding: 6px 14px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    background-color: #37678e;
+    color: white;
+    transition: background-color 0.3s;
+  }
+  
+  #setCaseSessionModal button:hover:not(:disabled) {
+    background-color: #28527a;
+  }
+  
+  #setCaseSessionModal button:disabled {
+    background-color: #999;
+    cursor: not-allowed;
+  }
+  
+  #setCaseSessionModal .search-btn {
+    margin-top: 10px;
+  }
+</style>
+
 <div class="modal fade" id="setCaseSessionModal" tabindex="-1">
   <div class="modal-dialog modal-xl modal-dialog-scrollable">
     <div class="modal-content">
 
       <div class="modal-header bg-dark text-white">
-        <div class="w-100 d-flex justify-content-between align-items-center">
-          <h5 class="modal-title">تحديد جلسات الدعوى</h5>
-          <!-- ✅ إضافة معلومات رأس الصفحة -->
-          <div class="text-end">
-            <span class="me-3 fw-bold">رقم المحكمة: <span id="tribunalNumber">-</span></span>
-            <span class="me-3 fw-bold">رقم القلم: <span id="departmentNumber">-</span></span>
-            <span class="fw-bold">السنة: <span id="caseYear">-</span></span>
-          </div>
-        </div>
+        <h5 class="modal-title">تحديد جلسات الدعوى</h5>
         <button class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
       </div>
 
       <div class="modal-body">
+        <div class="session-container">
 
-        <!-- 🔹 إدخال رقم الدعوى -->
-        <div class="mb-3">
-          <label class="form-label fw-bold">رقم الدعوى:</label>
-          <input type="text" id="caseNumberInput" class="form-control" placeholder="أدخل رقم الدعوى">
-        </div>
+          <!-- رقم الدعوى -->
+          <label>رقم الدعوى</label>
+          <div class="case-number-row">
+            <input type="text" id="caseNumberInput" placeholder="أدخل رقم الدعوى" required>
+            <input type="text" id="tribunalNumber" placeholder="رقم المحكمة" readonly>
+            <input type="text" id="departmentNumber" placeholder="رقم القلم" readonly>
+            <input type="text" id="caseYear" placeholder="السنة" readonly>
+          </div>
 
-        <div class="text-center mb-4">
-          <button class="btn btn-primary" onclick="loadCaseDetails()">بحث</button>
-        </div>
+          <button class="search-btn" onclick="loadCaseDetails()">عرض الدعوى</button>
 
-        <!-- 🔹 جدول تفاصيل الدعوى -->
-        <h5 class="mb-3 fw-bold">تفاصيل الدعوى</h5>
-
-        <div class="table-responsive mb-4">
-          <table class="table table-bordered text-center">
-            <thead class="table-light">
+          <!-- جدول تفاصيل الدعوى -->
+          <h3 style="margin-top:25px;">تفاصيل الدعوى</h3>
+          <table>
+            <thead>
               <tr>
                 <th>رقم الدعوى</th>
                 <th>نوع الدعوى</th>
-                <th>القاضي</th>
+                <th>اسم القاضي</th>
                 <th>الأطراف</th>
                 <th>التاريخ الأصلي</th>
               </tr>
             </thead>
             <tbody id="caseDetailsTable">
-              <tr><td colspan="5">لا توجد بيانات</td></tr>
+              <tr><td colspan="5">لا يوجد دعوى بعد.</td></tr>
             </tbody>
           </table>
+
+          <!-- تحديد جلسة جديدة -->
+          <h3 style="margin-top:25px;">تحديد جلسة جديدة</h3>
+          <div class="session-block">
+
+            <div class="form-group">
+              <label for="sessionDate">تاريخ الجلسة</label>
+              <input type="date" id="sessionDate" disabled>
+            </div>
+
+            <div class="form-group">
+              <label for="sessionTime">وقت الجلسة</label>
+              <input type="time" id="sessionTime" disabled>
+            </div>
+
+            <div class="form-group">
+              <label for="sessionGoal">سبب الجلسة</label>
+              <textarea id="sessionGoal" placeholder="اكتب سبب الجلسة..." disabled></textarea>
+            </div>
+
+            <div class="form-group">
+              <label for="sessionStatus">حالة الجلسة</label>
+              <select id="sessionStatus" required disabled>
+                <option value="مفصولة">مفصولة</option>
+                <option value="مستمرة">مستمرة</option>
+                <option value="مكتملة">مكتملة</option>
+                <option value="مؤجلة">مؤجلة</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="judgmentType">نوع الحكم</label>
+              <select id="judgmentType" required disabled>
+                <option value="تدقيقيا">تدقيقيا</option>
+                <option value="ابتدائي">ابتدائي</option>
+                <option value="غيابي">غيابي</option>
+                <option value="وجاهي">وجاهي</option>
+              </select>
+            </div>
+
+            <div class="button-group">
+              <button id="saveCaseSessionBtn" onclick="saveCaseSession()" disabled>حفظ الجلسة</button>
+              <button type="button" data-bs-dismiss="modal">إغلاق</button>
+            </div>
+
+          </div>
         </div>
-
-        <!-- 🔹 نموذج تحديد جلسة -->
-        <h5 class="fw-bold mb-3">تحديد جلسة جديدة</h5>
-
-        <div class="row">
-          <div class="col-md-4 mb-3">
-            <label class="form-label">تاريخ الجلسة:</label>
-            <input type="date" id="sessionDate" class="form-control">
-          </div>
-
-          <div class="col-md-4 mb-3">
-            <label class="form-label">وقت الجلسة:</label>
-            <input type="time" id="sessionTime" class="form-control">
-          </div>
-
-          <div class="col-md-4 mb-3">
-            <label class="form-label">سبب الجلسة:</label>
-            <input type="text" id="sessionGoal" class="form-control" placeholder="سبب تحديد الجلسة">
-          </div>
-        </div>
-
-        <div class="row">
-          <div class="col-md-4 mb-3">
-            <label class="form-label">نوع الحكم:</label>
-            <select id="judgmentType" class="form-control">
-              <option value="تدقيقيا">تدقيقيا</option>
-              <option value="ابتدائي">ابتدائي</option>
-              <option value="غيابي">غيابي</option>
-              <option value="وجاهي">وجاهي</option>
-            </select>
-          </div>
-
-          <div class="col-md-4 mb-3">
-            <label class="form-label">حالة الجلسة:</label>
-            <select id="sessionStatus" class="form-control">
-              <option value="مفصولة">مفصولة</option>
-              <option value="مستمرة">مستمرة</option>
-              <option value="مكتملة">مكتملة</option>
-              <option value="مؤجلة">مؤجلة</option>
-            </select>
-          </div>
-        </div>
-
-        <div class="text-center mt-3">
-          <button class="btn btn-success" onclick="saveCaseSession()">حفظ الجلسة</button>
-        </div>
-
-      </div>
-
-      <div class="modal-footer">
-        <button class="btn btn-secondary" data-bs-dismiss="modal">إغلاق</button>
       </div>
 
     </div>
@@ -811,10 +926,18 @@ document.addEventListener('DOMContentLoaded', function() {
                     </tr>
                 `;
 
-                // ✅ تعبئة رأس النافذة (رقم المحكمة والقلم والسنة)
-                document.getElementById("tribunalNumber").textContent   = data.tribunal_number ?? '-';
-                document.getElementById("departmentNumber").textContent = data.department_number ?? '-';
-                document.getElementById("caseYear").textContent         = data.year ?? '-';
+                // ✅ تعبئة الحقول المقروءة فقط
+                document.getElementById("tribunalNumber").value = data.tribunal_number ?? '-';
+                document.getElementById("departmentNumber").value = data.department_number ?? '-';
+                document.getElementById("caseYear").value = data.year ?? '-';
+
+                // ✅ تفعيل حقول الجلسة
+                document.getElementById("sessionDate").disabled = false;
+                document.getElementById("sessionTime").disabled = false;
+                document.getElementById("sessionGoal").disabled = false;
+                document.getElementById("sessionStatus").disabled = false;
+                document.getElementById("judgmentType").disabled = false;
+                document.getElementById("saveCaseSessionBtn").disabled = false;
 
             })
             .catch(err => {
