@@ -1648,132 +1648,283 @@ document.getElementById('caseNumberInputJudgment').addEventListener("keydown", f
 
 <!-- نافذه إعادة تحديد الجلسات-->
 <!-- نافذة إعادة التحديد -->
+<style>
+  #rescheduleSessionModal .modal-body {
+    background-color: #f4f4f4;
+    padding: 25px;
+  }
+  
+  #rescheduleSessionModal .session-container {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    padding: 25px;
+    margin-bottom: 20px;
+  }
+  
+  #rescheduleSessionModal h3 {
+    text-align: right;
+    margin-top: 25px;
+    margin-bottom: 10px;
+    font-weight: bold;
+  }
+  
+  #rescheduleSessionModal label {
+    font-weight: bold;
+    margin-top: 10px;
+    display: block;
+    font-size: 14px;
+    color: #333;
+  }
+  
+  #rescheduleSessionModal input, 
+  #rescheduleSessionModal textarea, 
+  #rescheduleSessionModal select {
+    padding: 8px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    margin-top: 5px;
+    width: 100%;
+    transition: border-color 0.3s;
+    font-size: 14px;
+  }
+  
+  #rescheduleSessionModal input:focus, 
+  #rescheduleSessionModal select:focus, 
+  #rescheduleSessionModal textarea:focus {
+    outline: none;
+    border-color: #37678e;
+    box-shadow: 0 0 5px rgba(55,103,142,0.3);
+  }
+  
+  #rescheduleSessionModal input:disabled, 
+  #rescheduleSessionModal textarea:disabled, 
+  #rescheduleSessionModal select:disabled {
+    background-color: #e9ecef;
+  }
+  
+  #rescheduleSessionModal .case-number-row {
+    display: flex;
+    gap: 10px;
+    margin-top: 5px;
+  }
+  
+  #rescheduleSessionModal .case-number-row input {
+    flex: 1;
+  }
+  
+  #rescheduleSessionModal table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+  }
+  
+  #rescheduleSessionModal th, 
+  #rescheduleSessionModal td {
+    border: 1px solid #ccc;
+    padding: 8px;
+    text-align: center;
+  }
+  
+  #rescheduleSessionModal th {
+    background: #1e1e1e;
+    color: white;
+  }
+  
+  #rescheduleSessionModal .old-session-block,
+  #rescheduleSessionModal .session-block {
+    margin-top: 20px;
+    padding: 15px;
+    border-radius: 10px;
+    background: #eef7ff;
+    border: 1px solid #bcd5ff;
+  }
+  
+  #rescheduleSessionModal .form-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 12px;
+  }
+  
+  #rescheduleSessionModal .form-group label {
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: #333;
+  }
+  
+  #rescheduleSessionModal .button-group {
+    display: flex;
+    gap: 10px;
+    margin-top: 15px;
+    justify-content: flex-start;
+  }
+  
+  #rescheduleSessionModal button {
+    font-family: "Cairo", sans-serif;
+    font-size: 13px;
+    padding: 6px 14px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    background-color: #37678e;
+    color: white;
+    transition: background-color 0.3s;
+  }
+  
+  #rescheduleSessionModal button:hover:not(:disabled) {
+    background-color: #28527a;
+  }
+  
+  #rescheduleSessionModal button:disabled {
+    background-color: #999;
+    cursor: not-allowed;
+  }
+  
+  #rescheduleSessionModal .delete-btn {
+    background: #a94442;
+    color: white;
+    padding: 4px 10px;
+    border-radius: 5px;
+  }
+  
+  #rescheduleSessionModal .delete-btn:hover {
+    background: #922d2b;
+  }
+  
+  #rescheduleSessionModal .search-btn {
+    margin-top: 10px;
+  }
+</style>
+
 <div class="modal fade" id="rescheduleSessionModal" tabindex="-1" aria-labelledby="rescheduleSessionModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-xl modal-dialog-scrollable">
     <div class="modal-content">
       <div class="modal-header bg-dark text-white">
-        <div class="w-100 d-flex justify-content-between align-items-center">
-          <h5 class="modal-title">إعادة تحديد جلسات الدعوى</h5>
-          <!-- ✅ إضافة معلومات رأس الصفحة -->
-          <div class="text-end">
-            <span class="me-3 fw-bold">رقم المحكمة: <span id="rescheduleTribunalNumber">-</span></span>
-            <span class="me-3 fw-bold">رقم القلم: <span id="rescheduleDepartmentNumber">-</span></span>
-            <span class="fw-bold">السنة: <span id="rescheduleCaseYear">-</span></span>
-          </div>
-        </div>
+        <h5 class="modal-title">إعادة تحديد جلسات الدعوى</h5>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="إغلاق"></button>
       </div>
 
       <div class="modal-body">
+        <div class="session-container">
 
-        <!-- إدخال رقم الدعوى -->
-        <div class="mb-3">
-          <label>رقم الدعوى:</label>
-          <input type="text" id="caseNumberInputReschedule" class="form-control" placeholder="أدخل رقم الدعوى واضغط Enter">
-        </div>
+        <div class="session-container">
 
-        <!-- جدول تفاصيل الدعوى -->
-        <div id="caseDetailsTableReschedule" class="mb-4">
-          <table class="table table-bordered table-sm text-center">
-            <thead class="table-light">
+          <!-- رقم الدعوى -->
+          <label>رقم الدعوى</label>
+          <div class="case-number-row">
+            <input type="text" id="caseNumberInputReschedule" placeholder="أدخل رقم الدعوى" required>
+            <input type="text" id="rescheduleTribunalNumber" placeholder="رقم المحكمة" readonly>
+            <input type="text" id="rescheduleDepartmentNumber" placeholder="رقم القلم" readonly>
+            <input type="text" id="rescheduleCaseYear" placeholder="السنة" readonly>
+          </div>
+
+          <button class="search-btn" onclick="loadRescheduleCase()">عرض الدعوى</button>
+
+          <!-- تفاصيل الدعوى -->
+          <h3>تفاصيل الدعوى</h3>
+          <table>
+            <thead>
               <tr>
                 <th>رقم الدعوى</th>
                 <th>نوع الدعوى</th>
-                <th>القاضي</th>
+                <th>اسم القاضي</th>
                 <th>الأطراف</th>
                 <th>التاريخ الأصلي</th>
               </tr>
             </thead>
             <tbody id="caseDetailsBodyReschedule">
-              <tr><td colspan="5">لا توجد بيانات</td></tr>
+              <tr><td colspan="5">لا يوجد دعوى بعد.</td></tr>
             </tbody>
           </table>
-        </div>
 
-        <!-- تفاصيل الجلسة القديمة -->
-        <div id="oldSessionDetails" class="mb-4">
-          <h6 class="fw-bold">الجلسة القديمة</h6>
-          <table class="table table-bordered table-sm text-center">
-            <thead class="table-light">
-              <tr>
-                <th>التاريخ</th>
-                <th>الوقت</th>
-                <th>السبب</th>
-                <th>إجراء</th>
-              </tr>
-            </thead>
-            <tbody id="oldSessionBody">
-              <tr><td colspan="4">لا توجد بيانات</td></tr>
-            </tbody>
-          </table>
-        </div>
-
-        <!-- نموذج الجلسة الجديدة -->
-        <div id="newSessionForm">
-          <h6 class="fw-bold">إدخال الجلسة الجديدة</h6>
-          <div class="row g-3">
-            <div class="col-md-4">
-              <label>تاريخ الجلسة:</label>
-              <input type="date" id="newSessionDate" class="form-control">
-            </div>
-            <div class="col-md-4">
-              <label>وقت الجلسة:</label>
-              <input type="time" id="newSessionTime" class="form-control">
-            </div>
-            <div class="col-md-4">
-              <label>سبب الجلسة:</label>
-              <input type="text" id="newSessionGoal" class="form-control" placeholder="سبب الجلسة">
-            </div>
+          <!-- الجلسة القديمة -->
+          <h3>الجلسة القديمة</h3>
+          <div class="old-session-block">
+            <table>
+              <thead>
+                <tr>
+                  <th>تاريخ الجلسة</th>
+                  <th>وقت الجلسة</th>
+                  <th>سبب الجلسة</th>
+                  <th>إجراء</th>
+                </tr>
+              </thead>
+              <tbody id="oldSessionBody">
+                <tr><td colspan="4">لا توجد جلسة قديمة.</td></tr>
+              </tbody>
+            </table>
           </div>
 
-          <div class="row g-3 mt-2">
-            <div class="col-md-4">
-              <label>نوع الحكم:</label>
-              <select id="newJudgmentType" class="form-control">
-                <option value="تدقيقيا">تدقيقيا</option>
-                <option value="ابتدائي">ابتدائي</option>
-                <option value="غيابي">غيابي</option>
-                <option value="وجاهي">وجاهي</option>
-              </select>
+          <!-- إدخال جلسة جديدة -->
+          <h3>إدخال جلسة جديدة</h3>
+          <div class="session-block">
+
+            <div class="form-group">
+              <label for="newSessionDate">تاريخ الجلسة</label>
+              <input type="date" id="newSessionDate" disabled>
             </div>
 
-            <div class="col-md-4">
-              <label>حالة الجلسة:</label>
-              <select id="newSessionStatus" class="form-control">
+            <div class="form-group">
+              <label for="newSessionTime">وقت الجلسة</label>
+              <input type="time" id="newSessionTime" disabled>
+            </div>
+
+            <div class="form-group">
+              <label for="newSessionGoal">سبب الجلسة</label>
+              <textarea id="newSessionGoal" placeholder="اكتب سبب الجلسة..." disabled></textarea>
+            </div>
+
+            <div class="form-group">
+              <label for="newSessionStatus">حالة الجلسة</label>
+              <select id="newSessionStatus" disabled>
                 <option value="مفصولة">مفصولة</option>
                 <option value="مستمرة">مستمرة</option>
                 <option value="مكتملة">مكتملة</option>
                 <option value="مؤجلة">مؤجلة</option>
               </select>
             </div>
-          </div>
 
-          <div class="mt-3 text-center">
-            <button class="btn btn-primary" onclick="rescheduleSession()">إعادة التحديد</button>
+            <div class="form-group">
+              <label for="newJudgmentType">نوع الحكم</label>
+              <select id="newJudgmentType" disabled>
+                <option value="تدقيقا">تدقيقا</option>
+                <option value="ابتدائي">ابتدائي</option>
+                <option value="غيابي">غيابي</option>
+                <option value="وجاهي">وجاهي</option>
+              </select>
+            </div>
+
+            <div class="button-group">
+              <button id="saveRescheduleBtn" onclick="rescheduleSession()" disabled>حفظ الجلسة</button>
+              <button type="button" data-bs-dismiss="modal">إغلاق</button>
+            </div>
+
           </div>
         </div>
-
       </div>
+
     </div>
   </div>
 </div>
+
 <script>
 let currentCaseId = null;
 let currentJudgeId = null;
 let currentSessionId = null;
 
 /* ===============================
-   🔹 عند إدخال رقم الدعوى والضغط Enter
+   🔹 تحميل بيانات الدعوى والجلسة القديمة
 ================================= */
-document.getElementById('caseNumberInputReschedule').addEventListener('keypress', function (e) {
-  if (e.key === 'Enter') {
-    e.preventDefault();
-    const caseNumber = this.value.trim();
-    if (caseNumber) {
-      fetchCaseDetailsAndSession(caseNumber);
-    }
+function loadRescheduleCase() {
+  const caseNumber = document.getElementById('caseNumberInputReschedule').value.trim();
+  
+  if (!caseNumber) {
+    alert('يرجى إدخال رقم الدعوى');
+    return;
   }
-});
+  
+  fetchCaseDetailsAndSession(caseNumber);
+}
 
 /* ===============================
    🔹 جلب تفاصيل الدعوى + الجلسة القديمة
@@ -1787,9 +1938,9 @@ function fetchCaseDetailsAndSession(caseNumber) {
       renderCaseDetails(caseData);
 
       // ✅ تعبئة رأس النافذة
-      document.getElementById("rescheduleTribunalNumber").textContent   = caseData.tribunal_number ?? '-';
-      document.getElementById("rescheduleDepartmentNumber").textContent = caseData.department_number ?? '-';
-      document.getElementById("rescheduleCaseYear").textContent         = caseData.year ?? '-';
+      document.getElementById("rescheduleTribunalNumber").value = caseData.tribunal_number ?? '-';
+      document.getElementById("rescheduleDepartmentNumber").value = caseData.department_number ?? '-';
+      document.getElementById("rescheduleCaseYear").value = caseData.year ?? '-';
 
       fetchOldSession(caseNumber);
     })
@@ -1825,11 +1976,27 @@ function fetchOldSession(caseNumber) {
     .then(session => {
       currentSessionId = session.id;
       renderOldSession(session);
+      
+      // ✅ تفعيل حقول الجلسة الجديدة
+      document.getElementById("newSessionDate").disabled = false;
+      document.getElementById("newSessionTime").disabled = false;
+      document.getElementById("newSessionGoal").disabled = false;
+      document.getElementById("newSessionStatus").disabled = false;
+      document.getElementById("newJudgmentType").disabled = false;
+      document.getElementById("saveRescheduleBtn").disabled = false;
     })
     .catch(() => {
       document.getElementById('oldSessionBody').innerHTML = `
         <tr><td colspan="4" class="text-center text-muted">لا توجد جلسة محددة</td></tr>
       `;
+      
+      // ✅ تفعيل الحقول حتى لو لم توجد جلسة قديمة
+      document.getElementById("newSessionDate").disabled = false;
+      document.getElementById("newSessionTime").disabled = false;
+      document.getElementById("newSessionGoal").disabled = false;
+      document.getElementById("newSessionStatus").disabled = false;
+      document.getElementById("newJudgmentType").disabled = false;
+      document.getElementById("saveRescheduleBtn").disabled = false;
     });
 }
 
@@ -1843,7 +2010,7 @@ function renderOldSession(session) {
       <td>${session.session_date}</td>
       <td>${session.session_time}</td>
       <td>${session.session_goal}</td>
-      <td><button class="btn btn-danger btn-sm" onclick="deleteOldSession()">حذف</button></td>
+      <td><button class="delete-btn" onclick="deleteOldSession()">حذف</button></td>
     </tr>
   `;
 }
@@ -1852,6 +2019,11 @@ function renderOldSession(session) {
    🔹 حذف الجلسة القديمة
 ================================= */
 function deleteOldSession() {
+  if (!currentSessionId) {
+    alert('❌ لا توجد جلسة للحذف');
+    return;
+  }
+  
   fetch(`/typist/delete-case-session/${currentSessionId}`, {
     method: 'DELETE',
     headers: {
@@ -1864,18 +2036,23 @@ function deleteOldSession() {
       document.getElementById('oldSessionBody').innerHTML = `
         <tr><td colspan="4" class="text-center text-success">تم حذف الجلسة</td></tr>
       `;
+      currentSessionId = null;
     })
     .catch(() => alert('❌ فشل حذف الجلسة'));
 }
 
 /* ===============================
-   🔹 حفظ الجلسة الجديدة (مع نوع الحكم + حالة الجلسة)
+   🔹 حفظ الجلسة الجديدة
 ================================= */
 function rescheduleSession() {
+  if (!currentCaseId || !currentJudgeId) {
+    alert('❌ يرجى تحميل بيانات الدعوى أولاً');
+    return;
+  }
+  
   const date = document.getElementById('newSessionDate').value;
   const time = document.getElementById('newSessionTime').value;
   const goal = document.getElementById('newSessionGoal').value;
-
   const judgmentType = document.getElementById('newJudgmentType').value;
   const sessionStatus = document.getElementById('newSessionStatus').value;
 
