@@ -3097,12 +3097,11 @@ document.addEventListener('DOMContentLoaded', function () {
     //   جلب بيانات الطلب والأطراف
     // -------------------------------------------
     function fetchRequestData(requestNumber) {
-        axios.get("{{ route('typist.judgment.open') }}", {
-            params: { request_number: requestNumber }
-        })
+        fetch("{{ route('typist.judgment.open') }}?request_number=" + requestNumber)
+        .then(response => response.json())
         .then(response => {
 
-            let data = response.data.request;
+            let data = response.request;
 
             document.getElementById('tribunal_number_j').value = data.tribunal.number;
             document.getElementById('department_number_j').value = data.department.number;
@@ -3232,15 +3231,23 @@ document.addEventListener('DOMContentLoaded', function () {
     // -------------------------------------------
     document.getElementById('save_judgment').addEventListener('click', function () {
 
-        axios.post("{{ route('typist.judgment.store') }}", {
-            request_id: window.currentRequestId,
-            judgment_date: document.getElementById('judgment_date').value,
-            closure_date: document.getElementById('closure_date').value,
+        fetch("{{ route('typist.judgment.store') }}", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content
+            },
+            body: JSON.stringify({
+                request_id: window.currentRequestId,
+                judgment_date: document.getElementById('judgment_date').value,
+                closure_date: document.getElementById('closure_date').value,
 
-            text_against: window.textAgainst,
-            text_final: window.textFinal,
-            text_waiver: window.textWaiver,
+                text_against: window.textAgainst,
+                text_final: window.textFinal,
+                text_waiver: window.textWaiver,
+            })
         })
+        .then(res => res.json())
         .then(() => {
             alert("✔ تم حفظ الحكم بالكامل");
         })
