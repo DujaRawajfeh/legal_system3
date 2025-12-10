@@ -2332,14 +2332,14 @@ function fetchRequestSchedule() {
     .then(response => response.json())
     .then(data => {
         if (data.success) {
-          console.log('Request Schedule Data:', data.data);
+            console.log('Request Schedule Data:', data.data);
             updateScheduleTable(data.data);
 
             if (data.data.length > 0) {
                 const first = data.data[0];
-                document.getElementById('courtNumber').textContent = first.tribunal_number || '-';
-                document.getElementById('courtDesk').textContent = first.department_number || '-';
-                document.getElementById('courtYear').textContent = first.court_year || '-';
+                document.getElementById('courtNumber').value = first.tribunal_number || '---';
+                document.getElementById('courtDesk').value = first.department_number || '---';
+                document.getElementById('courtYear').value = first.court_year || '---';
             }
         } else {
             alert('لم يتم العثور على بيانات');
