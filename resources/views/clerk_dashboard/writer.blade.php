@@ -1534,7 +1534,7 @@
               <th>الوظيفة</th>
               <th>مكان الإقامة</th>
               <th>رقم الهاتف</th>
-              <th>قسم التباليغ</th>
+              <!-- <th>قسم التباليغ</th> -->
               <th>طريقة التبليغ</th>
             </tr>
           </thead>
@@ -1547,6 +1547,239 @@
         <div class="actions">
           <button id="notif-complainant-save" class="btn-save">حفظ وانهاء</button>
           <button id="notif-complainant-notify" class="btn-notify">تنفيذ تبليغ</button>
+          <button class="btn-exit" data-bs-dismiss="modal">خروج</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<meta name="csrf-token" content="{{ csrf_token() }}">
+
+<!-- مذكرة تبليغ مشتكي موعد جلسة -->
+<style>
+#notif-session-complainant-modal .modal-content {
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+}
+
+#notif-session-complainant-modal h2 {
+    text-align: center;
+    margin-bottom: 18px;
+    font-size: 20px;
+}
+
+#notif-session-complainant-modal .case-number-wrapper {
+    margin-bottom: 20px;
+}
+
+#notif-session-complainant-modal .case-number-label {
+    font-weight: bold;
+    margin-bottom: 8px;
+    display: block;
+}
+
+#notif-session-complainant-modal .case-number-inputs {
+    display: flex;
+    gap: 5px;
+    flex-wrap: wrap;
+    margin-bottom: 12px;
+}
+
+#notif-session-complainant-modal .case-number-inputs input {
+    flex: 1;
+    min-width: 120px;
+    padding: 6px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+}
+
+#notif-session-complainant-modal .case-number-inputs button {
+    padding: 8px 20px;
+    border-radius: 6px;
+    border: 0;
+    cursor: pointer;
+    font-family: 'Cairo', sans-serif;
+    font-weight: bold;
+    font-size: 11px;
+    background: #000;
+    color: #fff;
+}
+
+#notif-session-complainant-modal .row {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 14px;
+    align-items: center;
+}
+
+#notif-session-complainant-modal .col {
+    flex: 1;
+}
+
+#notif-session-complainant-modal label {
+    display: block;
+    margin-top: 10px;
+    font-weight: bold;
+}
+
+#notif-session-complainant-modal input,
+#notif-session-complainant-modal select {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 14px;
+}
+
+#notif-session-complainant-modal #case-type,
+#notif-session-complainant-modal #judge-name {
+    width: 400px;
+    padding: 8px;
+    font-size: 16px;
+}
+
+#notif-session-complainant-modal table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+}
+
+#notif-session-complainant-modal table,
+#notif-session-complainant-modal th,
+#notif-session-complainant-modal td {
+    border: 1px solid #ccc;
+}
+
+#notif-session-complainant-modal th,
+#notif-session-complainant-modal td {
+    padding: 8px;
+    text-align: center;
+}
+
+#notif-session-complainant-modal th {
+    background: #000;
+    color: #fff;
+}
+
+#notif-session-complainant-modal tr.selected {
+    background: #d1e7fd;
+}
+
+#notif-session-complainant-modal tbody tr:hover {
+    background: #f0f8ff;
+    cursor: pointer;
+}
+
+#notif-session-complainant-modal .actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 18px;
+    justify-content: center;
+}
+
+#notif-session-complainant-modal .btn-save {
+    background: #1a7f24;
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 6px;
+    border: 0;
+    cursor: pointer;
+    font-family: 'Cairo', sans-serif;
+    font-weight: bold;
+    font-size: 11px;
+}
+
+#notif-session-complainant-modal .btn-notify {
+    background: #0d6efd;
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 6px;
+    border: 0;
+    cursor: pointer;
+    font-family: 'Cairo', sans-serif;
+    font-weight: bold;
+    font-size: 11px;
+}
+
+#notif-session-complainant-modal .btn-exit {
+    background: #c81e1e;
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 6px;
+    border: 0;
+    cursor: pointer;
+    font-family: 'Cairo', sans-serif;
+    font-weight: bold;
+    font-size: 11px;
+}
+</style>
+
+<div class="modal fade" id="notif-session-complainant-modal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-xl modal-dialog-centered">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h5 class="modal-title">مذكرة تبليغ مشتكي موعد جلسة</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+
+      <div class="modal-body">
+        <!-- رسالة/alert -->
+        <div id="notif-session-complainant-alert"></div>
+
+        <!-- رقم الدعوى -->
+        <div class="case-number-wrapper">
+          <div class="case-number-label">رقم الدعوى</div>
+          <div class="case-number-inputs">
+            <input type="text" id="notif-session-complainant-case-serial" maxlength="4" placeholder="####">
+            <input type="text" id="notif-session-complainant-court-number" readonly placeholder="##">
+            <input type="text" id="notif-session-complainant-pen-number" readonly placeholder="x/y">
+            <input type="text" id="notif-session-complainant-year-number" readonly placeholder="YYYY">
+          </div>
+          <div class="case-number-inputs">
+            <button id="notif-session-complainant-search">بحث</button>
+          </div>
+        </div>
+
+        <!-- نوع الدعوى واسم القاضي -->
+        <div class="row">
+          <div class="col">
+            <label>نوع الدعوى</label>
+            <input id="notif-session-complainant-case-type" disabled>
+          </div>
+          <div class="col">
+            <label>اسم القاضي</label>
+            <input id="notif-session-complainant-judge-name" disabled>
+          </div>
+        </div>
+
+        <!-- جدول الأطراف -->
+        <label>الأطراف</label>
+        <table id="notif-session-complainant-parties-table">
+          <thead>
+            <tr>
+              <th>الاسم</th>
+              <th>الرقم الوطني</th>
+              <th>نوع الطرف</th>
+              <th>الوظيفة</th>
+              <th>مكان الإقامة</th>
+              <th>رقم الهاتف</th>
+              <th>طريقة التبليغ</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+
+      </div> <!-- modal-body -->
+
+      <div class="modal-footer">
+        <div class="actions">
+          <button id="notif-session-complainant-save" class="btn-save">حفظ وانهاء</button>
+          <button id="notif-session-complainant-notify" class="btn-notify">تنفيذ تبليغ</button>
           <button class="btn-exit" data-bs-dismiss="modal">خروج</button>
         </div>
       </div>
@@ -2329,7 +2562,6 @@ document.addEventListener("DOMContentLoaded", function () {
         <td>${p.job ?? ''}</td>
         <td>${p.residence ?? ''}</td>
         <td>${p.phone ?? ''}</td>
-        <td>قسم التباليغ</td>
         <td>
           <select class="notification-method-select" data-index="${i}" style="width:100%; padding:4px; border:1px solid #ccc; border-radius:4px;">
             <option value="">-- اختر --</option>
@@ -2469,6 +2701,259 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   // إعادة ضبط عند إغلاق النافذة
+  document.getElementById(modalId).addEventListener('hidden.bs.modal', function () {
+    clearCaseDisplay();
+    clearAlert();
+    caseSerial.value = "";
+    courtNumber.value = "";
+    penNumber.value = "";
+    yearNumber.value = "";
+    currentCaseId = null;
+  });
+
+});
+</script>
+
+<script>
+    // تبليغ مشتكي موعد جلسة
+document.addEventListener("DOMContentLoaded", function () {
+
+  const modalId = "notif-session-complainant-modal";
+  const $ = id => document.getElementById(id);
+
+  const caseSerial = $("notif-session-complainant-case-serial");
+  const courtNumber = $("notif-session-complainant-court-number");
+  const penNumber = $("notif-session-complainant-pen-number");
+  const yearNumber = $("notif-session-complainant-year-number");
+  const searchBtn = $("notif-session-complainant-search");
+  
+  const caseType = $("notif-session-complainant-case-type");
+  const judgeName = $("notif-session-complainant-judge-name");
+  const tableBody = document.querySelector("#notif-session-complainant-parties-table tbody");
+  
+  const saveBtn = $("notif-session-complainant-save");
+  const notifyBtn = $("notif-session-complainant-notify");
+  const alertBox = $("notif-session-complainant-alert");
+
+  let selectedRow = null;
+  let selectedParticipant = null;
+  let currentCaseData = [];
+  let currentCaseId = null;
+
+  function showAlert(msg, type = "info") {
+    alertBox.innerHTML = `<div class="alert alert-${type}">${msg}</div>`;
+  }
+
+  function clearAlert() {
+    alertBox.innerHTML = "";
+  }
+
+  function clearCaseDisplay() {
+    caseType.value = "";
+    judgeName.value = "";
+    tableBody.innerHTML = "";
+    selectedRow = null;
+    selectedParticipant = null;
+    currentCaseData = [];
+  }
+
+  // البحث عند الضغط Enter على رقم الدعوى
+  caseSerial.addEventListener('keypress', function(e) {
+    if (e.key !== 'Enter') return;
+
+    const value = caseSerial.value.trim();
+    if (value.length !== 4) {
+      showAlert('⚠️ يجب إدخال 4 خانات', 'warning');
+      return;
+    }
+
+    courtNumber.value = '{{ auth()->user()->tribunal->number }}';
+    penNumber.value = '{{ auth()->user()->department->number }}';
+    yearNumber.value = new Date().getFullYear();
+
+    const fullCaseNumber = `${value}`;
+    
+    showAlert("⏳ جاري جلب بيانات القضية...", "info");
+
+    const notificationType = "مذكرة تبليغ مشتكي موعد جلسة";
+
+    fetch(`/court-cases/${encodeURIComponent(fullCaseNumber)}?notification_type=${encodeURIComponent(notificationType)}`)
+      .then(res => res.json().then(j => ({ ok: res.ok, json: j })))
+      .then(({ ok, json }) => {
+        if (!ok) throw json;
+
+        clearAlert();
+
+        currentCaseId = json.id;
+        caseType.value = json.title ?? "";
+        judgeName.value = json.judge_name ?? "";
+        currentCaseData = json.participants ?? [];
+
+        populateTable(currentCaseData);
+      })
+      .catch(err => {
+        console.error(err);
+        clearCaseDisplay();
+        showAlert(err.error ?? "❌ لا يوجد سجل", "danger");
+      });
+  });
+
+  searchBtn.addEventListener("click", function() {
+    const event = new KeyboardEvent('keypress', { key: 'Enter', bubbles: true });
+    caseSerial.dispatchEvent(event);
+  });
+
+  function populateTable(data) {
+    tableBody.innerHTML = '';
+    
+    if (!data || data.length === 0) {
+      showAlert("⚠️ لا يوجد أطراف من نوع 'مشتكي' في هذه القضية.", "warning");
+      return;
+    }
+
+    data.forEach((p, i) => {
+      const tr = document.createElement('tr');
+      tr.dataset.index = i;
+      
+      tr.innerHTML = `
+        <td>${p.name ?? ''}</td>
+        <td>${p.national_id ?? ''}</td>
+        <td>${p.type ?? ''}</td>
+        <td>${p.job ?? ''}</td>
+        <td>${p.residence ?? ''}</td>
+        <td>${p.phone ?? ''}</td>
+        <td>
+          <select class="notification-method-select" data-index="${i}" style="width:100%; padding:4px; border:1px solid #ccc; border-radius:4px;">
+            <option value="">-- اختر --</option>
+            <option value="sms">رسالة قصيرة</option>
+            <option value="email">بريد إلكتروني</option>
+            <option value="قسم التباليغ">قسم التباليغ</option>
+          </select>
+        </td>
+      `;
+      
+      const select = tr.querySelector('.notification-method-select');
+      select.addEventListener('click', (e) => {
+        e.stopPropagation();
+      });
+      
+      tr.addEventListener('click', () => {
+        if (selectedRow) selectedRow.classList.remove('selected');
+        tr.classList.add('selected');
+        selectedRow = tr;
+        selectedParticipant = p;
+      });
+      
+      tableBody.appendChild(tr);
+    });
+  }
+
+  if (notifyBtn) {
+    notifyBtn.addEventListener('click', () => {
+      if (!selectedRow || !selectedParticipant) {
+        showAlert('⚠️ حدد طرفا من الجدول', 'warning');
+        return;
+      }
+
+      const rowIndex = selectedRow.dataset.index;
+      const methodSelect = selectedRow.querySelector('.notification-method-select');
+      const method = methodSelect.value;
+
+      if (!method) {
+        showAlert('⚠️ اختر طريقة التبليغ من القائمة', 'warning');
+        return;
+      }
+
+      if (!currentCaseId) {
+        showAlert('⚠️ لا يوجد معرف للقضية', 'warning');
+        return;
+      }
+
+      notifyBtn.disabled = true;
+      notifyBtn.textContent = "جاري الإرسال...";
+
+      fetch("{{ route('notifications.save') }}", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content
+        },
+        body: JSON.stringify({
+          case_id: currentCaseId,
+          participant_name: selectedParticipant.name,
+          method: method
+        })
+      })
+      .then(res => res.json())
+      .then(data => {
+        showAlert(`✅ تم حفظ التبليغ للطرف: ${selectedParticipant.name} بطريقة: ${method}`, 'success');
+      })
+      .catch(err => {
+        console.error(err);
+        showAlert('❌ حدث خطأ أثناء حفظ التبليغ', 'danger');
+      })
+      .finally(() => {
+        notifyBtn.disabled = false;
+        notifyBtn.textContent = "تنفيذ تبليغ";
+      });
+    });
+  }
+
+  if (saveBtn) {
+    saveBtn.addEventListener('click', () => {
+      if (!selectedParticipant) {
+        showAlert('⚠️ اختر طرفاً أولاً', 'warning');
+        return;
+      }
+
+      const rowIndex = selectedRow.dataset.index;
+      const methodSelect = selectedRow.querySelector('.notification-method-select');
+      const method = methodSelect.value;
+
+      if (!method) {
+        showAlert('⚠️ اختر طريقة التبليغ من القائمة', 'warning');
+        return;
+      }
+
+      if (!currentCaseId) {
+        showAlert('⚠️ لا يوجد معرف للقضية', 'warning');
+        return;
+      }
+      
+      saveBtn.disabled = true;
+      saveBtn.textContent = "جاري الحفظ...";
+
+      fetch("{{ route('notifications.save') }}", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content
+        },
+        body: JSON.stringify({
+          case_id: currentCaseId,
+          participant_name: selectedParticipant.name,
+          method: method
+        })
+      })
+      .then(res => res.json())
+      .then(data => {
+        showAlert('✅ تم الحفظ بنجاح', 'success');
+        setTimeout(() => {
+          const modal = bootstrap.Modal.getInstance(document.getElementById(modalId));
+          if (modal) modal.hide();
+        }, 700);
+      })
+      .catch(err => {
+        console.error(err);
+        showAlert('❌ حدث خطأ أثناء الحفظ', 'danger');
+      })
+      .finally(() => {
+        saveBtn.disabled = false;
+        saveBtn.textContent = "حفظ وانهاء";
+      });
+    });
+  }
+
   document.getElementById(modalId).addEventListener('hidden.bs.modal', function () {
     clearCaseDisplay();
     clearAlert();
