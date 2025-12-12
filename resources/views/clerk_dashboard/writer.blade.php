@@ -4,7 +4,7 @@
 
 @section('content')
 
-<!-- ⭐ قائمة الدعوى / الطلب الخاصة بالكاتب -->
+<!--  قائمة الدعوى / الطلب الخاصة بالكاتب -->
 <div id="writer-case-options"
      style="
         display:none;
@@ -29,9 +29,10 @@
     تسجيل طلب
 </li>
         <li style="padding:10px; border-bottom:1px solid #ddd; cursor:pointer;"
-            data-bs-toggle="modal" data-bs-target="#withdrawCaseModal">
-            سحب دعوى / المدعي العام
-        </li>
+    data-bs-toggle="modal"
+    data-bs-target="#withdrawCaseModal">
+    سحب دعوى / المدعي العام
+</li>
 
         <li style="padding:10px; border-bottom:1px solid #ddd; cursor:pointer;"
             data-bs-toggle="modal" data-bs-target="#pullPoliceCaseModal">
@@ -44,6 +45,84 @@
         </li>
     </ul>
 </div>
+
+
+
+<style>
+.floating-menu a {
+    display:block;
+    padding:5px 0;
+    text-decoration:none;
+    color:#333;
+}
+.floating-menu a:hover {
+    color:#0d6efd;
+}
+.submenu-title {
+    font-weight:bold;
+    cursor:pointer;
+}
+</style>
+<!-- قائمة التباليغ الخاصة بالكاتب -->
+<div id="notifications-menu" class="floating-menu" style="display:none; position:absolute; top:120px; right:50px; background:white; border:1px solid #ccc; border-radius:6px; padding:10px; width:250px; z-index:9999;">
+    <!-- تباليغ الدعوى -->
+    <div class="submenu">
+        <div class="submenu-title">تباليغ الدعوى ▾</div>
+        <div class="submenu-items" style="display:none; margin-right:10px;">
+            <a class="submenu-item" href="#" data-bs-toggle="modal" data-bs-target="#notif-complainant-modal"> مذكرة تبليغ مشتكى عليه</a>
+            <a class="submenu-item open-modal"
+   href="#"
+   data-bs-toggle="modal"
+   data-bs-target="#notif-session-complainant-modal">
+    مذكرة تبليغ مشتكي موعد جلسة
+</a>
+            <a class="submenu-item" href="#">مذكرة حضور خاصة بالشهود</a>
+            <a class="submenu-item" href="#">مذكرة تبليغ حكم</a>
+            <a class="submenu-item" href="#" 
+   data-bs-toggle="modal" 
+   data-bs-target="#manage-notifications-modal">
+   إدارة تباليغ
+</a>
+        </div>
+    </div>
+
+    <hr>
+
+    <!-- كتب مخاطبات الأمن العام -->
+    <div class="submenu">
+        <div class="submenu-title">كتب مخاطبات الأمن العام ▾</div>
+        <div class="submenu-items" style="display:none; margin-right:10px;">
+            <a class="submenu-item"
+   href="#"
+   data-bs-toggle="modal"
+   data-bs-target="#arrest-memo-modal">
+    مذكرة توقيف
+</a>
+            <a class="submenu-item" href="#">مذكرة تمديد توقيف</a>
+            <a class="submenu-item" href="#">مذكرة الإفراج عن الموقوفين</a>
+            <a class="submenu-item"
+   href="#"
+   data-bs-toggle="modal"
+   data-bs-target="#arrest-memos-modal">
+    المذكرات
+</a>
+        </div>
+    </div>
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
 <!--نافذه تسجيل دعوى -->
 <style>
 #registerCaseModal .modal-dialog {
@@ -792,7 +871,7 @@
 </div>
 
 
-<!-- ✅ نافذة جدول الطلبات -->
+<!--  نافذة جدول الطلبات -->
 <div class="modal fade" id="requestScheduleModal" tabindex="-1" aria-labelledby="requestScheduleLabel" aria-hidden="true">
   <div class="modal-dialog modal-xl">
     <div class="modal-content">
@@ -859,10 +938,433 @@
 </div>
 
 
+<!-- نافذة سحب دعوى من المدعي العام -->
+
+<div class="modal fade" id="withdrawCaseModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title">سحب دعوى من المدعي العام</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body">
+
+                <!-- رقم الدعوى -->
+                <div class="mb-3">
+                    <label class="form-label">رقم الدعوى</label>
+                    <input type="text" id="case_number" class="form-control">
+                </div>
+
+                <!-- المحكمة (افتراضي: عمان) -->
+                <div class="mb-3">
+                    <label class="form-label">المحكمة</label>
+                    <select id="court_location" class="form-control">
+                        <option value="عمان" selected>عمان</option>
+                        <option value="الزرقاء">الزرقاء</option>
+                        <option value="إربد">إربد</option>
+                    </select>
+                </div>
+
+                <!-- السجل العام (قادم من قاعدة البيانات مباشرة) -->
+                <div class="mb-3">
+                    <label class="form-label">السجل العام</label>
+                    <select id="prosecutor_office" class="form-control">
+                        @foreach ($records as $rec)
+                            <option value="{{ $rec->records }}">{{ $rec->records }}</option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <!-- صندوق عرض الرسالة -->
+                <div id="pullResult" class="alert d-none mt-3"></div>
+
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn btn-primary" onclick="pullCase()">سحب الدعوى</button>
+                <button class="btn btn-secondary" data-bs-dismiss="modal">إغلاق</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<meta name="csrf-token" content="{{ csrf_token() }}">
+
+<!-- نافذة سحب قضية من الشرطة -->
+<div class="modal fade" id="pullPoliceCaseModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title">سحب قضية من الشرطة</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body">
+
+                <!-- اختيار المركز الأمني -->
+                <div class="row g-2 mb-3">
+                    <div class="col-md-8">
+                        <label class="form-label">المركز الأمني</label>
+                      <select id="police_center" class="form-control">
+                      <option value="">اختر المركز الأمني</option>
+                      <option value="شرطة جنوب عمان">شرطة جنوب عمان</option>
+                      <option value="شرطة شمال عمان">شرطة شمال عمان</option>
+                      <option value="شرطة غرب عمان">شرطة غرب عمان</option>
+                  </select>
+                    </div>
+
+                    <div class="col-md-4 d-flex align-items-end">
+                        <button id="searchPoliceCases" class="btn btn-primary w-100">بحث</button>
+                    </div>
+                </div>
+
+                <!-- عرض المركز المختار -->
+                <div id="selectedCenterName" class="mb-3 text-muted" style="display:none;">
+                    المركز المختار: <strong id="centerNameText"></strong>
+                </div>
+
+                <!-- هنا يوضع الجدول بعد البحث -->
+                <div id="policeCasesResult"></div>
+
+                <!-- صندوق رسائل -->
+                <div id="policeAlert" class="mt-3"></div>
+
+            </div>
+
+            <div class="modal-footer">
+                <button id="pullSelectedCaseBtn" class="btn btn-success" disabled>سحب القضية</button>
+                <button class="btn btn-secondary" data-bs-dismiss="modal">إغلاق</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<meta name="csrf-token" content="{{ csrf_token() }}">
 
 
 
+<!-- مذكرة تبليغ مشتكي عليه -->
+<div class="modal fade" id="notif-complainant-modal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-xl modal-dialog-centered">
+    <div class="modal-content">
 
+      <div class="modal-header">
+        <h5 class="modal-title">مذكرة تبليغ مشتكى عليه</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+
+      <div class="modal-body">
+        <!-- رسالة/alert -->
+        <div id="notif-complainant-alert"></div>
+
+        <!-- سطر إدخال رقم الدعوى + زر بحث -->
+        <div class="row g-2 mb-3">
+          <div class="col-md-9">
+            <input type="text" id="notif-complainant-case-number" class="form-control" placeholder="أدخل رقم الدعوى">
+          </div>
+          <div class="col-md-3 d-flex align-items-end">
+            <button id="notif-complainant-search" class="btn btn-primary w-100">بحث</button>
+          </div>
+        </div>
+
+        <!-- مساحة لعرض بيانات القضية (بعد البحث) -->
+        <div id="notif-complainant-case-info" class="mb-3" style="display:none;">
+          <div class="row">
+            <div class="col-md-3"><small class="text-muted">رقم المحكمة</small><div id="notif-complainant-tribunal">-</div></div>
+            <div class="col-md-2"><small class="text-muted">رقم القلم</small><div id="notif-complainant-department">-</div></div>
+            <div class="col-md-2"><small class="text-muted">السنة</small><div id="notif-complainant-year">-</div></div>
+            <div class="col-md-5"><small class="text-muted">عنوان القضية</small><div id="notif-complainant-title">-</div></div>
+          </div>
+        </div>
+
+        <!-- جدول الأطراف (فلترة على الخادم بحسب نوع المذكرة) -->
+        <div id="notif-complainant-participants-area" style="display:none;">
+          <h6>قائمة الأطراف (مشتكى عليه)</h6>
+          <div class="table-responsive">
+            <table class="table table-sm table-hover" id="notif-complainant-participants-table">
+              <thead class="table-light">
+                <tr>
+                  <th style="width:60px">اختيار</th>
+                  <th>الاسم</th>
+                  <th>الرقم الوطني</th>
+                  <th>نوع الطرف</th>
+                  <th>مكان الإقامة</th>
+                  <th>الوظيفة</th>
+                  <th>الهاتف</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- خيارات طريقة التبليغ -->
+        <div id="notif-complainant-method-area" class="mt-3" style="display:none;">
+          <div class="row g-2 align-items-end">
+            <div class="col-md-6">
+              <label class="form-label">طريقة التبليغ</label>
+              <select id="notif-complainant-method" class="form-control">
+                <option value="">اختر طريقة</option>
+                <option value="sms">SMS</option>
+                <option value="email">Email</option>
+                <option value="قسم التباليغ">قسم التباليغ</option>
+              </select>
+            </div>
+            
+
+      </div> <!-- modal-body -->
+
+      <div class="modal-footer">
+        <button id="notif-complainant-save" class="btn btn-success" disabled>حفظ التبليغ</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إغلاق</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<meta name="csrf-token" content="{{ csrf_token() }}">
+
+<!-- إدارة تباليغ الدعوى -->
+<div class="modal fade" id="manage-notifications-modal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-xl modal-dialog-centered">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h5 class="modal-title">إدارة تباليغ الدعوى</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body">
+
+        <div id="manage-notifications-alert"></div>
+
+        <!-- إدخال رقم الدعوى -->
+        <div class="row g-2 mb-3">
+          <div class="col-md-12">
+            <input type="text" id="manage-notifications-case-number" class="form-control"
+                   placeholder="أدخل رقم الدعوى ثم اضغط Enter">
+          </div>
+        </div>
+
+        <!-- جدول التباليغ -->
+        <div id="manage-notifications-table-area" style="display:none;">
+          <h6>سجل التبليغات</h6>
+
+          <div class="table-responsive">
+            <table class="table table-sm table-hover" id="manage-notifications-table">
+              <thead class="table-light">
+                <tr>
+                  <th>رقم الدعوى</th>
+                  <th>نوع الطرف</th>
+                  <th>اسم الطرف</th>
+                  <th>طريقة التبليغ</th>
+                  <th>تاريخ التبليغ</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-secondary" data-bs-dismiss="modal">إغلاق</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+
+<!--  مذكرة توقيف -->
+<div class="modal fade" id="arrest-memo-modal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-xl modal-dialog-centered">
+    <div class="modal-content">
+
+      <div class="modal-header">
+        <h5 class="modal-title">مذكرة توقيف</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body">
+
+        <!-- Alert -->
+        <div id="arrest-alert"></div>
+
+        <!--  معلومات المحكمة -->
+        <div class="row text-center mb-3">
+          <div class="col-md-4">
+            <label class="text-muted">رقم المحكمة</label>
+            <div id="arrest-tribunal">-</div>
+          </div>
+
+          <div class="col-md-4">
+            <label class="text-muted">رقم القلم</label>
+            <div id="arrest-department">-</div>
+          </div>
+
+          <div class="col-md-4">
+            <label class="text-muted">السنة</label>
+            <div id="arrest-year">-</div>
+          </div>
+        </div>
+
+        <!-- رقم الدعوى -->
+        <div class="row mb-3">
+          <div class="col-md-9">
+            <input type="text" id="arrest-case-number" class="form-control" placeholder="أدخل رقم الدعوى">
+          </div>
+
+          <div class="col-md-3 d-flex align-items-end">
+            <button class="btn btn-primary w-100" id="arrest-search-btn">بحث</button>
+          </div>
+        </div>
+
+        <!-- نوع الدعوى -->
+        <div id="arrest-case-type-area" style="display:none;">
+          <label class="text-muted">نوع الدعوى:</label>
+          <div id="arrest-case-title" class="fw-bold"></div>
+        </div>
+
+        <!-- جدول الأطراف -->
+        <div id="arrest-participants-area" style="display:none;" class="mt-3">
+          <h6>الأطراف</h6>
+
+          <div class="table-responsive">
+            <table class="table table-sm table-hover" id="arrest-participants-table">
+              <thead class="table-light">
+                <tr>
+                  <th style="width:60px">اختيار</th>
+                  <th>الاسم</th>
+                  <th>نوع الطرف</th>
+                  <th>الوظيفة</th>
+                  <th>مكان الإقامة</th>
+                  <th>رقم الهاتف</th>
+                  <th>التبليغ بواسطة</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- بيانات إضافية -->
+        <div id="arrest-extra-area" style="display:none;" class="mt-4">
+
+          <!-- اسم القاضي -->
+          <div class="mb-3">
+            <label>اسم القاضي</label>
+            <input type="text" id="arrest-judge-name" class="form-control" readonly>
+          </div>
+
+          <!-- مدة التوقيف -->
+          <div class="mb-3">
+            <label>مدة التوقيف (بالأيام)</label>
+            <input type="number" id="arrest-duration" class="form-control" min="1">
+          </div>
+
+          <!-- سبب التوقيف -->
+          <div class="mb-3">
+            <label>سبب التوقيف</label>
+            <select id="arrest-reason" class="form-control">
+              <option value="">اختر سبب التوقيف</option>
+              <option value="خشية الفرار">خشية الفرار</option>
+              <option value="منع التأثير على الشهود">منع التأثير على الشهود</option>
+              <option value="منع العبث بالأدلة">منع العبث بالأدلة</option>
+              <option value="لحماية المشتكي من الخطر">لحماية المشتكي من الخطر</option>
+            </select>
+          </div>
+
+          <!-- مركز الإصلاح والتأهيل -->
+          <div class="mb-3">
+            <label>مركز الإصلاح والتأهيل</label>
+            <select id="arrest-center" class="form-control">
+              <option value="">اختر المركز</option>
+              <option value="مركز إصلاح وتأهيل ماركا">مركز إصلاح وتأهيل ماركا</option>
+              <option value="مركز إصلاح وتأهيل إربد">مركز إصلاح وتأهيل إربد</option>
+              <option value="مركز إصلاح وتأهيل الكرك">مركز إصلاح وتأهيل الكرك</option>
+            </select>
+          </div>
+
+        </div>
+
+      </div>
+
+      <!-- أزرار -->
+      <div class="modal-footer">
+        <button class="btn btn-success" id="arrest-save-btn" disabled>حفظ</button>
+        <button class="btn btn-primary" id="arrest-save-close-btn" disabled>حفظ وإنهاء</button>
+        <button class="btn btn-secondary" data-bs-dismiss="modal">إغلاق</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+<!-- المذكرات -->
+<div class="modal fade" id="arrest-memos-modal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-xl modal-dialog-centered">
+    <div class="modal-content">
+
+      <!-- Header -->
+      <div class="modal-header">
+        <h5 class="modal-title">المذكرات</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body">
+
+        <!-- Alerts -->
+        <div id="arrest-memos-alert"></div>
+
+        <!-- إدخال رقم الدعوى -->
+        <div class="row g-2 mb-3">
+          <div class="col-md-9">
+            <input type="text" id="arrest-memos-case-number" class="form-control" placeholder="أدخل رقم الدعوى">
+          </div>
+
+          <div class="col-md-3 d-flex align-items-end">
+            <button class="btn btn-primary w-100" id="arrest-memos-search-btn">بحث</button>
+          </div>
+        </div>
+
+        <!-- عنوان قبل الجدول -->
+        <h6 id="arrest-memos-title" class="mt-3" style="display:none;">
+          مذكرات التوقيف المرتبطة بالدعوى
+        </h6>
+
+        <!-- جدول المذكرات -->
+        <div class="table-responsive mt-2" id="arrest-memos-table-area" style="display:none;">
+          <table class="table table-sm table-hover" id="arrest-memos-table">
+            <thead class="table-light">
+              <tr>
+                <th>رقم الدعوى</th>
+                <th>اسم الطرف</th>
+                <th>الإفراج</th>
+                <th>مدة التوقيف</th>
+                <th>سبب التوقيف</th>
+                <th>مركز الإصلاح والتأهيل</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-secondary" data-bs-dismiss="modal">إغلاق</button>
+      </div>
+
+    </div>
+  </div>
+</div>
 
 
 
@@ -875,6 +1377,867 @@
 
 @yield('chief-extra')
 @endsection
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+
+  const modalId = "arrest-memos-modal";
+
+  const $ = id => document.getElementById(id);
+
+  const caseNumberInput = $("arrest-memos-case-number");
+  const searchBtn = $("arrest-memos-search-btn");
+  const alertBox = $("arrest-memos-alert");
+
+  const tableArea = $("arrest-memos-table-area");
+  const tableBody = document.querySelector("#arrest-memos-table tbody");
+  const titleLabel = $("arrest-memos-title");
+
+  function showAlert(msg, type = "warning") {
+    alertBox.innerHTML = `<div class="alert alert-${type}">${msg}</div>`;
+  }
+
+  function clearAlert() {
+    alertBox.innerHTML = "";
+  }
+
+  function resetUI() {
+    clearAlert();
+    tableArea.style.display = "none";
+    titleLabel.style.display = "none";
+    tableBody.innerHTML = "";
+  }
+
+  // 🔎 زر البحث
+  searchBtn.addEventListener("click", function () {
+
+    resetUI();
+
+    const number = caseNumberInput.value.trim();
+    if (!number) {
+      showAlert("⚠️ يرجى إدخال رقم الدعوى");
+      return;
+    }
+
+    showAlert("⏳ جاري تحميل بيانات المذكرات ...", "info");
+
+    fetch(`/writer/arrest-memos/${encodeURIComponent(number)}`)
+      .then(res => res.json().then(j => ({ ok: res.ok, json: j })))
+      .then(({ ok, json }) => {
+
+        if (!ok) throw json;
+
+        clearAlert();
+
+        const memos = json.memos ?? [];
+
+        if (!memos.length) {
+          showAlert("⚠️ لا توجد مذكرات توقيف لهذه الدعوى");
+          return;
+        }
+
+        // عرض العنوان
+        titleLabel.style.display = "block";
+
+        // بناء الجدول
+        tableBody.innerHTML = "";
+
+        memos.forEach(m => {
+          const tr = document.createElement("tr");
+
+          tr.innerHTML = `
+            <td>${m.case_number}</td>
+            <td>${m.participant_name}</td>
+            <td>${m.released}</td>
+            <td>${m.detention_duration}</td>
+            <td>${m.detention_reason}</td>
+            <td>${m.detention_center}</td>
+          `;
+
+          tableBody.appendChild(tr);
+        });
+
+        tableArea.style.display = "block";
+
+      })
+      .catch(err => {
+        console.error(err);
+        showAlert(err.error ?? "❌ حدث خطأ أثناء تحميل البيانات", "danger");
+      });
+
+  });
+
+  // إعادة ضبط النافذة عند الإغلاق
+  document.getElementById(modalId).addEventListener("hidden.bs.modal", resetUI);
+
+});
+
+
+
+
+
+
+
+
+</script>
+
+<script>
+    //مذكرة توقيف
+document.addEventListener("DOMContentLoaded", function () {
+
+  const modalId = "arrest-memo-modal";
+  const modalEl = document.getElementById(modalId);
+
+  const $ = id => document.getElementById(id);
+
+  // عناصر الإدخال
+  const caseNumberInput = $("arrest-case-number");
+  const searchBtn = $("arrest-search-btn");
+
+  const tribunalEl = $("arrest-tribunal");
+  const departmentEl = $("arrest-department");
+  const yearEl = $("arrest-year");
+  const caseTitleEl = $("arrest-case-title");
+
+  const caseTypeArea = $("arrest-case-type-area");
+  const participantsArea = $("arrest-participants-area");
+  const extraArea = $("arrest-extra-area");
+
+  const participantsTableBody = document.querySelector("#arrest-participants-table tbody");
+
+  const judgeNameInput = $("arrest-judge-name");
+  const durationInput = $("arrest-duration");
+  const reasonSelect = $("arrest-reason");
+  const centerSelect = $("arrest-center");
+
+  const saveBtn = $("arrest-save-btn");
+  const saveCloseBtn = $("arrest-save-close-btn");
+
+  const alertBox = $("arrest-alert");
+
+  let selectedParticipant = null;
+  let currentCaseNumber = null;
+
+  function showAlert(msg, type = "warning") {
+    alertBox.innerHTML = `<div class="alert alert-${type}">${msg}</div>`;
+  }
+
+  function clearAlert() { alertBox.innerHTML = ""; }
+
+  function resetUI() {
+    clearAlert();
+    participantsTableBody.innerHTML = "";
+    caseTypeArea.style.display = "none";
+    participantsArea.style.display = "none";
+    extraArea.style.display = "none";
+    judgeNameInput.value = "";
+
+    saveBtn.disabled = true;
+    saveCloseBtn.disabled = true;
+  }
+
+  // 🔍 زر البحث
+  searchBtn.addEventListener("click", function () {
+
+    resetUI();
+
+    const caseNumber = caseNumberInput.value.trim();
+    if (!caseNumber) {
+      showAlert("⚠️ يرجى إدخال رقم الدعوى");
+      return;
+    }
+
+    showAlert("⏳ جاري جلب بيانات الدعوى ...", "info");
+
+    fetch("/writer/arrest-memo", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content
+      },
+      body: JSON.stringify({
+        case_number: caseNumber
+      })
+    })
+    .then(res => res.json().then(j => ({ ok: res.ok, json: j })))
+    .then(({ ok, json }) => {
+
+      if (!ok) throw json;
+
+      clearAlert();
+
+      // حفظ رقم الدعوى
+      currentCaseNumber = caseNumber;
+
+      // تعبئة بيانات المحكمة
+      tribunalEl.textContent = json.case?.tribunal?.number ?? "-";
+      departmentEl.textContent = json.case?.department?.number ?? "-";
+      yearEl.textContent = json.case?.year ?? "-";
+
+      // نوع الدعوى
+      caseTitleEl.textContent = json.case?.title ?? "-";
+      caseTypeArea.style.display = "block";
+
+      // اسم القاضي
+      judgeNameInput.value = json.judge_name ?? "";
+
+      // عرض الأطراف
+      const parts = json.participants ?? [];
+      if (!parts.length) {
+        showAlert("⚠️ لا يوجد أطراف لهذه الدعوى");
+        return;
+      }
+
+      participantsTableBody.innerHTML = "";
+
+      parts.forEach(p => {
+        const tr = document.createElement("tr");
+
+        tr.innerHTML = `
+          <td><input type="radio" name="arrest_participant" value="${p.name}"></td>
+          <td>${p.name}</td>
+          <td>${p.type}</td>
+          <td>${p.job ?? ""}</td>
+          <td>${p.residence ?? ""}</td>
+          <td>${p.phone ?? ""}</td>
+          <td>الأمن العام</td>
+        `;
+
+        tr.querySelector("input").addEventListener("change", () => {
+          selectedParticipant = p.name;
+          extraArea.style.display = "block";
+          validateForm();
+        });
+
+        participantsTableBody.appendChild(tr);
+      });
+
+      participantsArea.style.display = "block";
+    })
+    .catch(err => {
+      console.error(err);
+      showAlert(err.error ?? "❌ حدث خطأ أثناء جلب بيانات الدعوى", "danger");
+    });
+
+  });
+
+  // ➕ التحقق من جاهزية الحفظ
+  function validateForm() {
+
+    const valid =
+      selectedParticipant &&
+      durationInput.value &&
+      reasonSelect.value &&
+      centerSelect.value;
+
+    saveBtn.disabled = !valid;
+    saveCloseBtn.disabled = !valid;
+  }
+
+  durationInput.addEventListener("input", validateForm);
+  reasonSelect.addEventListener("change", validateForm);
+  centerSelect.addEventListener("change", validateForm);
+
+  // 💾 زر الحفظ
+  function submitArrestMemo(closeAfter) {
+    clearAlert();
+
+    fetch("/writer/arrest-memo", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content
+      },
+      body: JSON.stringify({
+        case_number: currentCaseNumber,
+        participant_name: selectedParticipant,
+        detention_duration: durationInput.value,
+        detention_reason: reasonSelect.value,
+        detention_center: centerSelect.value,
+        save: true
+      })
+    })
+    .then(res => res.json().then(j => ({ ok: res.ok, json: j })))
+    .then(({ ok, json }) => {
+      if (!ok) throw json;
+
+      showAlert("✅ تم حفظ مذكرة التوقيف بنجاح", "success");
+
+      if (closeAfter) {
+        setTimeout(() => {
+          const modal = bootstrap.Modal.getInstance(modalEl);
+          modal.hide();
+        }, 700);
+      }
+
+    })
+    .catch(err => {
+      console.error(err);
+      showAlert(err.error ?? "❌ خطأ أثناء حفظ مذكرة التوقيف", "danger");
+    });
+  }
+
+  saveBtn.addEventListener("click", () => submitArrestMemo(false));
+  saveCloseBtn.addEventListener("click", () => submitArrestMemo(true));
+
+  // إعادة ضبط عند إغلاق النافذة
+  modalEl.addEventListener("hidden.bs.modal", resetUI);
+
+});
+</script>
+
+
+
+
+
+
+
+
+
+
+<script>
+    //إدارة تباليغ الدعوى
+document.addEventListener("DOMContentLoaded", function () {
+
+  const modalId = "manage-notifications-modal";
+  const $ = id => document.getElementById(id);
+
+  const caseInput = $("manage-notifications-case-number");
+  const alertBox = $("manage-notifications-alert");
+  const tableArea = $("manage-notifications-table-area");
+  const tableBody = document.querySelector("#manage-notifications-table tbody");
+
+  function showAlert(msg, type="info") {
+    alertBox.innerHTML = `<div class="alert alert-${type}">${msg}</div>`;
+  }
+
+  function clearAlert() { alertBox.innerHTML = ""; }
+
+  function resetTable() {
+    tableArea.style.display = "none";
+    tableBody.innerHTML = "";
+  }
+
+  // ⬅ البحث عند الضغط على Enter
+  caseInput.addEventListener("keyup", function (e) {
+    if (e.key === "Enter") {
+      fetchNotifications();
+    }
+  });
+
+  function fetchNotifications() {
+    clearAlert();
+    resetTable();
+
+    const caseNumber = caseInput.value.trim();
+    if (!caseNumber) {
+      showAlert("⚠️ أدخل رقم الدعوى", "warning");
+      return;
+    }
+
+    showAlert("⏳ جاري تحميل البيانات...");
+
+    fetch(`/writer/case-notifications/${encodeURIComponent(caseNumber)}`)
+      .then(res => res.json().then(j => ({ ok: res.ok, json: j })))
+      .then(({ ok, json }) => {
+
+        if (!ok) throw json;
+
+        clearAlert();
+
+        const notifications = json.notifications || [];
+
+        if (!notifications.length) {
+          showAlert("⚠️ لا يوجد أي تبليغات لهذه الدعوى", "warning");
+          return;
+        }
+
+        tableBody.innerHTML = "";
+        notifications.forEach(n => {
+          const tr = document.createElement("tr");
+
+          tr.innerHTML = `
+            <td>${n.case_number}</td>
+            <td>${n.participant_type}</td>
+            <td>${n.participant_name}</td>
+            <td>${n.method}</td>
+            <td>${n.notified_at ?? "-"}</td>
+          `;
+
+          tableBody.appendChild(tr);
+        });
+
+        tableArea.style.display = "block";
+
+      })
+      .catch(err => {
+        console.error(err);
+        resetTable();
+        showAlert(err.error ?? "❌ حدث خطأ أثناء تحميل التبليغات", "danger");
+      });
+  }
+
+  // مسح البيانات عند إغلاق النافذة
+  document.getElementById(modalId).addEventListener("hidden.bs.modal", function () {
+    clearAlert();
+    resetTable();
+    caseInput.value = "";
+  });
+
+});
+</script>
+
+
+
+
+
+
+<script>
+    //تبليغ مشتكي عليه
+document.addEventListener("DOMContentLoaded", function () {
+
+  const modalId = "notif-complainant-modal";
+  const $alert = id => document.getElementById(id);
+
+  const caseInput = $alert("notif-complainant-case-number");
+  const searchBtn = $alert("notif-complainant-search");
+  const caseInfoDiv = $alert("notif-complainant-case-info");
+  const tribunalEl = $alert("notif-complainant-tribunal");
+  const departmentEl = $alert("notif-complainant-department");
+  const yearEl = $alert("notif-complainant-year");
+  const titleEl = $alert("notif-complainant-title");
+
+  const participantsArea = $alert("notif-complainant-participants-area");
+  const participantsTableBody = document.querySelector("#notif-complainant-participants-table tbody");
+
+  const methodArea = $alert("notif-complainant-method-area");
+  const methodSelect = $alert("notif-complainant-method");
+  const notesInput = $alert("notif-complainant-notes");
+
+  const saveBtn = $alert("notif-complainant-save");
+  const alertBox = $alert("notif-complainant-alert");
+
+  let selectedParticipantName = null;
+  let currentCaseId = null; // ← ID القضية الحقيقي
+
+  function showAlertHTML(html, type = "info") {
+    alertBox.innerHTML = `<div class="alert alert-${type}">${html}</div>`;
+  }
+
+  function clearAlert() { alertBox.innerHTML = ""; }
+
+  function clearCaseDisplay() {
+    caseInfoDiv.style.display = "none";
+    participantsArea.style.display = "none";
+    methodArea.style.display = "none";
+    participantsTableBody.innerHTML = "";
+    saveBtn.disabled = true;
+    selectedParticipantName = null;
+    currentCaseId = null;
+  }
+
+  // عند الضغط على بحث
+  searchBtn.addEventListener("click", function () {
+    clearAlert();
+    participantsTableBody.innerHTML = "";
+    methodArea.style.display = "none";
+    participantsArea.style.display = "none";
+    caseInfoDiv.style.display = "none";
+    saveBtn.disabled = true;
+
+    const number = caseInput.value.trim();
+    if (!number) {
+      showAlertHTML("⚠️ أدخل رقم الدعوى للبحث", "warning");
+      return;
+    }
+
+    showAlertHTML("جاري جلب بيانات القضية...", "info");
+
+    const notificationType = "مذكرة تبليغ مشتكى عليه";
+
+    fetch(`/court-cases/${encodeURIComponent(number)}?notification_type=${encodeURIComponent(notificationType)}`)
+      .then(async res => {
+        const json = await res.json();
+        if (!res.ok) throw json;
+        return json;
+      })
+      .then(data => {
+        clearAlert();
+
+        // ← حفظ ID الحقيقي للقضية
+        currentCaseId = data.id;
+
+        tribunalEl.textContent = data.tribunal?.name ?? "-";
+        departmentEl.textContent = data.department?.name ?? "-";
+        yearEl.textContent = data.year ?? "-";
+        titleEl.textContent = data.title ?? "-";
+
+        caseInfoDiv.style.display = "block";
+
+        const parts = data.participants ?? [];
+        if (!parts.length) {
+          showAlertHTML("⚠️ لا يوجد أطراف من نوع 'مشتكى عليه' في هذه القضية.", "warning");
+          return;
+        }
+
+        participantsTableBody.innerHTML = "";
+        parts.forEach(p => {
+          const tr = document.createElement("tr");
+
+          tr.innerHTML = `
+            <td><input type="radio" name="notif_complaint_participant" value="${escapeHtml(p.name)}"></td>
+            <td>${escapeHtml(p.name)}</td>
+            <td>${escapeHtml(p.national_id ?? "")}</td>
+            <td>${escapeHtml(p.type ?? "")}</td>
+            <td>${escapeHtml(p.residence ?? "")}</td>
+            <td>${escapeHtml(p.job ?? "")}</td>
+            <td>${escapeHtml(p.phone ?? "")}</td>
+          `;
+
+          tr.querySelector('input[type="radio"]').addEventListener('change', function () {
+            selectedParticipantName = this.value;
+            methodArea.style.display = "block";
+            saveBtn.disabled = !methodSelect.value;
+            clearAlert();
+          });
+
+          participantsTableBody.appendChild(tr);
+        });
+
+        participantsArea.style.display = "block";
+      })
+      .catch(err => {
+        console.error(err);
+        clearCaseDisplay();
+        if (err && err.error) showAlertHTML(err.error, "warning");
+        else showAlertHTML("❌ حدث خطأ أثناء جلب بيانات القضية", "danger");
+      });
+  });
+
+  // عندما يختار طريقة التبليغ
+  methodSelect.addEventListener("change", function () {
+    saveBtn.disabled = !this.value || !selectedParticipantName;
+  });
+
+  // حفظ التبليغ
+  saveBtn.addEventListener("click", function () {
+    clearAlert();
+
+    if (!currentCaseId || !selectedParticipantName) {
+      showAlertHTML("⚠️ اختر قضية وطرف وطريقة التبليغ أولاً", "warning");
+      return;
+    }
+
+    const payload = {
+      case_id: currentCaseId, // ← ID الصحيح
+      participant_name: selectedParticipantName,
+      method: methodSelect.value,
+      notes: notesInput?.value || null
+    };
+
+    saveBtn.disabled = true;
+    saveBtn.textContent = "جارٍ الحفظ...";
+
+    fetch("{{ route('notifications.save') }}", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRF-TOKEN": document.querySelector('meta[name=\"csrf-token\"]').content
+      },
+      body: JSON.stringify(payload)
+    })
+    .then(async res => {
+      const json = await res.json();
+      if (!res.ok) throw json;
+      return json;
+    })
+    .then(ret => {
+      showAlertHTML("✅ تم حفظ التبليغ بنجاح", "success");
+    })
+    .catch(err => {
+      console.error(err);
+      if (err && err.error) showAlertHTML(err.error, "danger");
+      else showAlertHTML("❌ حدث خطأ أثناء حفظ التبليغ", "danger");
+    })
+    .finally(() => {
+      saveBtn.disabled = false;
+      saveBtn.textContent = "حفظ التبليغ";
+    });
+  });
+
+  function escapeHtml(text) {
+    if (text === null || text === undefined) return "";
+    return String(text)
+      .replaceAll('&', '&amp;')
+      .replaceAll('<', '&lt;')
+      .replaceAll('>', '&gt;')
+      .replaceAll('"', '&quot;')
+      .replaceAll("'", '&#039;');
+  }
+
+  document.getElementById(modalId).addEventListener('hidden.bs.modal', function () {
+    clearCaseDisplay();
+    clearAlert();
+  });
+
+});
+</script>
+
+
+<script>
+    //خيارات التباليغ
+document.addEventListener("DOMContentLoaded", function () {
+
+    const mainTrigger = document.getElementById("trigger-notifications");
+    const menu = document.getElementById("notifications-menu");
+
+    // عند الضغط على كلمة التباليغ
+    mainTrigger.addEventListener("click", function () {
+        menu.style.display = (menu.style.display === "none") ? "block" : "none";
+    });
+
+    // تفعيل القوائم الفرعية
+    document.querySelectorAll(".submenu-title").forEach(title => {
+        title.addEventListener("click", function () {
+            const items = this.nextElementSibling;
+            items.style.display = (items.style.display === "none") ? "block" : "none";
+        });
+    });
+
+    // إغلاق القائمة عند الضغط خارجها
+    document.addEventListener("click", function (e) {
+        if (!menu.contains(e.target) && e.target !== mainTrigger) {
+            menu.style.display = "none";
+        }
+    });
+
+});
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+// نافذة سحب قضية من الشرطة 
+document.addEventListener("DOMContentLoaded", function () {
+
+    const searchBtn = document.getElementById("searchPoliceCases");
+    const centerSelect = document.getElementById("police_center");
+    const resultContainer = document.getElementById("policeCasesResult");
+    const alertBox = document.getElementById("policeAlert");
+    const selectedCenterDiv = document.getElementById("selectedCenterName");
+    const centerNameText = document.getElementById("centerNameText");
+    const pullBtn = document.getElementById("pullSelectedCaseBtn");
+
+    let selectedCaseId = null;
+    let selectedCenterName = null;
+
+    // ----------------------
+    // دالة عرض الرسائل
+    // ----------------------
+    function showAlert(message, type = "info") {
+        alertBox.innerHTML = `<div class="alert alert-${type}">${message}</div>`;
+    }
+
+    function clearAlert() {
+        alertBox.innerHTML = "";
+    }
+
+    function format(date) {
+        return date ? new Date(date).toLocaleDateString() : "-";
+    }
+
+    // ----------------------
+    // اختيار القضية من الجدول
+    // ----------------------
+    window.selectPoliceCase = function (id, centerName) {
+        selectedCaseId = id;
+        selectedCenterName = centerName;
+
+        pullBtn.disabled = false;
+
+        centerNameText.innerText = centerName;
+        selectedCenterDiv.style.display = "block";
+    };
+
+    // ----------------------
+    // عند الضغط على زر البحث
+    // ----------------------
+    searchBtn.addEventListener("click", function () {
+        clearAlert();
+        resultContainer.innerHTML = `<div class="text-center py-3">جارٍ البحث...</div>`;
+
+        const center = centerSelect.value.trim();
+        if (!center) {
+            showAlert("⚠️ يرجى اختيار المركز الأمني", "warning");
+            resultContainer.innerHTML = "";
+            return;
+        }
+
+        fetch(`/police-cases/by-center/${encodeURIComponent(center)}`)
+            .then(res => res.json())
+            .then(data => {
+
+                if (data.message) {
+                    resultContainer.innerHTML = "";
+                    showAlert(data.message, "warning");
+                    return;
+                }
+
+                // بناء الجدول
+                let html = `
+                    <table class="table table-bordered table-hover">
+                        <thead class="table-light">
+                            <tr>
+                                <th style="width:60px">اختيار</th>
+                                <th>المركز الأمني</th>
+                                <th>رقم القضية لدى الأمن العام</th>
+                                <th>تاريخ تسجيل القضية</th>
+                                <th>تاريخ الجريمة</th>
+                                <th>حالة القضية</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                `;
+
+                data.forEach(row => {
+                    html += `
+                        <tr>
+                            <td>
+                                <input type="radio" name="caseSelect"
+                                    onclick="selectPoliceCase(${row.id}, '${row.center_name}')">
+                            </td>
+                            <td>${row.center_name}</td>
+                            <td>${row.police_case_number ?? "-"}</td>
+                            <td>${format(row.police_registration_date)}</td>
+                            <td>${format(row.crime_date)}</td>
+                            <td>${row.status ?? "-"}</td>
+                        </tr>
+                    `;
+                });
+
+                html += `</tbody></table>`;
+
+                resultContainer.innerHTML = html;
+
+                selectedCaseId = null;
+                pullBtn.disabled = true;
+            })
+            .catch(err => {
+                console.error(err);
+                showAlert("❌ حدث خطأ أثناء جلب القضايا", "danger");
+                resultContainer.innerHTML = "";
+            });
+    });
+
+    // ----------------------
+    // زر السحب
+    // ----------------------
+    pullBtn.addEventListener("click", function () {
+
+        if (!selectedCaseId) {
+            showAlert("⚠️ يرجى اختيار قضية أولاً", "warning");
+            return;
+        }
+
+        pullBtn.disabled = true;
+        pullBtn.innerText = "جاري السحب...";
+
+        fetch(`/writer/pull-police-case/${selectedCaseId}`, {
+            method: "POST",
+            headers: {
+                "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content
+            }
+        })
+            .then(res => res.json())
+            .then(response => {
+                showAlert(response.message ?? "تمت العملية", "success");
+
+                // إعادة تحميل الجدول بعد السحب
+                searchBtn.click();
+            })
+            .catch(err => {
+                console.error(err);
+                showAlert("❌ حدث خطأ أثناء سحب القضية", "danger");
+            })
+            .finally(() => {
+                pullBtn.disabled = true;
+                pullBtn.innerText = "سحب القضية";
+            });
+    });
+
+});
+</script>
+
+
+
+
+
+
+
+<script>
+    //نافذة سحب دعوى من المدعي العام 
+    document.addEventListener("DOMContentLoaded", function () {
+
+    window.pullCase = function () {
+
+        let case_number = document.getElementById("case_number").value;
+        let court_location = document.getElementById("court_location").value;
+        let prosecutor_office = document.getElementById("prosecutor_office").value;
+
+        let resultBox = document.getElementById("pullResult");
+        resultBox.classList.add("d-none");
+
+        fetch("/cases/pull", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content
+            },
+            body: JSON.stringify({
+                case_number: case_number,
+                court_location: court_location,
+                prosecutor_office: prosecutor_office
+            })
+        })
+        .then(res => res.json())
+        .then(response => {
+
+            resultBox.classList.remove("d-none");
+
+            if (response.error) {
+                resultBox.classList.add("alert-danger");
+                resultBox.classList.remove("alert-success");
+                resultBox.innerHTML = response.error;
+            } else {
+                resultBox.classList.add("alert-success");
+                resultBox.classList.remove("alert-danger");
+                resultBox.innerHTML = response.message;
+
+                // تفريغ رقم الدعوى بعد السحب
+                document.getElementById("case_number").value = "";
+            }
+
+        })
+        .catch(error => {
+            resultBox.classList.remove("d-none");
+            resultBox.classList.add("alert-danger");
+            resultBox.innerHTML = "حدث خطأ غير متوقع";
+            console.error(error);
+        });
+    };
+
+});
+
+
+</script>
 <script>
 document.addEventListener("DOMContentLoaded", function () {
 
@@ -1012,8 +2375,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
             // اطبع المفاتيح والقيمة للتأكد
             if (Array.isArray(data) && data.length > 0) {
-                console.log("🔑 Keys:", Object.keys(data[0]));
-                console.log("🟢 First Name Value:", data[0].first_name);
+                console.log(" Keys:", Object.keys(data[0]));
+                console.log("x First Name Value:", data[0].first_name);
             }
 
             const tbody = document.getElementById("civilResults");
@@ -1797,4 +3160,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
 });
 </script>
+
+
+
+
+
 @endpush

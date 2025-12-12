@@ -1088,12 +1088,12 @@ public function storeTrialReport(Request $request, CaseSession $session)
 {
     $case = $session->courtCase;
 
-    // ⭐ نوع المحضر (trial / after)
+    // نوع المحضر (trial / after)
     $mode = $request->report_mode ?? 'trial';
 
-    // =============================
+   
     // 1) حفظ أقوال الأطراف الأساسيين
-    // =============================
+    
     if ($request->participants) {
         foreach ($request->participants as $pid => $data) {
 
@@ -1131,9 +1131,8 @@ public function storeTrialReport(Request $request, CaseSession $session)
         }
     }
 
-    // =============================
+   
     // 3) حفظ القرار النهائي
-    // =============================
     CourtSessionReport::create([
         'case_session_id' => $session->id,
         'court_case_id'   => $case->id,
@@ -1206,9 +1205,8 @@ public function storeAfterTrialReport(Request $request, CaseSession $session)
     $case = $session->courtCase;
     $mode = "after"; // ⭐ نوع المحضر
 
-    // =============================
+    
     // 1) حفظ أقوال الأطراف الأساسيين
-    // =============================
     if ($request->participants) {
         foreach ($request->participants as $pid => $data) {
 
@@ -1230,9 +1228,8 @@ public function storeAfterTrialReport(Request $request, CaseSession $session)
         }
     }
 
-    // =============================
+   
     // 2) حفظ الأطراف الجديدة
-    // =============================
     if ($request->new_parties) {
         foreach ($request->new_parties as $part) {
 
@@ -1248,9 +1245,8 @@ public function storeAfterTrialReport(Request $request, CaseSession $session)
         }
     }
 
-    // =============================
+   
     // 3) حفظ القرار
-    // =============================
     CourtSessionReport::updateOrCreate(
         [
             'case_session_id' => $session->id,

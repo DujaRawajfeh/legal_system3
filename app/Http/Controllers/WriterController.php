@@ -32,17 +32,33 @@ class WriterController extends Controller
 {
     $user = Auth::user();
 
-    // ✅ تجهيز متغير النتائج لتفادي الخطأ في الواجهة
+    // تجهيز متغير النتائج لتفادي الخطأ في الواجهة
     $results = [];
+
+    // ⚡ جلب السجلّات من قاعدة البيانات لعرضها في نافذة "سحب دعوى"
+    $records = IncomingProsecutorCase::select('records')
+                ->distinct()
+                ->whereNotNull('records')
+                ->orderBy('records')
+                ->get();
 
     return view('clerk_dashboard.writer', [
         'user' => $user,
         'courtName' => optional($user->tribunal)->name,
         'departmentName' => optional($user->department)->name,
         'userName' => $user->full_name,
-        'results' => $results, // ✅ تمرير النتائج بدون تغيير على الفكرة
+        'results' => $results,
+        'records' => $records, // ← مهم لعرض السجل العام داخل المودال
     ]);
 }
+
+
+
+
+
+
+
+
 
 
   //تسجيل دعوى
@@ -190,9 +206,12 @@ public function getNextAvailableJudge()
  * جلب تفاصيل قضية حسب رقمها، تشمل نوع الدعوى، رقم المحكمة، والأطراف المرتبطين.
  */
 public function fetchCaseDetails($number, Request $request)
-{
-    // 🟡 تسجيل بداية الطلب
-    \Log::info('📥 بدء جلب تفاصيل القضية من نافذة المذكرات', [
+{     
+   
+
+
+    // تسجيل بداية الطلب
+    \Log::info(' بدء جلب تفاصيل القضية من نافذة المذكرات', [
         'case_number'       => $number,
         'query_params'      => $request->all(),
     ]);
@@ -207,10 +226,10 @@ public function fetchCaseDetails($number, Request $request)
             'case_number' => $number,
         ]);
 
-        return response()->json(['error' => 'رقم القضية غير موجود'], 422);
+        return response()->json(['error' => 'رقم القضية غير موجود'], 422); 
     }
 
-    // 🔥 تحميل الحكم النهائي بشكل مؤكد
+    // تحميل الحكم النهائي بشكل مؤكد
     $case->load('caseJudgment');
 
     // استخراج نوع المذكرة
@@ -241,7 +260,7 @@ public function fetchCaseDetails($number, Request $request)
         return response()->json(['error' => $e->getMessage()], 422);
     }
 
-    // 🟠 لو المذكرة من نوع "تبليغ حكم"
+    //  لو المذكرة من نوع "تبليغ حكم"
     if ($notificationType && str_contains($notificationType, 'تبليغ حكم')) {
 
         if (!$case->caseJudgment || !$case->caseJudgment->judgment_summary) {
@@ -274,13 +293,13 @@ public function fetchCaseDetails($number, Request $request)
 }
 public function saveNotification(Request $request)
 {
-    \Log::info('📥 بدء استقبال طلب تبليغ');
+    \Log::info(' بدء استقبال طلب تبليغ');
 
     try {
-        \Log::info('📦 البيانات المستلمة:', $request->all());
+        \Log::info(' البيانات المستلمة:', $request->all());
 
         $request->validate([
-            'case_id' => 'required|string',
+            'case_id' => 'required|integer',
             'participant_name' => 'required|string|max:255',
             'method' => 'required|string|in:sms,email,قسم التباليغ',
         ]);
@@ -288,10 +307,10 @@ public function saveNotification(Request $request)
         \Log::info('✅ التحقق من البيانات تم بنجاح');
 
         // تحويل رقم القضية إلى ID
-        $case = CourtCase::where('number', $request->case_id)->first();
+        $case = CourtCase::find($request->case_id);
 
         if (!$case) {
-            \Log::warning("🚫 رقم القضية غير موجود: {$request->case_id}");
+            \Log::warning(" القضية غير موجودة: {$request->case_id}");
             return response()->json(['error' => 'رقم القضية غير موجود'], 422);
         }
 
@@ -305,13 +324,23 @@ public function saveNotification(Request $request)
         \Log::info("✅ تم حفظ التبليغ للطرف: {$request->participant_name} بطريقة: {$request->method}");
 
         return response()->json(['status' => 'success']);
-    } catch (\Throwable $e) {
+    } 
+    catch (\Throwable $e) {
+
+        // 🔥 Logging كامل للخطأ
         \Log::error('❌ خطأ أثناء حفظ التبليغ:', [
-            'رسالة الخطأ' => $e->getMessage(),
-            'الموقع' => $e->getFile() . ':' . $e->getLine(),
+            'error_message' => $e->getMessage(),
+            'case_id_received' => $request->case_id,
+            'participant_name_received' => $request->participant_name,
+            'method_received' => $request->method,
+            'file' => $e->getFile(),
+            'line' => $e->getLine(),
+            'trace' => $e->getTraceAsString(),
         ]);
 
-        return response()->json(['error' => 'حدث خطأ داخلي أثناء الحفظ'], 500);
+        return response()->json([
+            'error' => 'حدث خطأ داخلي أثناء الحفظ'
+        ], 500);
     }
 }
 /**
@@ -319,39 +348,36 @@ public function saveNotification(Request $request)
  */
 private function filterParticipantsByNotificationType($participants, $notificationType)
 {
-    $requiredType = match ($notificationType) {
-        'مذكرة تبليغ مشتكي عليه' => 'مشتكى عليه',
-        'مذكرة تبليغ مشتكي موعد جلسة' => 'مشتكي',
-        'مذكرة حضور خاصة بالشهود' => 'شاهد',
-        default => null,
-    };
+    // إزالة المسافات والاختلافات
+    $notificationType = trim($notificationType);
 
-    if (!$requiredType) {
-        return $participants; // لا فلتر
+    // تحديد الأنواع المقبولة لكل مذكرة
+    if (str_contains($notificationType, 'مشتكى عليه')) {
+        $requiredTypes = ['مشتكى عليه'];
+    }
+    elseif (str_contains($notificationType, 'مشتكي موعد جلسة')) {
+        $requiredTypes = ['مشتكي'];
+    }
+    elseif (str_contains($notificationType, 'خاصة بالشهود')) {
+        $requiredTypes = ['شاهد'];
+    }
+    else {
+        return $participants; // غير داخلة بالتبليغات
     }
 
-    $filtered = collect($participants)->filter(function ($p) use ($requiredType) {
-        return $p->type === $requiredType;
+    // فلترة الأطراف حسب النوع
+    $filtered = collect($participants)->filter(function ($p) use ($requiredTypes) {
+        return in_array(trim($p->type), $requiredTypes);
     });
 
+    // لو ما في ولا طرف → ارمي رسالة
     if ($filtered->isEmpty()) {
-        throw new \Exception("لا يوجد طرف من نوع {$requiredType} في هذه القضية.");
+        $typeName = implode(' أو ', $requiredTypes);
+        throw new \Exception("لا يوجد طرف من نوع {$typeName} في هذه الدعوى.");
     }
 
-    return $filtered->values(); // إعادة الأطراف المطابقة فقط
+    return $filtered->values();
 }
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -365,32 +391,24 @@ public function pullFromModal(Request $request)
     try {
         $caseNumber = $request->input('case_number');
         $courtLocation = $request->input('court_location');
-        $prosecutorOffice = $request->input('prosecutor_office');
+        $prosecutorOffice = $request->input('prosecutor_office'); // ← تأتي من الواجهة بنفس نص DB
 
-        // ✅ ترجمة السجل العام إلى القيمة الفعلية في الجدول
-        $map = [
-            'south' => 'السجل العام/جنوب عمان',
-            'east'  => 'السجل العام/شرق عمان',
-            'north' => 'السجل العام/شمال عمان',
-        ];
-        $translatedOffice = $map[$prosecutorOffice] ?? $prosecutorOffice;
-
-        // ✅ تتبع قبل البحث
+        // 🔍 تتبع قبل البحث
         Log::info('محاولة سحب دعوى', [
             'case_number' => $caseNumber,
-            'records' => $translatedOffice,
+            'records' => $prosecutorOffice,
         ]);
 
-        // ✅ البحث عن الدعوى حسب رقمها والسجل العام
+        // 🔍 البحث حسب رقم الدعوى وقيمة records كما هي في قاعدة البيانات
         $incoming = IncomingProsecutorCase::where('case_number', $caseNumber)
-                    ->where('records', $translatedOffice)
+                    ->where('records', $prosecutorOffice)
                     ->first();
 
         if (!$incoming) {
             throw new \Exception("لا توجد دعوى بهذا الرقم والسجل العام المحدد");
         }
 
-        // ✅ اختيار القاضي حسب القلم
+        // اختيار قاضي مرتبط بالقلم
         $judge = User::where('department_id', $incoming->department_id)
                      ->inRandomOrder()
                      ->first();
@@ -399,23 +417,22 @@ public function pullFromModal(Request $request)
             throw new \Exception("لا يوجد قاضي مرتبط بالقلم رقم: {$incoming->department_id}");
         }
 
-        // ✅ توليد رقم القضية الجديد
+        // توليد رقم القضية الجديد
         $year = now()->year;
         $lastNumber = CourtCase::whereYear('created_at', $year)->max('number');
         $number = $lastNumber ? $lastNumber + 1 : 1;
 
-        // ✅ إنشاء القضية كـ جنائية
+        // إنشاء القضية
         $courtCase = CourtCase::create([
-            'judge_id'      => $judge->id,
-            'type'          => 'جنائية',
-            'number'        => $number,
-            'year'          => $year,
-            'tribunal_id'   => $incoming->tribunal_id,
-            'department_id' => $incoming->department_id,
-            'created_by'    => auth()->id(),
-        ]);
-
-        // ✅ إضافة الأطراف حسب النوع الواقعي
+    'judge_id'      => $judge->id,
+    'type'          => $incoming->title, // ← أخذ النوع من عنوان الدعوى
+    'number'        => $number,
+    'year'          => $year,
+    'tribunal_id'   => $incoming->tribunal_id,
+    'department_id' => $incoming->department_id,
+    'created_by'    => auth()->id(),
+]);
+        // الأطراف الأساسية
         Participant::create([
             'court_case_id' => $courtCase->id,
             'type'          => $incoming->plaintiff_type ?? 'مدعي',
@@ -436,6 +453,7 @@ public function pullFromModal(Request $request)
             'phone'         => $incoming->defendant_phone,
         ]);
 
+        // طرف ثالث (إن وجد)
         if (!empty($incoming->third_party_name)) {
             Participant::create([
                 'court_case_id' => $courtCase->id,
@@ -448,18 +466,19 @@ public function pullFromModal(Request $request)
             ]);
         }
 
-        // ✅ إنشاء أول جلسة بعد 7 أيام
+        // إنشاء أول جلسة بعد 7 أيام
         \App\Models\CaseSession::create([
             'court_case_id' => $courtCase->id,
             'judge_id'      => $judge->id,
             'session_date'  => now()->addDays(7)->format('Y-m-d'),
         ]);
 
-        // ✅ حذف الدعوى الأصلية
+        // حذف الدعوى الأصلية
         $incoming->delete();
 
         return response()->json(['message' => 'تم سحب الدعوى وإنشاء الجلسة بنجاح']);
     } catch (\Exception $e) {
+
         Log::error('خطأ أثناء تنفيذ pullFromModal', [
             'error' => $e->getMessage(),
             'trace' => $e->getTraceAsString(),
@@ -470,9 +489,22 @@ public function pullFromModal(Request $request)
         return response()->json(['error' => $e->getMessage()], 500);
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
 //الشرطه
-  // ✅ تعيين القاضي حسب القلم
-// ✅ تعيين القاضي حسب القلم
+  //  تعيين القاضي حسب القلم
+//  تعيين القاضي حسب القلم
 public function assignJudge($departmentId)
 {
     $judge = User::where('department_id', $departmentId)
@@ -556,7 +588,7 @@ public function pullFromPoliceCase($id)
             }
         }
 
-        // ✅ إنشاء جلسة تلقائية
+        // إنشاء جلسة تلقائية
         CaseSession::create([
             'court_case_id' => $courtCase->id,
             'judge_id'      => $judgeId,
@@ -564,13 +596,13 @@ public function pullFromPoliceCase($id)
             'status'        => 'محددة',
         ]);
 
-        Log::info('✅ تم إنشاء الجلسة', ['court_case_id' => $courtCase->id]);
+        Log::info(' تم إنشاء الجلسة', ['court_case_id' => $courtCase->id]);
 
-        // ✅ حذف القضية من جدول الشرطة
+        //  حذف القضية من جدول الشرطة
         $incoming->delete();
-        Log::info('🗑️ تم حذف القضية من جدول الشرطة', ['incoming_id' => $id]);
+        Log::info(' تم حذف القضية من جدول الشرطة', ['incoming_id' => $id]);
 
-        return response()->json(['message' => '✅ تم سحب القضية وتحويلها بنجاح']);
+        return response()->json(['message' => ' تم سحب القضية وتحويلها بنجاح']);
 
     } catch (\Exception $e) {
         Log::error('❌ خطأ أثناء تنفيذ سحب القضية', [
@@ -582,7 +614,7 @@ public function pullFromPoliceCase($id)
         return response()->json(['message' => '❌ حدث خطأ أثناء سحب القضية'], 500);
     }
 }
-// ✅ عرض القضايا من جدول الشرطة حسب المركز
+//  عرض القضايا من جدول الشرطة حسب المركز
 public function getPoliceCasesByCenter($center)
 {
     // 🔍 تنظيف الاسم وإزالة المسافات الزائدة
@@ -608,6 +640,23 @@ public function getPoliceCasesByCenter($center)
 
     return response()->json($cases);
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // مذكرة توقيف
 public function handleArrestMemo(Request $request) 
 {
@@ -681,6 +730,13 @@ public function handleArrestMemo(Request $request)
         'department_number' => optional($case->department)->number,
     ]);
 }
+
+
+
+
+
+
+
 
 //مذكرة تمديد توقيف
 public function extendArrestMemo(Request $request) 
@@ -785,6 +841,20 @@ public function extendArrestMemo(Request $request)
         'current_duration'  => $memo->detention_duration,
     ]);
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 //المشاركين
 // المشاركين — بحث الأحوال المدنية
 public function searchCivilRegistry(Request $request)
@@ -1019,6 +1089,13 @@ public function getCaseNotifications($caseNumber)
         return response()->json(['error' => 'تعذر تحميل تباليغ الدعوى'], 500);
     }
 }
+
+
+
+
+
+
+
 
 
 

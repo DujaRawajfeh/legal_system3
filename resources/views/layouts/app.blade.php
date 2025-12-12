@@ -112,14 +112,14 @@
 
 <body>
 
-{{-- 🔵 الشريط العلوي --}}
+{{--  الشريط العلوي --}}
 <div class="top-bar">
     <div>المحكمة: {{ optional(auth()->user()->tribunal)->name ?? '---' }}</div>
     <div>القلم: {{ optional(auth()->user()->department)->name ?? '---' }}</div>
     <div>الموظف: {{ auth()->user()->full_name ?? '---' }}</div>
 </div>
 
-{{-- 🔵 الشريط الثاني --}}
+{{-- الشريط الثاني --}}
 <div class="menu-bar">
     <span id="trigger-cases" style="cursor: pointer;">الدعوى / الطلب</span>
     <span id="trigger-notifications" style="cursor: pointer;">التباليغ</span>
@@ -133,7 +133,7 @@
 </div>
 </div>
 
-{{-- 🔵 الشريط الثالث --}}
+{{--  الشريط الثالث --}}
 <div class="third-bar">
 
     <div class="d-flex align-items-center">
@@ -224,11 +224,9 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 </script>
 
-{{-- 🔵 سكربت فتح نافذة الطلب --}}
+{{--  سكربت فتح نافذة الطلب --}}
 <script>
-// =============================
-//  الضغط على Enter لفتح نافذة الطلب
-// =============================
+
 document.addEventListener('DOMContentLoaded', function () {
 
     const entryTypeRequest = document.getElementById("type_request");
@@ -250,10 +248,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
 });
 
-
-// =============================
-//   فتح نافذة تفاصيل الطلب
-// =============================
 function openRequestDetails(requestNumber) {
 
     const modal = new bootstrap.Modal(document.getElementById("requestDetailsModal"));
@@ -266,9 +260,7 @@ function openRequestDetails(requestNumber) {
 }
 
 
-// =============================
-//   جلب بيانات الطلب (POST)
-// =============================
+
 async function loadRequestDetails(requestNumber) {
 
     const body = document.getElementById("requestDetailsBody");

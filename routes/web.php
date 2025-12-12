@@ -40,8 +40,11 @@ Route::post('/cases/pull', [WriterController::class, 'pullFromModal'])->name('ca
 Route::post('/writer/pull-police-case/{id}', [WriterController::class, 'pullFromPoliceCase'])->name('writer.pull-police-case');
 Route::get('/writer/assign-judge/{departmentId}', [WriterController::class, 'assignJudge'])->name('writer.assign-judge');
 Route::get('/police-cases/by-center/{center}', [WriterController::class, 'getPoliceCasesByCenter']);
+
 //مذكرة توقيف
 Route::post('/writer/arrest-memo', [WriterController::class, 'handleArrestMemo']);
+
+
 Route::post('/writer/extend-arrest-memo', [WriterController::class, 'extendArrestMemo']);
 
 Route::post('/civil-registry/search', [WriterController::class, 'searchCivilRegistry']);
