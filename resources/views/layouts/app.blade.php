@@ -6,64 +6,90 @@
     <title>@yield('title', 'نظام المحكمة')</title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
     <style>
     body {
         margin: 0;
-        font-family: 'Segoe UI', sans-serif;
+        font-family: 'Cairo', sans-serif;
         direction: rtl;
-        background-color: #f9f9f9;
+        background-color: #f8f9fa;
     }
 
-    .top-bar {
-        background-color: #004080;
-        color: white;
-        font-size: 14px;
-        padding: 4px 12px;
+    /* الشريط العلوي الرمادي */
+    .court-bar {
+        background-color: #717172;
+        color: #fff;
+        text-align: right;
+        font-size: 1rem;
+        padding: 8px 20px;
+    }
+
+    /* الشريط الأسود */
+    .navbar {
+        background-color: #000;
+        padding: 12px 20px;
         display: flex;
-        justify-content: space-between;
         align-items: center;
+        font-weight: bold;
+        font-size: small;
+        gap: 40px;
     }
 
-    .menu-bar {
-        background-color: #e0e0e0;
-        font-size: 13px;
-        padding: 4px 12px;
+    .navbar .user-info {
+        color: white;
+        white-space: nowrap;
+    }
+
+    .navbar ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
         display: flex;
         gap: 20px;
-        border-bottom: 1px solid #ccc;
+    }
+
+    .navbar ul li {
         position: relative;
     }
 
-    .third-bar {
-        background-color: #f0f0f0;
-        font-size: 13px;
-        padding: 6px 12px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        border-bottom: 1px solid #ccc;
+    .navbar ul li a {
+        color: white;
+        text-decoration: none;
+        cursor: pointer;
     }
 
-    .third-bar input {
-        width: 90px;
-        font-size: 13px;
+    .navbar ul li a:hover {
+        text-decoration: underline;
     }
 
-/* 🔵 تصغير حجم دوائر الـ Radio (دعوى / طلب) */
-.third-bar .form-check-input {
-    width: 12px !important;
-    height: 12px !important;
-    margin-top: 2px;
-    cursor: pointer;
-}
+    .navbar ul li ul {
+        display: none;
+        position: absolute;
+        background-color: #fff;
+        border: 1px solid #ccc;
+        padding: 5px 0;
+        right: 0;
+        min-width: 180px;
+        z-index: 100;
+    }
 
+    .navbar ul li ul li {
+        padding: 5px 10px;
+    }
 
+    .navbar ul li ul li a {
+        color: #000;
+    }
+
+    .navbar ul li:hover ul {
+        display: block;
+    }
 
     .content {
-        padding: 20px;
+        padding: 0;
     }
 
     #case-options {
@@ -82,89 +108,63 @@
         background-color: #e9ecef;
     }
     </style>
-    <style>
-.dropdown {
-    position: relative;
-    display: inline-block;
-}
-
-.dropdown-content {
-    display: none;
-    position: absolute;
-    background-color: #fff;
-    min-width: 160px;
-    border: 1px solid #ccc;
-    z-index: 1000;
-}
-
-.dropdown-content a {
-    color: black;
-    padding: 8px 12px;
-    text-decoration: none;
-    display: block;
-}
-
-.dropdown-content a:hover {
-    background-color: #f1f1f1;
-}
-</style>
 </head>
 
 <body>
 
-{{--  الشريط العلوي --}}
-<div class="top-bar">
-    <div>المحكمة: {{ optional(auth()->user()->tribunal)->name ?? '---' }}</div>
-    <div>القلم: {{ optional(auth()->user()->department)->name ?? '---' }}</div>
-    <div>الموظف: {{ auth()->user()->full_name ?? '---' }}</div>
-</div>
+<!-- الشريط العلوي الرمادي -->
+<div class="court-bar">{{ optional(auth()->user()->tribunal)->name ?? 'محكمة بداية عمان' }}</div>
 
-{{-- الشريط الثاني --}}
-<div class="menu-bar">
-    <span id="trigger-cases" style="cursor: pointer;">الدعوى / الطلب</span>
-    <span id="trigger-notifications" style="cursor: pointer;">التباليغ</span>
-    <span id="sessions-trigger" style="cursor: pointer;">الجلسات</span>
-      <div class="dropdown">
-        <span id="trigger-security" style="cursor: pointer;">الحماية ▾</span>
-        <div id="security-menu" class="dropdown-content">
-            <a href="{{ route('2fa.setup') }}">المصادقة الثنائية</a>
-        </div>
-    </div>
-</div>
-</div>
+<!-- الشريط الأسود -->
+<nav class="navbar">
+  <div class="user-info">
+    <div>الكاتب / {{ auth()->user()->full_name ?? 'محمد احمد' }}</div>
+  </div>
 
-{{--  الشريط الثالث --}}
-<div class="third-bar">
+  <ul>
+    <li><a href="#" id="trigger-cases">الدعوى▾</a>
+      <ul>
+        <li><a href="#" data-bs-toggle="modal" data-bs-target="#registerCaseModal">تسجيل دعوى</a></li>
+        <li><a href="#" data-bs-toggle="modal" data-bs-target="#withdrawCaseModal">سحب دعوى/المدعي العام </a></li>
+        <li><a href="#" data-bs-toggle="modal" data-bs-target="#pullPoliceCaseModal">سحب دعوى من الشرطة</a></li>
+      </ul>
+    </li>
+    <li><a href="#">الطلب▾</a>
+      <ul>
+        <li><a href="#" id="open-register-request">تسجيل الطلبات </a></li>
+      </ul>
+    </li>
+    <li><a href="#">مخاطبات الامن العام ▾</a>
+      <ul>
+        <li><a href="#" data-bs-toggle="modal" data-bs-target="#arrest-memo-modal">مذكرة توقيف</a></li>
+        <li><a href="#">مذكرة تمديد توقيف</a></li>
+        <li><a href="#">مذكرة افراج للموقوفين</a></li>
+      </ul>
+    </li>
+    <li><a href="#" id="trigger-notifications">تباليغ ▾</a>
+      <ul>
+        <li><a href="#" data-bs-toggle="modal" data-bs-target="#notif-complainant-modal">مذكرة تبليغ مشتكى عليه</a></li>
+        <li><a href="#" data-bs-toggle="modal" data-bs-target="#notif-session-complainant-modal">مذكرة تبليغ مشتكي موعد جلسة</a></li>
+        <li><a href="#">مذكرة حضور خاصة بالشهود</a></li>
+        <li><a href="#">مذكرة تبليغ حكم</a></li>
+        <li><a href="#" data-bs-toggle="modal" data-bs-target="#manage-notifications-modal">ادارة تباليغ الدعوى</a></li>
+      </ul>
+    </li>
+    <li>
+      <a href="#" id="sessions-trigger">الجلسات ▾</a>
+      <ul>
+        <li><a href="#">جدول أعمال المحكمة</a></li>
+        <li><a href="#">جدول أعمال القاضي</a></li>
+        <li><a href="#">جدول الدعوى</a></li>
+        <li><a href="#" data-bs-toggle="modal" data-bs-target="#requestScheduleModal">جدول الطلبات</a></li>
+      </ul>
+    </li>
+    <li><a href="#" data-bs-toggle="modal" data-bs-target="#participantsModal">المشاركين</a></li>
+    <li><a href="{{ route('2fa.setup') }}">اعدادات الحماية</a></li>
+  </ul>
+</nav>
 
-    <div class="d-flex align-items-center">
-        <label class="me-2 mb-0">النوع:</label>
 
-        <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" name="entry_type" id="type_case" value="case" checked>
-            <label class="form-check-label" for="type_case">دعوى</label>
-        </div>
-
-        <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" name="entry_type" id="type_request" value="request">
-            <label class="form-check-label" for="type_request">طلب</label>
-        </div>
-    </div>
-
-    <div class="d-flex align-items-center gap-2">
-        <label class="mb-0">رقم الدعوى:</label>
-
-        <input type="text" class="form-control form-control-sm" placeholder="المحكمة"
-               readonly value="{{ optional(auth()->user()->tribunal)->number ?? '---' }}">
-
-        <input type="text" class="form-control form-control-sm" placeholder="القلم"
-               readonly value="{{ optional(auth()->user()->department)->number ?? '---' }}">
-
-        {{-- ⭐ هذا هو الحقل الذي سنقرأ منه رقم الطلب --}}
-        <input id="entryNumberInput" type="text" class="form-control form-control-sm" placeholder="الرقم">
-
-        <input type="text" class="form-control form-control-sm" placeholder="السنة" readonly value="{{ date('Y') }}">
-    </div>
-</div>
 
 {{-- ⭐⭐⭐ نافذة تفاصيل الطلب ⭐⭐⭐ --}}
 <div class="modal fade" id="requestDetailsModal" tabindex="-1">

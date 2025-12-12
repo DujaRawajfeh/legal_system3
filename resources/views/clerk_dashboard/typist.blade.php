@@ -245,7 +245,7 @@ body {
   </ul>
 </nav>
 
-  @include('components.entry-search-bar')
+  @extends('components.entry-search-bar')
 
 
 

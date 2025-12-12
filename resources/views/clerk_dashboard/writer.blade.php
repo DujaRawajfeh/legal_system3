@@ -4,6 +4,123 @@
 
 @section('content')
 
+<style>
+/* شبكة القضايا */
+.cases-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 40px;
+}
+
+/* البوكس الرئيسي لكل قضية */
+.case-strip {
+  display: flex;
+  flex-direction: row;       /* نص يمين + أزرار يسار */
+  justify-content: space-between;
+  align-items: center;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 12px 15px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.08);
+  direction: rtl;            /* النقاط داخل النص على اليمين */
+}
+
+/* بيانات القضية */
+.case-info {
+  flex: 1;
+  direction: rtl;
+  text-align: right;
+}
+
+.case-info h3 {
+  margin: 3px 0;
+  color: #333;
+  font-size: 15px;
+}
+
+.case-info p {
+  margin: 3px 0;
+  color: #555;
+  font-size: 12px;
+}
+
+/* حاوية الأزرار على اليسار */
+.case-actions {
+  display: flex;
+  flex-direction: column; /* تحت بعض */
+  gap: 6px;
+  direction: ltr;         /* حتى يبقوا يسار بدون انقلاب */
+}
+
+/* الزر الصغير */
+.case-actions .action-btn {
+  font-family: "Cairo", sans-serif;
+  font-weight: bold;
+  background-color: #37678e;
+  border: none;
+  color: white;
+  cursor: pointer;
+  transition: 0.2s;
+
+  font-size: 10px;
+  padding: 6px 10px;
+  border-radius: 5px;
+  white-space: nowrap;    /* ما ينزل سطر */
+}
+
+.case-actions .action-btn:hover {
+  background-color: #2f5574;
+}
+
+.container-writer {
+  width: 90%;
+  max-width: 1200px;
+  margin: 20px auto;
+  padding: 25px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  direction: rtl;
+  text-align: right;
+}
+
+#main-title {
+  margin-top: 5px;
+  margin-bottom: 0;
+}
+
+.title-line {
+  border: none;
+  height: 2px;
+  background-color: #000;
+  margin: 4px 0 15px 0;
+  width: 100%;
+}
+</style>
+
+<!-- Main Content Area -->
+<div class="container-writer">
+  <section>
+    <h2 id="main-title">القضايا التي يمكن متابعتها</h2>
+    <hr class="title-line">
+    <div class="cases-grid" id="casesGrid">
+      <!-- Cases will be loaded here dynamically -->
+      <div class="case-strip" data-key="2025/0012" data-type="case">
+        <div class="case-info" id="case-box" data-status="مستمرة">
+          <h3>القضية رقم: 2025/0012</h3>
+          <p><strong>عنوان القضية:</strong> القتل العمد</p>
+        </div>
+        <div class="case-actions" id="actions-2025-0012">
+          <button class="action-btn" id="btnRecord" onclick="openRecordprint()">محضر المحاكمة</button>
+          <button class="action-btn" id="btnAfter" onclick="openAfterprint()">ما بعد</button>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
 <!--  قائمة الدعوى / الطلب الخاصة بالكاتب -->
 <div id="writer-case-options"
      style="
@@ -2433,6 +2550,34 @@ document.addEventListener("DOMContentLoaded", function () {
 
 @push('scripts')
 <!-- قائمة محاضر الجلسات الخاصة بالكاتب -->
+<script>
+function openRecordprint() {
+    window.open('/recordprint', '_blank');
+}
+function openAfterprint() {
+    window.open('/afterprint', '_blank');
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+    const status = document.getElementById("case-box")?.dataset.status;
+
+    const btnRecord = document.getElementById("btnRecord");
+    const btnAfter  = document.getElementById("btnAfter");
+
+    if (status === "مستمرة" || status === "مكتملة") {
+        if (btnRecord) btnRecord.style.display = "inline-block";
+        if (btnAfter) btnAfter.style.display = "inline-block";
+
+    } else if (status === "محددة") {
+        if (btnRecord) btnRecord.style.display = "inline-block";
+        if (btnAfter) btnAfter.style.display = "none";
+
+    } else if (status === "مؤجلة" || status === "مفصولة") {
+        if (btnRecord) btnRecord.style.display = "none";
+        if (btnAfter) btnAfter.style.display = "none";
+    }
+});
+</script>
 <script>
 document.addEventListener('DOMContentLoaded', function() {
 
