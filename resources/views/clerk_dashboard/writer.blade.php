@@ -188,16 +188,16 @@
         <div class="submenu-items" style="display:none; margin-right:10px;">
             <a class="submenu-item" href="#" data-bs-toggle="modal" data-bs-target="#notif-complainant-modal"> مذكرة تبليغ مشتكى عليه</a>
             <a class="submenu-item open-modal"
-   href="#"
-   data-bs-toggle="modal"
-   data-bs-target="#notif-session-complainant-modal">
-    مذكرة تبليغ مشتكي موعد جلسة
-</a>
-            <a class="submenu-item" href="#">مذكرة حضور خاصة بالشهود</a>
+         href="#"
+         data-bs-toggle="modal"
+         data-bs-target="#notif-session-complainant-modal">
+        مذكرة تبليغ مشتكي موعد جلسة
+      </a>
+            <a class="submenu-item" href="#" data-bs-toggle="modal" data-bs-target="#notif-witness-modal">مذكرة حضور خاصة ezz</a>
             <a class="submenu-item" href="#">مذكرة تبليغ حكم</a>
             <a class="submenu-item" href="#" 
-   data-bs-toggle="modal" 
-   data-bs-target="#manage-notifications-modal">
+         data-bs-toggle="modal" 
+         data-bs-target="#manage-notifications-modal">
    إدارة تباليغ
 </a>
         </div>
@@ -2263,97 +2263,83 @@
 @yield('chief-extra')
 @endsection
 <script>
-  document.addEventListener("DOMContentLoaded", function () {
 
+document.addEventListener("DOMContentLoaded", function () {
   const modalId = "arrest-memos-modal";
-
   const $ = id => document.getElementById(id);
-
   const caseNumberInput = $("arrest-memos-case-number");
   const searchBtn = $("arrest-memos-search-btn");
   const alertBox = $("arrest-memos-alert");
-
   const tableArea = $("arrest-memos-table-area");
   const tableBody = document.querySelector("#arrest-memos-table tbody");
   const titleLabel = $("arrest-memos-title");
 
   function showAlert(msg, type = "warning") {
-    alertBox.innerHTML = `<div class="alert alert-${type}">${msg}</div>`;
+    if (alertBox) alertBox.innerHTML = `<div class="alert alert-${type}">${msg}</div>`;
   }
 
   function clearAlert() {
-    alertBox.innerHTML = "";
+    if (alertBox) alertBox.innerHTML = "";
   }
 
   function resetUI() {
     clearAlert();
-    tableArea.style.display = "none";
-    titleLabel.style.display = "none";
-    tableBody.innerHTML = "";
+    if (tableArea) tableArea.style.display = "none";
+    if (titleLabel) titleLabel.style.display = "none";
+    if (tableBody) tableBody.innerHTML = "";
   }
 
   // 🔎 زر البحث
-  searchBtn.addEventListener("click", function () {
-
-    resetUI();
-
-    const number = caseNumberInput.value.trim();
-    if (!number) {
-      showAlert("⚠️ يرجى إدخال رقم الدعوى");
-      return;
-    }
-
-    showAlert("⏳ جاري تحميل بيانات المذكرات ...", "info");
-
-    fetch(`/writer/arrest-memos/${encodeURIComponent(number)}`)
-      .then(res => res.json().then(j => ({ ok: res.ok, json: j })))
-      .then(({ ok, json }) => {
-
-        if (!ok) throw json;
-
-        clearAlert();
-
-        const memos = json.memos ?? [];
-
-        if (!memos.length) {
-          showAlert("⚠️ لا توجد مذكرات توقيف لهذه الدعوى");
-          return;
-        }
-
-        // عرض العنوان
-        titleLabel.style.display = "block";
-
-        // بناء الجدول
-        tableBody.innerHTML = "";
-
-        memos.forEach(m => {
-          const tr = document.createElement("tr");
-
-          tr.innerHTML = `
-            <td>${m.case_number}</td>
-            <td>${m.participant_name}</td>
-            <td>${m.released}</td>
-            <td>${m.detention_duration}</td>
-            <td>${m.detention_reason}</td>
-            <td>${m.detention_center}</td>
-          `;
-
-          tableBody.appendChild(tr);
+  if (searchBtn) {
+    searchBtn.addEventListener("click", function () {
+      resetUI();
+      if (!caseNumberInput) return;
+      const number = caseNumberInput.value.trim();
+      if (!number) {
+        showAlert("⚠️ يرجى إدخال رقم الدعوى");
+        return;
+      }
+      showAlert("⏳ جاري تحميل بيانات المذكرات ...", "info");
+      fetch(`/writer/arrest-memos/${encodeURIComponent(number)}`)
+        .then(res => res.json().then(j => ({ ok: res.ok, json: j })))
+        .then(({ ok, json }) => {
+          if (!ok) throw json;
+          clearAlert();
+          const memos = json.memos ?? [];
+          if (!memos.length) {
+            showAlert("⚠️ لا توجد مذكرات توقيف لهذه الدعوى");
+            return;
+          }
+          // عرض العنوان
+          if (titleLabel) titleLabel.style.display = "block";
+          // بناء الجدول
+          if (tableBody) tableBody.innerHTML = "";
+          memos.forEach(m => {
+            const tr = document.createElement("tr");
+            tr.innerHTML = `
+              <td>${m.case_number}</td>
+              <td>${m.participant_name}</td>
+              <td>${m.released}</td>
+              <td>${m.detention_duration}</td>
+              <td>${m.detention_reason}</td>
+              <td>${m.detention_center}</td>
+            `;
+            tableBody.appendChild(tr);
+          });
+          tableArea.style.display = "block";
+        })
+        .catch(err => {
+          console.error(err);
+          showAlert(err.error ?? "❌ حدث خطأ أثناء تحميل البيانات", "danger");
         });
-
-        tableArea.style.display = "block";
-
-      })
-      .catch(err => {
-        console.error(err);
-        showAlert(err.error ?? "❌ حدث خطأ أثناء تحميل البيانات", "danger");
-      });
-
-  });
+    });
+  }
 
   // إعادة ضبط النافذة عند الإغلاق
-  document.getElementById(modalId).addEventListener("hidden.bs.modal", resetUI);
-
+  var modalEl = document.getElementById(modalId);
+  if (modalEl) {
+    modalEl.addEventListener("hidden.bs.modal", resetUI);
+  }
 });
 
 

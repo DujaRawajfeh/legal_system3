@@ -145,7 +145,11 @@
       <ul>
         <li><a href="#" data-bs-toggle="modal" data-bs-target="#notif-complainant-modal">مذكرة تبليغ مشتكى عليه</a></li>
         <li><a href="#" data-bs-toggle="modal" data-bs-target="#notif-session-complainant-modal">مذكرة تبليغ مشتكي موعد جلسة</a></li>
-        <li><a href="#">مذكرة حضور خاصة بالشهود</a></li>
+        <li>
+                                <a class="submenu-item" href="#" data-bs-toggle="modal" data-bs-target="#notif-witness-modal">مذكرة حضور خاصة بالشهود</a>
+
+        </li>
+
         <li><a href="#">مذكرة تبليغ حكم</a></li>
         <li><a href="#" data-bs-toggle="modal" data-bs-target="#manage-notifications-modal">ادارة تباليغ الدعوى</a></li>
       </ul>
@@ -232,19 +236,18 @@ document.addEventListener('DOMContentLoaded', function () {
     const entryTypeRequest = document.getElementById("type_request");
     const entryInput = document.getElementById("entryNumberInput");
 
-    entryInput.addEventListener("keydown", function (e) {
-
-        if (e.key === "Enter" && entryTypeRequest.checked) {
-
-            const reqNumber = entryInput.value.trim();
-            if (!reqNumber) {
-                alert("الرجاء إدخال رقم الطلب");
-                return;
+    if (entryInput) {
+        entryInput.addEventListener("keydown", function (e) {
+            if (e.key === "Enter" && entryTypeRequest && entryTypeRequest.checked) {
+                const reqNumber = entryInput.value.trim();
+                if (!reqNumber) {
+                    alert("الرجاء إدخال رقم الطلب");
+                    return;
+                }
+                openRequestDetails(reqNumber);
             }
-
-            openRequestDetails(reqNumber);
-        }
-    });
+        });
+    }
 
 });
 
@@ -340,21 +343,18 @@ document.addEventListener("DOMContentLoaded", function () {
     const inputs = document.querySelectorAll('.third-bar input[type="text"]');
     const caseNumberInput = inputs[2]; // رقم الدعوى
 
-    caseNumberInput.addEventListener("keydown", function (e) {
-
-        if (e.key === "Enter" && entryTypeCase.checked) {
-
-            const caseNum = caseNumberInput.value.trim();
-
-            if (!caseNum) {
-                alert("الرجاء إدخال رقم الدعوى");
-                return;
+    if (caseNumberInput) {
+        caseNumberInput.addEventListener("keydown", function (e) {
+            if (e.key === "Enter" && entryTypeCase && entryTypeCase.checked) {
+                const caseNum = caseNumberInput.value.trim();
+                if (!caseNum) {
+                    alert("الرجاء إدخال رقم الدعوى");
+                    return;
+                }
+                openCaseDetails(caseNum);
             }
-
-            openCaseDetails(caseNum);
-        }
-
-    });
+        });
+    }
 
 });
 
@@ -488,7 +488,6 @@ async function loadCaseDetails(caseNumber) {
 
 
 
-<script>
 document.getElementById('trigger-security').addEventListener('click', function() {
     let menu = document.getElementById('security-menu');
     if (menu.style.display === 'none' || menu.style.display === '') {
@@ -497,6 +496,20 @@ document.getElementById('trigger-security').addEventListener('click', function()
         menu.style.display = 'none';
     }
 });
+<script>
+var trigger = document.getElementById('trigger-security');
+if (trigger) {
+    trigger.addEventListener('click', function() {
+        let menu = document.getElementById('security-menu');
+        if (menu) {
+            if (menu.style.display === 'none' || menu.style.display === '') {
+                menu.style.display = 'block';
+            } else {
+                menu.style.display = 'none';
+            }
+        }
+    });
+}
 </script>
 @stack('scripts')
 
