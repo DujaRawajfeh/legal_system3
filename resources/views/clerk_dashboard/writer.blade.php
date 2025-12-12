@@ -1535,7 +1535,7 @@
               <th>مكان الإقامة</th>
               <th>رقم الهاتف</th>
               <th>قسم التباليغ</th>
-              <th>تبليغ إلكتروني</th>
+              <th>طريقة التبليغ</th>
             </tr>
           </thead>
           <tbody></tbody>
@@ -2242,6 +2242,7 @@ document.addEventListener("DOMContentLoaded", function () {
   let selectedRow = null;
   let selectedParticipant = null;
   let currentCaseData = [];
+  let currentCaseId = null; // Store case ID
 
   function showAlert(msg, type = "info") {
     alertBox.innerHTML = `<div class="alert alert-${type}">${msg}</div>`;
@@ -2289,6 +2290,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         clearAlert();
 
+        currentCaseId = json.id; // Store the case ID
         caseType.value = json.title ?? "";
         judgeName.value = json.judge_name ?? "";
         currentCaseData = json.participants ?? [];
@@ -2318,6 +2320,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     data.forEach((p, i) => {
       const tr = document.createElement('tr');
+      tr.dataset.index = i;
       
       tr.innerHTML = `
         <td>${p.name ?? ''}</td>
@@ -2327,8 +2330,21 @@ document.addEventListener("DOMContentLoaded", function () {
         <td>${p.residence ?? ''}</td>
         <td>${p.phone ?? ''}</td>
         <td>قسم التباليغ</td>
-        <td><button onclick="window.elecNotify(${i})">إرسال</button></td>
+        <td>
+          <select class="notification-method-select" data-index="${i}" style="width:100%; padding:4px; border:1px solid #ccc; border-radius:4px;">
+            <option value="">-- اختر --</option>
+            <option value="sms">رسالة قصيرة</option>
+            <option value="email">بريد إلكتروني</option>
+            <option value="قسم التباليغ">قسم التباليغ</option>
+          </select>
+        </td>
       `;
+      
+      // Stop propagation on select to avoid row selection when clicking dropdown
+      const select = tr.querySelector('.notification-method-select');
+      select.addEventListener('click', (e) => {
+        e.stopPropagation();
+      });
       
       tr.addEventListener('click', () => {
         if (selectedRow) selectedRow.classList.remove('selected');
@@ -2341,20 +2357,57 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   }
 
-  // إرسال تبليغ إلكتروني
-  window.elecNotify = function(index) {
-    if (!currentCaseData[index]) return;
-    showAlert(`✅ تم إرسال تبليغ إلكتروني لـ: ${currentCaseData[index].name}`, 'success');
-  };
-
-  // تنفيذ تبليغ
+  // تنفيذ تبليغ - send to database
   if (notifyBtn) {
     notifyBtn.addEventListener('click', () => {
       if (!selectedRow || !selectedParticipant) {
         showAlert('⚠️ حدد طرفا من الجدول', 'warning');
         return;
       }
-      showAlert(`✅ تم التبليغ للطرف المحدد: ${selectedParticipant.name}`, 'success');
+
+      // Get the method from the selected row's dropdown
+      const rowIndex = selectedRow.dataset.index;
+      const methodSelect = selectedRow.querySelector('.notification-method-select');
+      const method = methodSelect.value;
+
+      if (!method) {
+        showAlert('⚠️ اختر طريقة التبليغ من القائمة', 'warning');
+        return;
+      }
+
+      if (!currentCaseId) {
+        showAlert('⚠️ لا يوجد معرف للقضية', 'warning');
+        return;
+      }
+
+      // Send to database
+      notifyBtn.disabled = true;
+      notifyBtn.textContent = "جاري الإرسال...";
+
+      fetch("{{ route('notifications.save') }}", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content
+        },
+        body: JSON.stringify({
+          case_id: currentCaseId,
+          participant_name: selectedParticipant.name,
+          method: method
+        })
+      })
+      .then(res => res.json())
+      .then(data => {
+        showAlert(`✅ تم حفظ التبليغ للطرف: ${selectedParticipant.name} بطريقة: ${method}`, 'success');
+      })
+      .catch(err => {
+        console.error(err);
+        showAlert('❌ حدث خطأ أثناء حفظ التبليغ', 'danger');
+      })
+      .finally(() => {
+        notifyBtn.disabled = false;
+        notifyBtn.textContent = "تنفيذ تبليغ";
+      });
     });
   }
 
@@ -2366,8 +2419,24 @@ document.addEventListener("DOMContentLoaded", function () {
         return;
       }
 
-      const fullCaseNumber = caseSerial.value.trim();
+      // Get the method from the selected row's dropdown
+      const rowIndex = selectedRow.dataset.index;
+      const methodSelect = selectedRow.querySelector('.notification-method-select');
+      const method = methodSelect.value;
+
+      if (!method) {
+        showAlert('⚠️ اختر طريقة التبليغ من القائمة', 'warning');
+        return;
+      }
+
+      if (!currentCaseId) {
+        showAlert('⚠️ لا يوجد معرف للقضية', 'warning');
+        return;
+      }
       
+      saveBtn.disabled = true;
+      saveBtn.textContent = "جاري الحفظ...";
+
       fetch("{{ route('notifications.save') }}", {
         method: "POST",
         headers: {
@@ -2375,11 +2444,9 @@ document.addEventListener("DOMContentLoaded", function () {
           "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content
         },
         body: JSON.stringify({
-          case_number: fullCaseNumber,
+          case_id: currentCaseId,
           participant_name: selectedParticipant.name,
-          participant_type: selectedParticipant.type,
-          method: 'قسم التباليغ',
-          notification_type: 'مذكرة تبليغ مشتكى عليه'
+          method: method
         })
       })
       .then(res => res.json())
@@ -2393,6 +2460,10 @@ document.addEventListener("DOMContentLoaded", function () {
       .catch(err => {
         console.error(err);
         showAlert('❌ حدث خطأ أثناء الحفظ', 'danger');
+      })
+      .finally(() => {
+        saveBtn.disabled = false;
+        saveBtn.textContent = "حفظ وانهاء";
       });
     });
   }
@@ -2405,6 +2476,7 @@ document.addEventListener("DOMContentLoaded", function () {
     courtNumber.value = "";
     penNumber.value = "";
     yearNumber.value = "";
+    currentCaseId = null;
   });
 
 });
