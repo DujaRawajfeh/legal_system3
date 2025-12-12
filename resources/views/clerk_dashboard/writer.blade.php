@@ -141,10 +141,10 @@
 </li>
 
 
-<li id="open-register-request"
+<!-- <li id="open-register-request"
     style="padding:10px; border-bottom:1px solid #ddd; cursor:pointer;">
     تسجيل طلب
-</li>
+</li> -->
         <li style="padding:10px; border-bottom:1px solid #ddd; cursor:pointer;"
     data-bs-toggle="modal"
     data-bs-target="#withdrawCaseModal">
@@ -1056,13 +1056,70 @@
 
 
 <!-- نافذة سحب دعوى من المدعي العام -->
+<style>
+#withdrawCaseModal .modal-content {
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+#withdrawCaseModal .modal-header {
+    background: #f8f9fa;
+    border-bottom: 1px solid #dee2e6;
+}
+
+#withdrawCaseModal .modal-body {
+    padding: 30px;
+}
+
+#withdrawCaseModal .form-label {
+    font-weight: bold;
+    margin-bottom: 8px;
+    display: block;
+}
+
+#withdrawCaseModal .form-control,
+#withdrawCaseModal .form-select {
+    padding: 8px 12px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+#withdrawCaseModal .withdraw-btn {
+    background-color: #000;
+    color: white;
+    padding: 10px 30px;
+    border: none;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+#withdrawCaseModal .withdraw-btn:hover {
+    background-color: #333;
+}
+
+#withdrawCaseModal .exit-btn {
+    background-color: #e74c3c;
+    color: white;
+    padding: 10px 30px;
+    border: none;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+#withdrawCaseModal .exit-btn:hover {
+    background-color: #c0392b;
+}
+</style>
 
 <div class="modal fade" id="withdrawCaseModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
 
             <div class="modal-header">
-                <h5 class="modal-title">سحب دعوى من المدعي العام</h5>
+                <h5 class="modal-title">سحب الدعوى</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
 
@@ -1070,28 +1127,29 @@
 
                 <!-- رقم الدعوى -->
                 <div class="mb-3">
-                    <label class="form-label">رقم الدعوى</label>
-                    <input type="text" id="case_number" class="form-control">
+                    <label class="form-label">رقم الدعوى:</label>
+                    <input type="text" id="case_number" class="form-control" placeholder="أدخل رقم الدعوى">
                 </div>
 
-                <!-- المحكمة (افتراضي: عمان) -->
-                <div class="mb-3">
-                    <label class="form-label">المحكمة</label>
-                    <select id="court_location" class="form-control">
-                        <option value="عمان" selected>عمان</option>
-                        <option value="الزرقاء">الزرقاء</option>
-                        <option value="إربد">إربد</option>
-                    </select>
-                </div>
-
-                <!-- السجل العام (قادم من قاعدة البيانات مباشرة) -->
-                <div class="mb-3">
-                    <label class="form-label">السجل العام</label>
-                    <select id="prosecutor_office" class="form-control">
-                        @foreach ($records as $rec)
-                            <option value="{{ $rec->records }}">{{ $rec->records }}</option>
-                        @endforeach
-                    </select>
+                <!-- المحكمة والسجل العام -->
+                <div class="row g-3 mb-3">
+                    <div class="col-md-6">
+                        <label class="form-label">المحكمة:</label>
+                        <select id="court_location" class="form-select">
+                            <option value="محكمة بداية عمان" selected>محكمة بداية عمان</option>
+                            <option value="محكمة بداية الزرقاء">محكمة بداية الزرقاء</option>
+                            <option value="محكمة بداية إربد">محكمة بداية إربد</option>
+                        </select>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label">السجل العام:</label>
+                        <select id="prosecutor_office" class="form-select">
+                            <option value="">-- اختر السجل العام --</option>
+                            @foreach ($records as $rec)
+                                <option value="{{ $rec->records }}">{{ $rec->records }}</option>
+                            @endforeach
+                        </select>
+                    </div>
                 </div>
 
                 <!-- صندوق عرض الرسالة -->
@@ -1100,8 +1158,8 @@
             </div>
 
             <div class="modal-footer">
-                <button class="btn btn-primary" onclick="pullCase()">سحب الدعوى</button>
-                <button class="btn btn-secondary" data-bs-dismiss="modal">إغلاق</button>
+                <button class="withdraw-btn" onclick="pullCase()">سحب الدعوى</button>
+                <button class="exit-btn" data-bs-dismiss="modal">خروج</button>
             </div>
 
         </div>
