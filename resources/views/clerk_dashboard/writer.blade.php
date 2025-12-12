@@ -1137,8 +1137,8 @@
                         <label class="form-label">المحكمة:</label>
                         <select id="court_location" class="form-select">
                             <option value="محكمة بداية عمان" selected>محكمة بداية عمان</option>
-                            <option value="محكمة بداية الزرقاء">محكمة بداية الزرقاء</option>
-                            <option value="محكمة بداية إربد">محكمة بداية إربد</option>
+                            <!-- <option value="محكمة بداية الزرقاء">محكمة بداية الزرقاء</option> -->
+                            <!-- <option value="محكمة بداية إربد">محكمة بداية إربد</option> -->
                         </select>
                     </div>
                     <div class="col-md-6">
@@ -1169,50 +1169,150 @@
 <meta name="csrf-token" content="{{ csrf_token() }}">
 
 <!-- نافذة سحب قضية من الشرطة -->
+<style>
+#pullPoliceCaseModal .modal-content {
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+#pullPoliceCaseModal .modal-body {
+    padding: 20px 30px;
+}
+
+#pullPoliceCaseModal .form-row {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    align-items: flex-end;
+}
+
+#pullPoliceCaseModal select,
+#pullPoliceCaseModal button {
+    padding: 8px 12px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    font-size: 14px;
+}
+
+#pullPoliceCaseModal button {
+    cursor: pointer;
+    font-weight: bold;
+}
+
+#pullPoliceCaseModal table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+#pullPoliceCaseModal table,
+#pullPoliceCaseModal th,
+#pullPoliceCaseModal td {
+    border: 1px solid #ccc;
+}
+
+#pullPoliceCaseModal th,
+#pullPoliceCaseModal td {
+    padding: 8px;
+    text-align: center;
+}
+
+#pullPoliceCaseModal th {
+    background-color: #f2f2f2;
+    font-weight: bold;
+}
+
+#pullPoliceCaseModal tr.selected {
+    background-color: #a8d5e2;
+}
+
+#pullPoliceCaseModal tbody tr:hover {
+    background-color: #f0f8ff;
+    cursor: pointer;
+}
+
+#pullPoliceCaseModal .withdraw-btn {
+    background-color: #27ae60;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+#pullPoliceCaseModal .withdraw-btn:hover {
+    background-color: #229954;
+}
+
+#pullPoliceCaseModal .withdraw-btn:disabled {
+    background-color: #95a5a6;
+    cursor: not-allowed;
+}
+
+#pullPoliceCaseModal .exit-btn {
+    background-color: #e74c3c;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+#pullPoliceCaseModal .exit-btn:hover {
+    background-color: #c0392b;
+}
+</style>
+
 <div class="modal fade" id="pullPoliceCaseModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-xl modal-dialog-centered">
         <div class="modal-content">
 
             <div class="modal-header">
-                <h5 class="modal-title">سحب قضية من الشرطة</h5>
+                <h5 class="modal-title">سحب دعوى من الشرطة</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
 
             <div class="modal-body">
 
-                <!-- اختيار المركز الأمني -->
-                <div class="row g-2 mb-3">
-                    <div class="col-md-8">
-                        <label class="form-label">المركز الأمني</label>
-                      <select id="police_center" class="form-control">
-                      <option value="">اختر المركز الأمني</option>
+                <!-- اختيار المركز الأمني + بحث بجانبه -->
+                <div class="form-row">
+                    <div style="flex:1; display:flex; gap:10px; align-items:flex-end;">
+                        <select id="police_center" style="flex:1;">
+                            <option value="">-- اختر المركز الأمني --</option>
                       <option value="شرطة جنوب عمان">شرطة جنوب عمان</option>
                       <option value="شرطة شمال عمان">شرطة شمال عمان</option>
-                      <option value="شرطة غرب عمان">شرطة غرب عمان</option>
-                  </select>
-                    </div>
-
-                    <div class="col-md-4 d-flex align-items-end">
-                        <button id="searchPoliceCases" class="btn btn-primary w-100">بحث</button>
+                      <option value="شرطة غرب عمان">شرطة غرب عمان</option>                        </select>
+                        <button id="searchPoliceCases">بحث</button>
                     </div>
                 </div>
 
-                <!-- عرض المركز المختار -->
-                <div id="selectedCenterName" class="mb-3 text-muted" style="display:none;">
-                    المركز المختار: <strong id="centerNameText"></strong>
-                </div>
-
-                <!-- هنا يوضع الجدول بعد البحث -->
-                <div id="policeCasesResult"></div>
+                <!-- جدول القضايا -->
+                <table id="policeCasesTable">
+                    <thead>
+                        <tr>
+                            <th>المركز الأمني</th>
+                            <th>رقم القضية لدى الأمن العام</th>
+                            <th>تاريخ تسجيل القضية لدى الشرطة</th>
+                            <th>تاريخ الجريمة</th>
+                            <th>حالة القضية لدى الشرطة</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- البيانات ستتعبأ هنا -->
+                    </tbody>
+                </table>
 
                 <!-- صندوق رسائل -->
                 <div id="policeAlert" class="mt-3"></div>
 
             </div>
 
-            <div class="modal-footer">
-                <button id="pullSelectedCaseBtn" class="btn btn-success" disabled>سحب القضية</button>
-                <button class="btn btn-secondary" data-bs-dismiss="modal">إغلاق</button>
+            <div class="modal-footer" style="justify-content: center; gap: 20px;">
+                <button id="pullSelectedCaseBtn" class="withdraw-btn" disabled>سحب الدعوى</button>
+                <button class="exit-btn" data-bs-dismiss="modal">خروج</button>
             </div>
 
         </div>
@@ -2205,14 +2305,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const searchBtn = document.getElementById("searchPoliceCases");
     const centerSelect = document.getElementById("police_center");
-    const resultContainer = document.getElementById("policeCasesResult");
+    const tbody = document.querySelector('#policeCasesTable tbody');
     const alertBox = document.getElementById("policeAlert");
-    const selectedCenterDiv = document.getElementById("selectedCenterName");
-    const centerNameText = document.getElementById("centerNameText");
     const pullBtn = document.getElementById("pullSelectedCaseBtn");
 
+    let selectedRow = null;
     let selectedCaseId = null;
-    let selectedCenterName = null;
 
     // ----------------------
     // دالة عرض الرسائل
@@ -2230,29 +2328,29 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     // ----------------------
-    // اختيار القضية من الجدول
+    // اختيار الصف من الجدول
     // ----------------------
-    window.selectPoliceCase = function (id, centerName) {
-        selectedCaseId = id;
-        selectedCenterName = centerName;
-
+    function selectRow(row, caseId) {
+        if (selectedRow) {
+            selectedRow.classList.remove('selected');
+        }
+        selectedRow = row;
+        selectedCaseId = caseId;
+        row.classList.add('selected');
         pullBtn.disabled = false;
-
-        centerNameText.innerText = centerName;
-        selectedCenterDiv.style.display = "block";
-    };
+    }
 
     // ----------------------
     // عند الضغط على زر البحث
     // ----------------------
     searchBtn.addEventListener("click", function () {
         clearAlert();
-        resultContainer.innerHTML = `<div class="text-center py-3">جارٍ البحث...</div>`;
+        tbody.innerHTML = '<tr><td colspan="5">جارٍ البحث...</td></tr>';
 
         const center = centerSelect.value.trim();
         if (!center) {
-            showAlert("⚠️ يرجى اختيار المركز الأمني", "warning");
-            resultContainer.innerHTML = "";
+            showAlert('⚠️ اختر المركز الأمني', 'warning');
+            tbody.innerHTML = '';
             return;
         }
 
@@ -2260,55 +2358,33 @@ document.addEventListener("DOMContentLoaded", function () {
             .then(res => res.json())
             .then(data => {
 
-                if (data.message) {
-                    resultContainer.innerHTML = "";
-                    showAlert(data.message, "warning");
+                tbody.innerHTML = '';
+
+                if (data.message || data.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="5">لا توجد بيانات</td></tr>`;
                     return;
                 }
 
-                // بناء الجدول
-                let html = `
-                    <table class="table table-bordered table-hover">
-                        <thead class="table-light">
-                            <tr>
-                                <th style="width:60px">اختيار</th>
-                                <th>المركز الأمني</th>
-                                <th>رقم القضية لدى الأمن العام</th>
-                                <th>تاريخ تسجيل القضية</th>
-                                <th>تاريخ الجريمة</th>
-                                <th>حالة القضية</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                `;
-
-                data.forEach(row => {
-                    html += `
-                        <tr>
-                            <td>
-                                <input type="radio" name="caseSelect"
-                                    onclick="selectPoliceCase(${row.id}, '${row.center_name}')">
-                            </td>
-                            <td>${row.center_name}</td>
-                            <td>${row.police_case_number ?? "-"}</td>
-                            <td>${format(row.police_registration_date)}</td>
-                            <td>${format(row.crime_date)}</td>
-                            <td>${row.status ?? "-"}</td>
-                        </tr>
+                data.forEach(c => {
+                    const row = tbody.insertRow();
+                    row.innerHTML = `
+                        <td>${c.center_name || c.police_station || '-'}</td>
+                        <td>${c.police_case_number || '-'}</td>
+                        <td>${format(c.police_registration_date || c.registration_date)}</td>
+                        <td>${format(c.crime_date)}</td>
+                        <td>${c.status || '-'}</td>
                     `;
+                    row.onclick = () => selectRow(row, c.id);
                 });
 
-                html += `</tbody></table>`;
-
-                resultContainer.innerHTML = html;
-
+                selectedRow = null;
                 selectedCaseId = null;
                 pullBtn.disabled = true;
             })
             .catch(err => {
                 console.error(err);
                 showAlert("❌ حدث خطأ أثناء جلب القضايا", "danger");
-                resultContainer.innerHTML = "";
+                tbody.innerHTML = '';
             });
     });
 
@@ -2318,7 +2394,7 @@ document.addEventListener("DOMContentLoaded", function () {
     pullBtn.addEventListener("click", function () {
 
         if (!selectedCaseId) {
-            showAlert("⚠️ يرجى اختيار قضية أولاً", "warning");
+            showAlert('⚠️ اختر صف من الجدول لسحب الدعوى', 'warning');
             return;
         }
 
@@ -2333,10 +2409,16 @@ document.addEventListener("DOMContentLoaded", function () {
         })
             .then(res => res.json())
             .then(response => {
-                showAlert(response.message ?? "تمت العملية", "success");
+                showAlert(response.message ?? "✅ تم سحب الدعوى بنجاح", "success");
 
-                // إعادة تحميل الجدول بعد السحب
-                searchBtn.click();
+                // حذف الصف بعد السحب
+                if (selectedRow) {
+                    selectedRow.remove();
+                    selectedRow = null;
+                }
+
+                selectedCaseId = null;
+                pullBtn.disabled = true;
             })
             .catch(err => {
                 console.error(err);
@@ -2344,7 +2426,7 @@ document.addEventListener("DOMContentLoaded", function () {
             })
             .finally(() => {
                 pullBtn.disabled = true;
-                pullBtn.innerText = "سحب القضية";
+                pullBtn.innerText = "سحب الدعوى";
             });
     });
 
