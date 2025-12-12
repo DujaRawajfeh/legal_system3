@@ -358,7 +358,7 @@ private function filterParticipantsByNotificationType($participants, $notificati
     elseif (str_contains($notificationType, 'مشتكي موعد جلسة')) {
         $requiredTypes = ['مشتكي'];
     }
-    elseif (str_contains($notificationType, 'خاصة بالشهود')) {
+    elseif (str_contains($notificationType, 'شاهد موعد جلسة') || str_contains($notificationType, 'خاصة بالشهود')) {
         $requiredTypes = ['شاهد'];
     }
     else {
