@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>تبليغ المشتكي</title>
+<style>
+body{font-family:'Cairo',sans-serif;background:#eef0f2;color:#111;margin:0;padding:20px}
+.card{max-width:900px;margin:0 auto;background:#fff;border-radius:10px;box-shadow:0 4px 14px rgba(0,0,0,.08);padding:20px}
+h2{text-align:center;margin-bottom:18px;font-size:20px}
+.row{display:flex;gap:12px;margin-bottom:14px;align-items:center}
+.col{flex:1}
+label{display:block;margin-top:10px;font-weight:bold}
+input{width:100%;padding:8px;border:1px solid #ccc;border-radius:6px;font-size:14px}
+.case-boxes{display:flex;gap:8px}
+.case-boxes input{width:70px;text-align:center}
+table{width:100%;border-collapse:collapse;margin-top:15px}
+table,th,td{border:1px solid #ccc}
+th,td{padding:8px;text-align:center}
+th{background:#000;color:#fff}
+tr.selected{background:#d1e7fd}
+.actions{display:flex;gap:12px;margin-top:18px}
+button{
+    padding:10px 20px;
+    border-radius:6px;
+    border:0;
+    cursor:pointer;
+    font-family: 'Cairo', sans-serif;
+    font-weight: bold;
+    font-size: 11px;}
+.btn-save{background:#1a7f24;color:#fff}
+.btn-exit{background:#c81e1e;color:#fff}
+.btn-notify{background:#0d6efd;color:#fff}
+#case-type,judge-name{
+    width: 400px;   /* أو أي حجم مناسب */
+  padding:8px;
+  font-size:16px;
+}
+.case-number-wrapper {
+  margin-bottom: 20px;
+}
+
+.case-number-label {
+  font-weight: bold;
+  margin-bottom: 8px;
+  display: block;
+}
+
+.case-number-inputs {
+  display: flex;
+  gap: 5px;
+  flex-wrap: wrap;
+  margin-bottom: 12px;
+}
+
+.case-number-inputs input {
+  flex: 1;
+  min-width: 120px;
+  padding: 6px;
+  font-size: 16px;
+}
+
+</style>
+</head>
+<body>
+
+<div class="card">
+<h2>مذكرة تبليغ مشتكى عليه</h2>
+<!-- رقم الدعوى -->
+<div class="case-number-wrapper">
+  <!-- السطر الأول: العنوان -->
+  <div class="case-number-label">رقم الدعوى</div>
+
+  <!-- السطر الثاني: البوكسات -->
+  <div class="case-number-inputs">
+    <input type="text" id="caseSerial" maxlength="4" placeholder="####">
+    <input type="text" id="courtNumber" readonly placeholder="##">
+    <input type="text" id="penNumber" readonly placeholder="x/y">
+    <input type="text" id="yearNumber" readonly placeholder="YYYY">
+  </div>
+
+  <!-- السطر الثالث: زر البحث -->
+  <div class="case-number-inputs">
+    <button onclick="searchCase()" >بحث</button>
+  </div>
+</div>
+
+
+<div class="row">
+<div class="col">
+<label>نوع الدعوى</label>
+<input id="case-type" disabled>
+</div>
+<div class="col">
+<label>اسم القاضي</label>
+<input id="judge-name" disabled>
+</div>
+</div>
+
+<label>الأطراف</label>
+<table id="parties-table">
+<thead>
+<tr>
+<th>الاسم</th>
+<th>الرقم الوطني</th>
+<th>نوع الطرف</th>
+<th>الوظيفة</th>
+<th>مكان الإقامة</th>
+<th>رقم الهاتف</th>
+<th>قسم التباليغ</th>
+<th>تبليغ إلكتروني</th>
+</tr>
+</thead>
+<tbody></tbody>
+</table>
+
+<div class="actions">
+<button class="btn-save" id="saveBtn">حفظ وانهاء</button>
+<button class="btn-notify" id="notifyBtn">تنفيذ تبليغ</button>
+<button class="btn-exit" id="exitBtn">خروج</button>
+</div>
+</div>
+
+<script>
+const fakeDB={
+"1000":{
+type:"مدني",
+judge:"محمد العلي",
+parties:[
+{name:"أحمد محمد",national:"9876543210",role:"مشتكي",job:"موظف",addr:"عمان",phone:"0790000000",dept:"شرق عمان"},
+{name:"سارة علي",national:"1234567890",role:"مشتكى عليه",job:"مهندسة",addr:"الزرقاء",phone:"0789999999",dept:"غرب عمان"}
+]},
+"2000":{
+type:"جزائي",
+judge:"ليلى حسين",
+parties:[
+{name:"خالد محمود",national:"5647382910",role:"مشتكي",job:"سائق",addr:"إربد",phone:"0777777777",dept:"شمال عمان"}
+]}
+};
+
+const caseSerial=document.getElementById('caseSerial');
+const cn=document.getElementById('courtNumber');
+const pn=document.getElementById('penNumber');
+const yn=document.getElementById('yearNumber');
+const caseType=document.getElementById('case-type');
+const judge=document.getElementById('judge-name');
+const tableBody=document.querySelector('#parties-table tbody');
+
+let selected=null;
+let currentData=[];
+
+caseSerial.addEventListener('keypress',function(e){
+if(e.key!=='Enter')return;
+const v=caseSerial.value.trim();
+if(v.length!==4){alert('4 خانات مطلوبة');return;}
+
+cn.value='01';
+pn.value='1/1';
+yn.value=new Date().getFullYear();
+
+if(fakeDB[v]){
+const r=fakeDB[v];
+caseType.value=r.type;
+judge.value=r.judge;
+currentData=r.parties;
+
+populateTable(currentData);
+}else{
+caseType.value='';
+judge.value='';
+tableBody.innerHTML='';
+alert('لا يوجد سجل');
+}
+});
+
+function populateTable(data){
+tableBody.innerHTML='';
+data.forEach((p,i)=>{
+const tr=document.createElement('tr');
+tr.innerHTML=`
+<td>${p.name}</td>
+<td>${p.national}</td>
+<td>${p.role}</td>
+<td>${p.job}</td>
+<td>${p.addr}</td>
+<td>${p.phone}</td>
+<td>${p.dept}</td>
+<td><button onclick="elecNotify(${i})">إرسال</button></td>
+`;
+tr.addEventListener('click',()=>{
+if(selected)selected.classList.remove('selected');
+tr.classList.add('selected');
+selected=tr;
+});
+tableBody.appendChild(tr);
+});
+}
+
+function elecNotify(i){
+alert('تم إرسال تبليغ إلكتروني لـ: '+currentData[i].name);
+}
+
+document.getElementById('notifyBtn').addEventListener('click',()=>{
+if(!selected){alert('حدد طرفا');return;}
+alert('تم التبليغ للطرف المحدد');
+});
+
+document.getElementById('saveBtn').addEventListener('click',()=>alert('تم الحفظ'));
+
+document.getElementById('exitBtn').addEventListener('click',()=>window.close());
+</script>
+
+</body>
+</html>
