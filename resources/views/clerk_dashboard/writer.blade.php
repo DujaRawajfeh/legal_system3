@@ -1281,7 +1281,7 @@
                 <div class="form-row">
                     <div style="flex:1; display:flex; gap:10px; align-items:flex-end;">
                         <select id="police_center" style="flex:1;">
-                            <option value="">-- اختر المركز الأمني --</option>
+                        <option value="">-- اختر المركز الأمني --</option>
                       <option value="شرطة جنوب عمان">شرطة جنوب عمان</option>
                       <option value="شرطة شمال عمان">شرطة شمال عمان</option>
                       <option value="شرطة غرب عمان">شرطة غرب عمان</option>                        </select>
@@ -2565,11 +2565,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // ✅ ربط الدالة بزر الإدخال إذا ضغط Enter
     const input = document.getElementById('requestNumberInput');
-    input.addEventListener('keydown', function (event) {
-        if (event.key === 'Enter') {
-            fetchRequestSchedule();
-        }
-    });
+    if (input) {
+        input.addEventListener('keydown', function (event) {
+            if (event.key === 'Enter') {
+                fetchRequestSchedule();
+            }
+        });
+    }
 
 });
 </script>
@@ -2719,40 +2721,16 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 </script>
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-
-    const trigger = document.getElementById('sessions-trigger'); // من layouts.app
-    const menu = document.getElementById('writer-sessions-submenu');
-
-    if (!trigger || !menu) return;
-
-    // عند الوقوف على كلمة الجلسات
-    trigger.addEventListener('mouseenter', () => {
-        menu.style.display = 'block';
-    });
-
-    // اخفاء القائمة عند خروج الماوس
-    trigger.addEventListener('mouseleave', () => {
-        setTimeout(() => {
-            if (!menu.matches(':hover')) {
-                menu.style.display = 'none';
-            }
-        }, 150);
-    });
-
-    menu.addEventListener('mouseleave', () => {
-        menu.style.display = 'none';
-    });
-
-});
-</script>
-<script>
+// إظهار قائمة الجلسات
 document.addEventListener('DOMContentLoaded', function () {
 
     const trigger = document.getElementById('sessions-trigger'); // من layouts.app
     const menu = document.getElementById('writer-sessions-submenu');
 
-    if (!trigger || !menu) return;
+    if (!trigger || !menu) {
+        console.warn('⚠️ sessions-trigger or writer-sessions-submenu not found');
+        return;
+    }
 
     // ⭐ إظهار القائمة تحت كلمة "الجلسات"
     trigger.addEventListener('mouseenter', () => {
@@ -2948,31 +2926,6 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // ⭐ إضافة مستند
-    const addEvidenceBtn = document.getElementById("addEvidence");
-    const evidenceContainer = document.getElementById("evidenceContainer");
-
-    if (addEvidenceBtn && evidenceContainer) {
-        addEvidenceBtn.addEventListener("click", () => {
-            const newEvidence = document.createElement("div");
-            newEvidence.className = "evidence-block";
-            newEvidence.innerHTML = `
-                <button type="button" class="remove-party" onclick="this.parentElement.remove()">×</button>
-                <div class="row g-3">
-                    <div class="col-md-6">
-                        <label class="form-label">نوع المستند</label>
-                        <input type="text" class="form-control evidence-type">
-                    </div>
-                    <div class="col-md-6">
-                        <label class="form-label">رفع الملف</label>
-                        <input type="file" class="form-control evidence-file">
-                    </div>
-                </div>
-            `;
-            evidenceContainer.appendChild(newEvidence);
-        });
-    }
-
     // ⭐ مسح الكل
     const clearBtn = document.getElementById("clearRequest");
     if (clearBtn) {
@@ -2984,12 +2937,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 const allParties = partiesContainer.querySelectorAll(".party-block");
                 allParties.forEach((party, index) => {
                     if (index > 0) party.remove();
-                });
-
-                // حذف المستندات المضافة (ماعدا الأول)
-                const allEvidence = evidenceContainer.querySelectorAll(".evidence-block");
-                allEvidence.forEach((evidence, index) => {
-                    if (index > 0) evidence.remove();
                 });
 
                 currentRequestId = null;
