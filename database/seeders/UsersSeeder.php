@@ -2,16 +2,119 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class UsersSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
-        //
+        DB::table('users')->insert([
+            [
+                'id' => 1,
+                'full_name' => 'أحمد المجالي ',
+                'national_id' => '1234567890',
+                'password' => '$2y$12$grMFsn1iDXJa4JTvQfSPd.QIomvUbLoX2mndd7Qjko9cxGRXhRA.K',
+                'role' => 'writer',
+                'created_at' => '2025-10-22 13:39:39',
+                'updated_at' => '2025-11-30 20:01:07',
+                'tribunal_id' => 11,
+                'department_id' => 1,
+                'password_changed_at' => '2025-11-29 23:17:48',
+                'two_factor_secret' => 'XKNISLYEGGF3CWWTULEB3NYZCGUGXHUF',
+                'two_factor_enabled' => 0,
+                'two_factor_recovery_codes' => null,
+            ],
+            [
+                'id' => 2,
+                'full_name' => ' علي محمد المجالي',
+                'national_id' => '1234567891',
+                'password' => '$2y$12$85WE/niAqQyvsYsbjcrRdeHSfGsJ0PmmrkKHL//A5oj0EIuu6JdCW',
+                'role' => 'judge',
+                'created_at' => '2025-10-22 16:33:07',
+                'updated_at' => '2025-12-10 16:32:38',
+                'tribunal_id' => 11,
+                'department_id' => 1,
+                'password_changed_at' => '2025-11-29 23:19:27',
+                'two_factor_secret' => '4LCTJYRN3U7C37YROBD45PH4IAF3OMB6',
+                'two_factor_enabled' => 0,
+                'two_factor_recovery_codes' => null,
+            ],
+            [
+                'id' => 3,
+                'full_name' => ' سلمى علي الرواشدة',
+                'national_id' => '1234567892',
+                'password' => '$2y$12$s8UbAzYoWjUL6cDxcPj6e.Lw6ysnAAEkFpfLLI8txsogoUSFK2FxG',
+                'role' => 'judge',
+                'created_at' => '2025-10-22 16:34:04',
+                'updated_at' => '2025-11-29 23:21:58',
+                'tribunal_id' => 11,
+                'department_id' => 1,
+                'password_changed_at' => '2025-11-29 23:21:52',
+                'two_factor_secret' => null,
+                'two_factor_enabled' => 0,
+                'two_factor_recovery_codes' => null,
+            ],
+            [
+                'id' => 4,
+                'full_name' => ' سارة احمد المجالي  ',
+                'national_id' => '1234567893',
+                'password' => '$2y$12$TcUTQGa2rpsbZCKCnIr7feJKPKlhR8EUEDzGSeXb/IigA4aq97T7C',
+                'role' => 'judge',
+                'created_at' => '2025-10-22 16:35:33',
+                'updated_at' => '2025-11-29 23:24:29',
+                'tribunal_id' => 11,
+                'department_id' => 1,
+                'password_changed_at' => '2025-11-29 23:24:28',
+                'two_factor_secret' => null,
+                'two_factor_enabled' => 0,
+                'two_factor_recovery_codes' => null,
+            ],
+            [
+                'id' => 6,
+                'full_name' => 'رزان محمد المجالي  ',
+                'national_id' => '1234567833',
+                'password' => '$2y$12$HS5IUUedH.E1/45nRGT2NuJgh.Pp118i.iSt6ttZNlKzxOMnXrC9C',
+                'role' => 'typist',
+                'created_at' => '2025-10-30 10:24:59',
+                'updated_at' => '2025-12-08 07:25:23',
+                'tribunal_id' => 11,
+                'department_id' => 1,
+                'password_changed_at' => '2025-11-29 23:25:50',
+                'two_factor_secret' => 'MNKMWPD5RWVZOOBC7AWTIHVI4UARFSYL',
+                'two_factor_enabled' => 0,
+                'two_factor_recovery_codes' => null,
+            ],
+            [
+                'id' => 7,
+                'full_name' => 'رزان خالد المجالي',
+                'national_id' => '1234567811',
+                'password' => '$2y$12$zBvUc/9tWUa1YUUPtnCh3OBBVBiGPE8ctpJeaAolnvf5nAVO47Gda',
+                'role' => 'archiver',
+                'created_at' => '2025-11-09 13:30:04',
+                'updated_at' => '2025-11-29 23:27:31',
+                'tribunal_id' => 11,
+                'department_id' => 1,
+                'password_changed_at' => '2025-11-29 23:27:31',
+                'two_factor_secret' => null,
+                'two_factor_enabled' => 0,
+                'two_factor_recovery_codes' => null,
+            ],
+            [
+                'id' => 8,
+                'full_name' => 'ريان حسين المجالي',
+                'national_id' => '1234567111',
+                'password' => '$2y$12$RsJYkAynHvtahFvwW8w0D.zVw/msCO6rX.X2gnXNLsijNWaxodfXO',
+                'role' => 'chief',
+                'created_at' => '2025-11-21 15:45:12',
+                'updated_at' => '2025-11-29 23:29:05',
+                'tribunal_id' => 11,
+                'department_id' => 1,
+                'password_changed_at' => '2025-11-29 23:29:04',
+                'two_factor_secret' => null,
+                'two_factor_enabled' => 0,
+                'two_factor_recovery_codes' => null,
+            ],
+        ]);
     }
 }
