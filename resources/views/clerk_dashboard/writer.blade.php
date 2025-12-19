@@ -3549,24 +3549,65 @@ document.addEventListener("DOMContentLoaded", function () {
         notifications.forEach(n => {
           const tr = document.createElement("tr");
 
-          tr.innerHTML = `
-            <td>${n.case_number || serial}</td>
-            <td>${n.participant_type || '-'}</td>
-            <td>${n.participant_name || '-'}</td>
-            <td>
-              <select class="form-select form-select-sm notification-method" style="width: 150px; margin: 0 auto;">
-                <option value="">اختر</option>
-                <option value="sms" ${n.method === 'sms' ? 'selected' : ''}>رسالة نصية</option>
-                <option value="email" ${n.method === 'email' ? 'selected' : ''}>بريد إلكتروني</option>
-                <option value="قسم التباليغ" ${n.method === 'قسم التباليغ' ? 'selected' : ''}>قسم التباليغ</option>
-              </select>
-            </td>
-            <td>
-              <input type="date" class="form-control form-control-sm notification-date" 
-                     style="width: 150px; margin: 0 auto;" 
-                     value="${n.notified_at || ''}" />
-            </td>
-          `;
+          // Extract date only from datetime (2025-10-23 13:37 → 2025-10-23)
+          let dateOnly = '';
+          if (n.notified_at) {
+            dateOnly = n.notified_at.split(' ')[0];
+          }
+
+          // Create cells
+          const tdCaseNumber = document.createElement('td');
+          tdCaseNumber.textContent = n.case_number || serial;
+
+          const tdParticipantType = document.createElement('td');
+          tdParticipantType.textContent = n.participant_type || '-';
+
+          const tdParticipantName = document.createElement('td');
+          tdParticipantName.textContent = n.participant_name || '-';
+
+          // Method select cell
+          const tdMethod = document.createElement('td');
+          const selectMethod = document.createElement('select');
+          selectMethod.className = 'form-select form-select-sm notification-method';
+          selectMethod.style.cssText = 'width: 150px; margin: 0 auto;';
+          
+          const methods = [
+            { value: '', label: 'اختر' },
+            { value: 'sms', label: 'رسالة نصية' },
+            { value: 'email', label: 'بريد إلكتروني' },
+            { value: 'قسم التباليغ', label: 'قسم التباليغ' }
+          ];
+          
+          methods.forEach(m => {
+            const option = document.createElement('option');
+            option.value = m.value;
+            option.textContent = m.label;
+            if (n.method === m.value) {
+              option.selected = true;
+            }
+            selectMethod.appendChild(option);
+          });
+          
+          tdMethod.appendChild(selectMethod);
+
+          // Date input cell
+          const tdDate = document.createElement('td');
+          const inputDate = document.createElement('input');
+          inputDate.type = 'date';
+          inputDate.className = 'form-control form-control-sm notification-date';
+          inputDate.style.cssText = 'width: 150px; margin: 0 auto;';
+          if (dateOnly) {
+            inputDate.value = dateOnly;
+          }
+          
+          tdDate.appendChild(inputDate);
+
+          // Append all cells to row
+          tr.appendChild(tdCaseNumber);
+          tr.appendChild(tdParticipantType);
+          tr.appendChild(tdParticipantName);
+          tr.appendChild(tdMethod);
+          tr.appendChild(tdDate);
 
           tableBody.appendChild(tr);
         });
