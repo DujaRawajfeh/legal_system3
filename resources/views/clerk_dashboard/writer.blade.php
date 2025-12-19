@@ -1269,6 +1269,24 @@ function loadJudgeSchedule() {
         });
 }
 
+// Open judge schedule modal function
+function openJudgeScheduleModal() {
+    const modal = new bootstrap.Modal(document.getElementById('judgeScheduleModal'));
+    modal.show();
+}
+
+// Open case schedule modal function
+function openCaseScheduleModal() {
+    const modal = new bootstrap.Modal(document.getElementById('caseScheduleModal'));
+    modal.show();
+}
+
+// Open request schedule modal function
+function openRequestScheduleModal() {
+    const modal = new bootstrap.Modal(document.getElementById('requestScheduleModal'));
+    modal.show();
+}
+
 </script>
 
 <!-- 🔶 مودال جدول الدعوى -->

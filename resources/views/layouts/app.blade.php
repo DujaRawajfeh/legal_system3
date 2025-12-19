@@ -180,9 +180,9 @@
       <a href="#" id="sessions-trigger">الجلسات ▾</a>
       <ul>
         <li><a onclick="openCourtScheduleModal()">جدول أعمال المحكمة</a></li>
-        <li><a onclick="$('#judgeScheduleModal').modal('show')">جدول أعمال القاضي</a></li>
-        <li><a onclick="$('#caseScheduleModal').modal('show')">جدول الدعوى</a></li>
-        <li><a onclick="$('#requestScheduleModal').modal('show')">جدول الطلبات</a></li>
+        <li><a onclick="openJudgeScheduleModal()">جدول أعمال القاضي</a></li>
+        <li><a onclick="openCaseScheduleModal()">جدول الدعوى</a></li>
+        <li><a onclick="openRequestScheduleModal()">جدول الطلبات</a></li>
         <li><a onclick="openReportsListModal()">محاضر الجلسات</a></li>
       </ul>
     </li>
