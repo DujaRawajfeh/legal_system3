@@ -1003,7 +1003,8 @@ public function fetchCaseParticipants(Request $request)
         'judge_name' => optional($courtCase->judge)->full_name,
         'participants' => $participants,
     ]);
-}//مذكرة الإفراج عن الموقوفين
+}
+//مذكرة الإفراج عن الموقوفين
 public function defaultInfo()
 {
     $tribunal = Tribunal::first();
