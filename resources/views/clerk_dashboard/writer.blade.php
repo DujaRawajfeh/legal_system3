@@ -2197,6 +2197,150 @@
 
 
 <!--  مذكرة توقيف -->
+<style>
+#arrest-memo-modal .modal-content {
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+}
+
+#arrest-memo-modal .modal-body {
+  font-family: 'Cairo', sans-serif;
+  padding: 20px;
+}
+
+#arrest-memo-modal h2 {
+  text-align: center;
+  margin-bottom: 18px;
+  font-size: 20px;
+}
+
+#arrest-memo-modal .case-number-wrapper {
+  margin-bottom: 20px;
+}
+
+#arrest-memo-modal .case-number-label {
+  font-weight: bold;
+  margin-bottom: 8px;
+  display: block;
+}
+
+#arrest-memo-modal .case-boxes {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+#arrest-memo-modal .case-boxes input {
+  width: 70px;
+  text-align: center;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+#arrest-memo-modal .row {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 14px;
+  align-items: center;
+}
+
+#arrest-memo-modal .col {
+  flex: 1;
+}
+
+#arrest-memo-modal label {
+  display: block;
+  margin-top: 10px;
+  font-weight: bold;
+}
+
+#arrest-memo-modal input,
+#arrest-memo-modal select {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+#arrest-memo-modal #arrest-case-type {
+  width: 100%;
+  padding: 8px;
+  font-size: 16px;
+}
+
+#arrest-memo-modal #arrest-judge-name,
+#arrest-memo-modal #arrest-duration {
+  width: 420px;
+  padding: 8px;
+  font-size: 16px;
+}
+
+#arrest-memo-modal table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 15px;
+}
+
+#arrest-memo-modal table,
+#arrest-memo-modal th,
+#arrest-memo-modal td {
+  border: 1px solid #ccc;
+}
+
+#arrest-memo-modal th,
+#arrest-memo-modal td {
+  padding: 8px;
+  text-align: center;
+}
+
+#arrest-memo-modal th {
+  background: #000;
+  color: #fff;
+}
+
+#arrest-memo-modal tr.selected {
+  background: #d1e7fd;
+}
+
+#arrest-memo-modal tbody tr:hover {
+  background: #f0f8ff;
+  cursor: pointer;
+}
+
+#arrest-memo-modal .actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 18px;
+  justify-content: center;
+}
+
+#arrest-memo-modal .btn-save {
+  background: #1a7f24;
+  color: #fff;
+  padding: 10px 14px;
+  border-radius: 6px;
+  border: 0;
+  cursor: pointer;
+  font-family: 'Cairo', sans-serif;
+  font-weight: 600;
+}
+
+#arrest-memo-modal .btn-exit {
+  background: #c81e1e;
+  color: #fff;
+  padding: 10px 14px;
+  border-radius: 6px;
+  border: 0;
+  cursor: pointer;
+  font-family: 'Cairo', sans-serif;
+  font-weight: 600;
+}
+</style>
+
 <div class="modal fade" id="arrest-memo-modal" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-xl modal-dialog-centered">
     <div class="modal-content">
@@ -2211,110 +2355,85 @@
         <!-- Alert -->
         <div id="arrest-alert"></div>
 
-        <!--  معلومات المحكمة -->
-        <div class="row text-center mb-3">
-          <div class="col-md-4">
-            <label class="text-muted">رقم المحكمة</label>
-            <div id="arrest-tribunal">-</div>
-          </div>
-
-          <div class="col-md-4">
-            <label class="text-muted">رقم القلم</label>
-            <div id="arrest-department">-</div>
-          </div>
-
-          <div class="col-md-4">
-            <label class="text-muted">السنة</label>
-            <div id="arrest-year">-</div>
-          </div>
-        </div>
-
         <!-- رقم الدعوى -->
-        <div class="row mb-3">
-          <div class="col-md-9">
-            <input type="text" id="arrest-case-number" class="form-control" placeholder="أدخل رقم الدعوى">
-          </div>
-
-          <div class="col-md-3 d-flex align-items-end">
-            <button class="btn btn-primary w-100" id="arrest-search-btn">بحث</button>
+        <div class="case-number-wrapper">
+          <label class="case-number-label">رقم الدعوى:</label>
+          <div class="case-boxes">
+            <input type="text" id="arrest-case-serial" maxlength="4" placeholder="####">
+            <input type="text" id="arrest-court-number" placeholder="##" readonly>
+            <input type="text" id="arrest-pen-number" placeholder="x/y" readonly>
+            <input type="text" id="arrest-year-number" placeholder="YYYY" readonly>
           </div>
         </div>
 
         <!-- نوع الدعوى -->
-        <div id="arrest-case-type-area" style="display:none;">
-          <label class="text-muted">نوع الدعوى:</label>
-          <div id="arrest-case-title" class="fw-bold"></div>
+        <div class="row">
+          <div class="col">
+            <label>نوع الدعوى:</label>
+            <input id="arrest-case-type" disabled>
+          </div>
         </div>
 
         <!-- جدول الأطراف -->
-        <div id="arrest-participants-area" style="display:none;" class="mt-3">
-          <h6>الأطراف</h6>
+        <label>الأطراف</label>
+        <table id="arrest-participants-table">
+          <thead>
+            <tr>
+              <th>الاسم</th>
+              <th>نوع الطرف</th>
+              <th>الوظيفة</th>
+              <th>مكان الإقامة</th>
+              <th>رقم الهاتف</th>
+              <th>التبليغ بواسطة</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
 
-          <div class="table-responsive">
-            <table class="table table-sm table-hover" id="arrest-participants-table">
-              <thead class="table-light">
-                <tr>
-                  <th style="width:60px">اختيار</th>
-                  <th>الاسم</th>
-                  <th>نوع الطرف</th>
-                  <th>الوظيفة</th>
-                  <th>مكان الإقامة</th>
-                  <th>رقم الهاتف</th>
-                  <th>التبليغ بواسطة</th>
-                </tr>
-              </thead>
-              <tbody></tbody>
-            </table>
+        <!-- اسم القاضي ومدة التوقيف -->
+        <div class="row">
+          <div class="col">
+            <label>اسم القاضي:</label>
+            <input id="arrest-judge-name" disabled>
+          </div>
+          <div class="col">
+            <label>مدة التوقيف (أيام):</label>
+            <input id="arrest-duration" type="number" min="0">
           </div>
         </div>
 
-        <!-- بيانات إضافية -->
-        <div id="arrest-extra-area" style="display:none;" class="mt-4">
-
-          <!-- اسم القاضي -->
-          <div class="mb-3">
-            <label>اسم القاضي</label>
-            <input type="text" id="arrest-judge-name" class="form-control" readonly>
-          </div>
-
-          <!-- مدة التوقيف -->
-          <div class="mb-3">
-            <label>مدة التوقيف (بالأيام)</label>
-            <input type="number" id="arrest-duration" class="form-control" min="1">
-          </div>
-
-          <!-- سبب التوقيف -->
-          <div class="mb-3">
-            <label>سبب التوقيف</label>
-            <select id="arrest-reason" class="form-control">
-              <option value="">اختر سبب التوقيف</option>
-              <option value="خشية الفرار">خشية الفرار</option>
-              <option value="منع التأثير على الشهود">منع التأثير على الشهود</option>
-              <option value="منع العبث بالأدلة">منع العبث بالأدلة</option>
-              <option value="لحماية المشتكي من الخطر">لحماية المشتكي من الخطر</option>
+        <!-- سبب التوقيف ومركز الإصلاح -->
+        <div class="row">
+          <div class="col">
+            <label>سبب التوقيف:</label>
+            <select id="arrest-reason">
+              <option value="">اختر</option>
+              <option value="خطر الهروب">خطر الهروب</option>
+              <option value="خطر العبث بالأدلة">خطر العبث بالأدلة</option>
+              <option value="خطر الإتيان بجرائم جديدة">خطر الإتيان بجرائم جديدة</option>
+              <option value="عدم ثبوت إقامة">عدم ثبوت إقامة</option>
+              <option value="أمر أمني">أمر أمني</option>
             </select>
           </div>
-
-          <!-- مركز الإصلاح والتأهيل -->
-          <div class="mb-3">
-            <label>مركز الإصلاح والتأهيل</label>
-            <select id="arrest-center" class="form-control">
+          <div class="col">
+            <label>مركز الإصلاح والتأهيل:</label>
+            <select id="arrest-center">
               <option value="">اختر المركز</option>
-              <option value="مركز إصلاح وتأهيل ماركا">مركز إصلاح وتأهيل ماركا</option>
-              <option value="مركز إصلاح وتأهيل إربد">مركز إصلاح وتأهيل إربد</option>
-              <option value="مركز إصلاح وتأهيل الكرك">مركز إصلاح وتأهيل الكرك</option>
+              <option value="مركز الإصلاح المركزي">مركز الإصلاح المركزي</option>
+              <option value="مركز الإصلاح الجنوبي">مركز الإصلاح الجنوبي</option>
+              <option value="مركز تأهيل الشمال">مركز تأهيل الشمال</option>
             </select>
           </div>
-
         </div>
 
       </div>
 
       <!-- أزرار -->
       <div class="modal-footer">
-        <button class="btn btn-success" id="arrest-save-btn" disabled>حفظ</button>
-        <button class="btn btn-primary" id="arrest-save-close-btn" disabled>حفظ وإنهاء</button>
-        <button class="btn btn-secondary" data-bs-dismiss="modal">إغلاق</button>
+        <div class="actions">
+          <button class="btn-save" id="arrest-save-btn">حفظ وانهاء</button>
+          <button class="btn-exit" data-bs-dismiss="modal">خروج</button>
+        </div>
       </div>
 
     </div>
