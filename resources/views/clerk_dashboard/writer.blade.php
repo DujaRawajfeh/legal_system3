@@ -2064,10 +2064,9 @@
           </table>
         </div>
 
-        <!-- أزرار حفظ وإنهاء -->
-        <div class="btn-area">
-          <button class="btn-save" id="manage-notifications-save">حفظ</button>
-          <button class="btn-end" data-bs-dismiss="modal">انهاء</button>
+        <!-- أزرار -->
+        <div class="btn-area" style="justify-content: center;">
+          <button class="btn-end" data-bs-dismiss="modal">إغلاق</button>
         </div>
 
       </div>
@@ -3550,12 +3549,12 @@ document.addEventListener("DOMContentLoaded", function () {
           const tr = document.createElement("tr");
 
           // Extract date only from datetime (2025-10-23 13:37 → 2025-10-23)
-          let dateOnly = '';
+          let dateOnly = '-';
           if (n.notified_at) {
             dateOnly = n.notified_at.split(' ')[0];
           }
 
-          // Create cells
+          // Create cells - all as plain text
           const tdCaseNumber = document.createElement('td');
           tdCaseNumber.textContent = n.case_number || serial;
 
@@ -3565,42 +3564,13 @@ document.addEventListener("DOMContentLoaded", function () {
           const tdParticipantName = document.createElement('td');
           tdParticipantName.textContent = n.participant_name || '-';
 
-          // Method select cell
+          // Method as plain text
           const tdMethod = document.createElement('td');
-          const selectMethod = document.createElement('select');
-          selectMethod.className = 'form-select form-select-sm notification-method';
-          selectMethod.style.cssText = 'width: 150px; margin: 0 auto;';
-          
-          const methods = [
-            { value: '', label: 'اختر' },
-            { value: 'sms', label: 'رسالة نصية' },
-            { value: 'email', label: 'بريد إلكتروني' },
-            { value: 'قسم التباليغ', label: 'قسم التباليغ' }
-          ];
-          
-          methods.forEach(m => {
-            const option = document.createElement('option');
-            option.value = m.value;
-            option.textContent = m.label;
-            if (n.method === m.value) {
-              option.selected = true;
-            }
-            selectMethod.appendChild(option);
-          });
-          
-          tdMethod.appendChild(selectMethod);
+          tdMethod.textContent = n.method || '-';
 
-          // Date input cell
+          // Date as plain text
           const tdDate = document.createElement('td');
-          const inputDate = document.createElement('input');
-          inputDate.type = 'date';
-          inputDate.className = 'form-control form-control-sm notification-date';
-          inputDate.style.cssText = 'width: 150px; margin: 0 auto;';
-          if (dateOnly) {
-            inputDate.value = dateOnly;
-          }
-          
-          tdDate.appendChild(inputDate);
+          tdDate.textContent = dateOnly;
 
           // Append all cells to row
           tr.appendChild(tdCaseNumber);
@@ -3622,68 +3592,8 @@ document.addEventListener("DOMContentLoaded", function () {
       });
   }
 
-  // Save button handler
-  if (saveBtn) {
-    saveBtn.addEventListener("click", async function() {
-      const rows = tableBody.querySelectorAll("tr");
-      
-      if (!rows.length) {
-        showAlert("⚠️ لا توجد بيانات لحفظها", "warning");
-        return;
-      }
-
-      const updates = [];
-      
-      rows.forEach(row => {
-        const cells = row.querySelectorAll("td");
-        const caseNumber = cells[0].textContent.trim();
-        const participantName = cells[2].textContent.trim();
-        const method = row.querySelector(".notification-method").value;
-        const date = row.querySelector(".notification-date").value;
-        
-        if (method && participantName) {
-          updates.push({
-            case_number: caseNumber,
-            participant_name: participantName,
-            method: method,
-            notified_at: date || null
-          });
-        }
-      });
-
-      if (!updates.length) {
-        showAlert("⚠️ لم يتم تحديد أي طريقة تبليغ", "warning");
-        return;
-      }
-
-      saveBtn.disabled = true;
-      saveBtn.textContent = "جاري الحفظ...";
-
-      try {
-        const res = await fetch("{{ route('notifications.save') }}", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content
-          },
-          body: JSON.stringify({ notifications: updates })
-        });
-
-        const data = await res.json();
-
-        if (!res.ok) throw data;
-
-        showAlert("✅ تم حفظ التعديلات بنجاح", "success");
-
-      } catch (err) {
-        console.error(err);
-        showAlert(err.error ?? "❌ حدث خطأ أثناء الحفظ", "danger");
-      } finally {
-        saveBtn.disabled = false;
-        saveBtn.textContent = "حفظ";
-      }
-    });
-  }
+  // Save button removed - this is a read-only view
+  // If you need to edit notifications, use the other notification modals
 
   // مسح البيانات عند إغلاق النافذة
   document.getElementById(modalId).addEventListener("hidden.bs.modal", function () {
