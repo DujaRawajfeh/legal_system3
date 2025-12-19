@@ -3377,19 +3377,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
   const $ = id => document.getElementById(id);
 
-  // عناصر الإدخال
-  const caseNumberInput = $("arrest-case-number");
-  const searchBtn = $("arrest-search-btn");
+  // عناصر الإدخال - 4 boxes
+  const caseSerial = $("arrest-case-serial");
+  const courtNumber = $("arrest-court-number");
+  const penNumber = $("arrest-pen-number");
+  const yearNumber = $("arrest-year-number");
 
-  const tribunalEl = $("arrest-tribunal");
-  const departmentEl = $("arrest-department");
-  const yearEl = $("arrest-year");
-  const caseTitleEl = $("arrest-case-title");
-
-  const caseTypeArea = $("arrest-case-type-area");
-  const participantsArea = $("arrest-participants-area");
-  const extraArea = $("arrest-extra-area");
-
+  const caseTypeInput = $("arrest-case-type");
   const participantsTableBody = document.querySelector("#arrest-participants-table tbody");
 
   const judgeNameInput = $("arrest-judge-name");
@@ -3398,39 +3392,47 @@ document.addEventListener("DOMContentLoaded", function () {
   const centerSelect = $("arrest-center");
 
   const saveBtn = $("arrest-save-btn");
-  const saveCloseBtn = $("arrest-save-close-btn");
-
   const alertBox = $("arrest-alert");
 
+  let selectedRow = null;
   let selectedParticipant = null;
-  let currentCaseNumber = null;
+  let currentCaseId = null;
 
   function showAlert(msg, type = "warning") {
     alertBox.innerHTML = `<div class="alert alert-${type}">${msg}</div>`;
   }
 
-  function clearAlert() { alertBox.innerHTML = ""; }
+  function clearAlert() { 
+    alertBox.innerHTML = ""; 
+  }
 
   function resetUI() {
     clearAlert();
-    participantsTableBody.innerHTML = "";
-    caseTypeArea.style.display = "none";
-    participantsArea.style.display = "none";
-    extraArea.style.display = "none";
+    caseTypeInput.value = "";
     judgeNameInput.value = "";
-
-    saveBtn.disabled = true;
-    saveCloseBtn.disabled = true;
+    participantsTableBody.innerHTML = "";
+    durationInput.value = "";
+    reasonSelect.value = "";
+    centerSelect.value = "";
+    selectedRow = null;
+    selectedParticipant = null;
   }
 
-  // 🔍 زر البحث
-  searchBtn.addEventListener("click", function () {
+  // 🔍 البحث عند Enter في أول خانة
+  if (caseSerial) {
+    caseSerial.addEventListener("keypress", function(e) {
+      if (e.key === "Enter") {
+        searchCase();
+      }
+    });
+  }
 
+  function searchCase() {
     resetUI();
 
-    const caseNumber = caseNumberInput.value.trim();
-    if (!caseNumber) {
-      showAlert("⚠️ يرجى إدخال رقم الدعوى");
+    const serial = caseSerial.value.trim();
+    if (serial.length !== 4) {
+      showAlert("⚠️ يرجى إدخال 4 أرقام في رقم الدعوى");
       return;
     }
 
@@ -3443,7 +3445,7 @@ document.addEventListener("DOMContentLoaded", function () {
         "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content
       },
       body: JSON.stringify({
-        case_number: caseNumber
+        case_number: serial
       })
     })
     .then(res => res.json().then(j => ({ ok: res.ok, json: j })))
@@ -3453,17 +3455,16 @@ document.addEventListener("DOMContentLoaded", function () {
 
       clearAlert();
 
-      // حفظ رقم الدعوى
-      currentCaseNumber = caseNumber;
+      // حفظ معرف القضية
+      currentCaseId = json.case?.id;
 
-      // تعبئة بيانات المحكمة
-      tribunalEl.textContent = json.case?.tribunal?.number ?? "-";
-      departmentEl.textContent = json.case?.department?.number ?? "-";
-      yearEl.textContent = json.case?.year ?? "-";
+      // تعبئة الخانات الأخرى
+      courtNumber.value = json.case?.tribunal?.number ?? "";
+      penNumber.value = json.case?.department?.number ?? "";
+      yearNumber.value = json.case?.year ?? "";
 
       // نوع الدعوى
-      caseTitleEl.textContent = json.case?.title ?? "-";
-      caseTypeArea.style.display = "block";
+      caseTypeInput.value = json.case?.type ?? "";
 
       // اسم القاضي
       judgeNameInput.value = json.judge_name ?? "";
@@ -3481,7 +3482,6 @@ document.addEventListener("DOMContentLoaded", function () {
         const tr = document.createElement("tr");
 
         tr.innerHTML = `
-          <td><input type="radio" name="arrest_participant" value="${p.name}"></td>
           <td>${p.name}</td>
           <td>${p.type}</td>
           <td>${p.job ?? ""}</td>
@@ -3490,85 +3490,97 @@ document.addEventListener("DOMContentLoaded", function () {
           <td>الأمن العام</td>
         `;
 
-        tr.querySelector("input").addEventListener("change", () => {
+        // Click to select row
+        tr.addEventListener("click", () => {
+          if (selectedRow) {
+            selectedRow.classList.remove("selected");
+          }
+          tr.classList.add("selected");
+          selectedRow = tr;
           selectedParticipant = p.name;
-          extraArea.style.display = "block";
-          validateForm();
         });
 
         participantsTableBody.appendChild(tr);
       });
 
-      participantsArea.style.display = "block";
+      showAlert("✅ تم تحميل بيانات الدعوى", "success");
     })
     .catch(err => {
       console.error(err);
       showAlert(err.error ?? "❌ حدث خطأ أثناء جلب بيانات الدعوى", "danger");
     });
-
-  });
-
-  // ➕ التحقق من جاهزية الحفظ
-  function validateForm() {
-
-    const valid =
-      selectedParticipant &&
-      durationInput.value &&
-      reasonSelect.value &&
-      centerSelect.value;
-
-    saveBtn.disabled = !valid;
-    saveCloseBtn.disabled = !valid;
   }
 
-  durationInput.addEventListener("input", validateForm);
-  reasonSelect.addEventListener("change", validateForm);
-  centerSelect.addEventListener("change", validateForm);
-
   // 💾 زر الحفظ
-  function submitArrestMemo(closeAfter) {
-    clearAlert();
+  if (saveBtn) {
+    saveBtn.addEventListener("click", function() {
+      clearAlert();
 
-    fetch("/writer/arrest-memo", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content
-      },
-      body: JSON.stringify({
-        case_number: currentCaseNumber,
-        participant_name: selectedParticipant,
-        detention_duration: durationInput.value,
-        detention_reason: reasonSelect.value,
-        detention_center: centerSelect.value,
-        save: true
-      })
-    })
-    .then(res => res.json().then(j => ({ ok: res.ok, json: j })))
-    .then(({ ok, json }) => {
-      if (!ok) throw json;
-
-      showAlert("✅ تم حفظ مذكرة التوقيف بنجاح", "success");
-
-      if (closeAfter) {
-        setTimeout(() => {
-          const modal = bootstrap.Modal.getInstance(modalEl);
-          modal.hide();
-        }, 700);
+      if (!selectedParticipant) {
+        showAlert("⚠️ يرجى اختيار طرف من الجدول");
+        return;
       }
 
-    })
-    .catch(err => {
-      console.error(err);
-      showAlert(err.error ?? "❌ خطأ أثناء حفظ مذكرة التوقيف", "danger");
+      if (!durationInput.value) {
+        showAlert("⚠️ يرجى إدخال مدة التوقيف");
+        return;
+      }
+
+      if (!reasonSelect.value) {
+        showAlert("⚠️ يرجى اختيار سبب التوقيف");
+        return;
+      }
+
+      if (!centerSelect.value) {
+        showAlert("⚠️ يرجى اختيار مركز الإصلاح");
+        return;
+      }
+
+      const caseNumber = caseSerial.value.trim();
+
+      fetch("/writer/arrest-memo", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content
+        },
+        body: JSON.stringify({
+          case_number: caseNumber,
+          participant_name: selectedParticipant,
+          detention_duration: durationInput.value,
+          detention_reason: reasonSelect.value,
+          detention_center: centerSelect.value,
+          save: true
+        })
+      })
+      .then(res => res.json().then(j => ({ ok: res.ok, json: j })))
+      .then(({ ok, json }) => {
+        if (!ok) throw json;
+
+        showAlert("✅ تم حفظ مذكرة التوقيف بنجاح", "success");
+
+        setTimeout(() => {
+          const modal = bootstrap.Modal.getInstance(modalEl);
+          if (modal) modal.hide();
+        }, 1000);
+      })
+      .catch(err => {
+        console.error(err);
+        showAlert(err.error ?? "❌ خطأ أثناء حفظ مذكرة التوقيف", "danger");
+      });
     });
   }
 
-  saveBtn.addEventListener("click", () => submitArrestMemo(false));
-  saveCloseBtn.addEventListener("click", () => submitArrestMemo(true));
-
   // إعادة ضبط عند إغلاق النافذة
-  modalEl.addEventListener("hidden.bs.modal", resetUI);
+  if (modalEl) {
+    modalEl.addEventListener("hidden.bs.modal", function() {
+      resetUI();
+      if (caseSerial) caseSerial.value = "";
+      if (courtNumber) courtNumber.value = "";
+      if (penNumber) penNumber.value = "";
+      if (yearNumber) yearNumber.value = "";
+    });
+  }
 
 });
 </script>
