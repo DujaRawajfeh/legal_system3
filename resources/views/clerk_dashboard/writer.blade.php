@@ -782,7 +782,7 @@
 
 
 <!-- قائمة محاضر الجلسات الخاصة بالكاتب -->
-<ul id="writer-sessions-submenu"
+<!-- <ul id="writer-sessions-submenu"
     style="display:none; position:absolute;
            background:white; border:1px solid #ccc;
            padding:10px; min-width:180px;
@@ -791,7 +791,7 @@
 
 
   
-</ul>
+</ul> -->
 
 
 
