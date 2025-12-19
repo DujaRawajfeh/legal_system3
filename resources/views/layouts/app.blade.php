@@ -274,6 +274,8 @@ document.addEventListener('DOMContentLoaded', function () {
     const entryTypeRequest = document.getElementById("type_request");
     const entryInput = document.getElementById("entryNumberInput");
 
+    if (!entryInput || !entryTypeRequest) return; // Exit if elements not found
+
     entryInput.addEventListener("keydown", function (e) {
 
         if (e.key === "Enter" && entryTypeRequest.checked) {
@@ -381,6 +383,8 @@ document.addEventListener("DOMContentLoaded", function () {
     const entryTypeCase = document.getElementById("type_case");
     const inputs = document.querySelectorAll('.third-bar input[type="text"]');
     const caseNumberInput = inputs[2]; // رقم الدعوى
+
+    if (!caseNumberInput || !entryTypeCase) return; // Exit if elements not found
 
     caseNumberInput.addEventListener("keydown", function (e) {
 
@@ -531,14 +535,18 @@ async function loadCaseDetails(caseNumber) {
 
 
 <script>
-document.getElementById('trigger-security').addEventListener('click', function() {
-    let menu = document.getElementById('security-menu');
-    if (menu.style.display === 'none' || menu.style.display === '') {
-        menu.style.display = 'block';
-    } else {
-        menu.style.display = 'none';
-    }
-});
+const securityTrigger = document.getElementById('trigger-security');
+const securityMenu = document.getElementById('security-menu');
+
+if (securityTrigger && securityMenu) {
+    securityTrigger.addEventListener('click', function() {
+        if (securityMenu.style.display === 'none' || securityMenu.style.display === '') {
+            securityMenu.style.display = 'block';
+        } else {
+            securityMenu.style.display = 'none';
+        }
+    });
+}
 </script>
 @stack('scripts')
 
