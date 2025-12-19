@@ -1903,51 +1903,173 @@
 <meta name="csrf-token" content="{{ csrf_token() }}">
 
 <!-- إدارة تباليغ الدعوى -->
+<style>
+  #manage-notifications-modal .modal-content {
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  }
+
+  #manage-notifications-modal .modal-body {
+    font-family: 'Cairo', sans-serif;
+    background: #f8f9fa;
+    padding: 20px;
+  }
+
+  #manage-notifications-modal h2 {
+    text-align: center;
+    margin-bottom: 18px;
+    font-size: 20px;
+  }
+
+  #manage-notifications-modal .case-number-wrapper {
+    margin-bottom: 20px;
+    background: #fff;
+    padding: 15px;
+    border-radius: 8px;
+  }
+
+  #manage-notifications-modal .case-number-label {
+    font-weight: bold;
+    margin-bottom: 8px;
+    display: block;
+  }
+
+  #manage-notifications-modal .case-number-inputs {
+    display: flex;
+    gap: 5px;
+    flex-wrap: wrap;
+    margin-bottom: 12px;
+  }
+
+  #manage-notifications-modal .case-number-inputs input {
+    flex: 1;
+    min-width: 120px;
+    padding: 8px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    text-align: center;
+  }
+
+  #manage-notifications-modal .case-number-inputs button {
+    padding: 10px 20px;
+    border-radius: 6px;
+    border: 0;
+    cursor: pointer;
+    font-family: 'Cairo', sans-serif;
+    font-weight: bold;
+    font-size: 14px;
+    background-color: #37678e;
+    color: #fff;
+    width: 100%;
+  }
+
+  #manage-notifications-modal table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+    background: #fff;
+  }
+
+  #manage-notifications-modal table, 
+  #manage-notifications-modal th, 
+  #manage-notifications-modal td {
+    border: 1px solid #ccc;
+  }
+
+  #manage-notifications-modal th, 
+  #manage-notifications-modal td {
+    padding: 8px;
+    text-align: center;
+  }
+
+  #manage-notifications-modal th {
+    background: #000;
+    color: #fff;
+  }
+
+  #manage-notifications-modal .btn-area {
+    margin-top: 20px;
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+  }
+
+  #manage-notifications-modal .btn-save {
+    background-color: #37678e;
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 6px;
+    border: 0;
+    cursor: pointer;
+    font-family: 'Cairo', sans-serif;
+    font-weight: bold;
+  }
+
+  #manage-notifications-modal .btn-end {
+    background-color: #777;
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 6px;
+    border: 0;
+    cursor: pointer;
+    font-family: 'Cairo', sans-serif;
+    font-weight: bold;
+  }
+</style>
+
 <div class="modal fade" id="manage-notifications-modal" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-xl modal-dialog-centered">
     <div class="modal-content">
 
-      <div class="modal-header">
+      <div class="modal-header" style="background: #000; color: #fff;">
         <h5 class="modal-title">إدارة تباليغ الدعوى</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
       </div>
 
       <div class="modal-body">
 
         <div id="manage-notifications-alert"></div>
 
-        <!-- إدخال رقم الدعوى -->
-        <div class="row g-2 mb-3">
-          <div class="col-md-12">
-            <input type="text" id="manage-notifications-case-number" class="form-control"
-                   placeholder="أدخل رقم الدعوى ثم اضغط Enter">
+        <!-- إدخال رقم الدعوى مقسم -->
+        <div class="case-number-wrapper">
+          <label class="case-number-label">رقم الدعوى:</label>
+
+          <div class="case-number-inputs">
+            <input type="text" id="manage-case-serial" maxlength="4" placeholder="####">
+            <input type="text" id="manage-case-court" maxlength="2" placeholder="##" readonly>
+            <input type="text" id="manage-case-pen" maxlength="3" placeholder="x/y" readonly>
+            <input type="text" id="manage-case-year" maxlength="4" placeholder="yyyy" readonly>
           </div>
+
+          <button id="manage-notifications-search">بحث</button>
         </div>
 
-        <!-- جدول التباليغ -->
-        <div id="manage-notifications-table-area" style="display:none;">
-          <h6>سجل التبليغات</h6>
-
-          <div class="table-responsive">
-            <table class="table table-sm table-hover" id="manage-notifications-table">
-              <thead class="table-light">
-                <tr>
-                  <th>رقم الدعوى</th>
-                  <th>نوع الطرف</th>
-                  <th>اسم الطرف</th>
-                  <th>طريقة التبليغ</th>
-                  <th>تاريخ التبليغ</th>
-                </tr>
-              </thead>
-              <tbody></tbody>
-            </table>
-          </div>
+        <!-- جدول التباليغ - دائماً ظاهر -->
+        <div class="table-responsive">
+          <table id="manage-notifications-table">
+            <thead>
+              <tr>
+                <th>رقم الدعوى</th>
+                <th>نوع الطرف</th>
+                <th>اسم الطرف</th>
+                <th>طريقة التبليغ</th>
+                <th>تاريخ التبليغ</th>
+              </tr>
+            </thead>
+            <tbody id="manage-notifications-tbody">
+              <!-- البيانات ستُملأ هنا -->
+            </tbody>
+          </table>
         </div>
 
-      </div>
+        <!-- أزرار حفظ وإنهاء -->
+        <div class="btn-area">
+          <button class="btn-save" id="manage-notifications-save">حفظ</button>
+          <button class="btn-end" data-bs-dismiss="modal">انهاء</button>
+        </div>
 
-      <div class="modal-footer">
-        <button class="btn btn-secondary" data-bs-dismiss="modal">إغلاق</button>
       </div>
 
     </div>
@@ -3349,40 +3471,64 @@ document.addEventListener("DOMContentLoaded", function () {
   const modalId = "manage-notifications-modal";
   const $ = id => document.getElementById(id);
 
-  const caseInput = $("manage-notifications-case-number");
+  const serialInput = $("manage-case-serial");
+  const courtInput = $("manage-case-court");
+  const penInput = $("manage-case-pen");
+  const yearInput = $("manage-case-year");
+  const searchBtn = $("manage-notifications-search");
+  const saveBtn = $("manage-notifications-save");
   const alertBox = $("manage-notifications-alert");
-  const tableArea = $("manage-notifications-table-area");
-  const tableBody = document.querySelector("#manage-notifications-table tbody");
+  const tableBody = $("manage-notifications-tbody");
 
   function showAlert(msg, type="info") {
-    alertBox.innerHTML = `<div class="alert alert-${type}">${msg}</div>`;
+    alertBox.innerHTML = `<div class="alert alert-${type} alert-dismissible fade show" role="alert">
+      ${msg}
+      <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>`;
   }
 
   function clearAlert() { alertBox.innerHTML = ""; }
 
   function resetTable() {
-    tableArea.style.display = "none";
     tableBody.innerHTML = "";
   }
 
-  // ⬅ البحث عند الضغط على Enter
-  caseInput.addEventListener("keyup", function (e) {
-    if (e.key === "Enter") {
-      fetchNotifications();
-    }
-  });
+  // Auto-focus next input on 4-digit entry
+  if (serialInput) {
+    serialInput.addEventListener("input", function() {
+      if (this.value.length === 4) {
+        courtInput.focus();
+      }
+    });
+  }
+
+  // Search button click
+  if (searchBtn) {
+    searchBtn.addEventListener("click", fetchNotifications);
+  }
+
+  // Enter key on serial input
+  if (serialInput) {
+    serialInput.addEventListener("keyup", function(e) {
+      if (e.key === "Enter" && this.value.length === 4) {
+        fetchNotifications();
+      }
+    });
+  }
 
   function fetchNotifications() {
     clearAlert();
     resetTable();
 
-    const caseNumber = caseInput.value.trim();
-    if (!caseNumber) {
-      showAlert("⚠️ أدخل رقم الدعوى", "warning");
+    const serial = serialInput.value.trim();
+    if (!serial || serial.length !== 4) {
+      showAlert("⚠️ أدخل رقم الدعوى (4 أرقام)", "warning");
       return;
     }
 
-    showAlert("⏳ جاري تحميل البيانات...");
+    const caseNumber = serial; // For now just use serial, extend if needed
+
+    showAlert("⏳ جاري تحميل البيانات...", "info");
 
     fetch(`/writer/case-notifications/${encodeURIComponent(caseNumber)}`)
       .then(res => res.json().then(j => ({ ok: res.ok, json: j })))
@@ -3404,17 +3550,28 @@ document.addEventListener("DOMContentLoaded", function () {
           const tr = document.createElement("tr");
 
           tr.innerHTML = `
-            <td>${n.case_number}</td>
-            <td>${n.participant_type}</td>
-            <td>${n.participant_name}</td>
-            <td>${n.method}</td>
-            <td>${n.notified_at ?? "-"}</td>
+            <td>${n.case_number || serial}</td>
+            <td>${n.participant_type || '-'}</td>
+            <td>${n.participant_name || '-'}</td>
+            <td>
+              <select class="form-select form-select-sm notification-method" style="width: 150px; margin: 0 auto;">
+                <option value="">اختر</option>
+                <option value="sms" ${n.method === 'sms' ? 'selected' : ''}>رسالة نصية</option>
+                <option value="email" ${n.method === 'email' ? 'selected' : ''}>بريد إلكتروني</option>
+                <option value="قسم التباليغ" ${n.method === 'قسم التباليغ' ? 'selected' : ''}>قسم التباليغ</option>
+              </select>
+            </td>
+            <td>
+              <input type="date" class="form-control form-control-sm notification-date" 
+                     style="width: 150px; margin: 0 auto;" 
+                     value="${n.notified_at || ''}" />
+            </td>
           `;
 
           tableBody.appendChild(tr);
         });
 
-        tableArea.style.display = "block";
+        showAlert(`✅ تم تحميل ${notifications.length} تبليغ`, "success");
 
       })
       .catch(err => {
@@ -3424,11 +3581,77 @@ document.addEventListener("DOMContentLoaded", function () {
       });
   }
 
+  // Save button handler
+  if (saveBtn) {
+    saveBtn.addEventListener("click", async function() {
+      const rows = tableBody.querySelectorAll("tr");
+      
+      if (!rows.length) {
+        showAlert("⚠️ لا توجد بيانات لحفظها", "warning");
+        return;
+      }
+
+      const updates = [];
+      
+      rows.forEach(row => {
+        const cells = row.querySelectorAll("td");
+        const caseNumber = cells[0].textContent.trim();
+        const participantName = cells[2].textContent.trim();
+        const method = row.querySelector(".notification-method").value;
+        const date = row.querySelector(".notification-date").value;
+        
+        if (method && participantName) {
+          updates.push({
+            case_number: caseNumber,
+            participant_name: participantName,
+            method: method,
+            notified_at: date || null
+          });
+        }
+      });
+
+      if (!updates.length) {
+        showAlert("⚠️ لم يتم تحديد أي طريقة تبليغ", "warning");
+        return;
+      }
+
+      saveBtn.disabled = true;
+      saveBtn.textContent = "جاري الحفظ...";
+
+      try {
+        const res = await fetch("{{ route('notifications.save') }}", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content
+          },
+          body: JSON.stringify({ notifications: updates })
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) throw data;
+
+        showAlert("✅ تم حفظ التعديلات بنجاح", "success");
+
+      } catch (err) {
+        console.error(err);
+        showAlert(err.error ?? "❌ حدث خطأ أثناء الحفظ", "danger");
+      } finally {
+        saveBtn.disabled = false;
+        saveBtn.textContent = "حفظ";
+      }
+    });
+  }
+
   // مسح البيانات عند إغلاق النافذة
   document.getElementById(modalId).addEventListener("hidden.bs.modal", function () {
     clearAlert();
     resetTable();
-    caseInput.value = "";
+    if (serialInput) serialInput.value = "";
+    if (courtInput) courtInput.value = "";
+    if (penInput) penInput.value = "";
+    if (yearInput) yearInput.value = "";
   });
 
 });
