@@ -985,6 +985,444 @@
     </div>
 </div>
 
+<!-- 🔶 مودال جدول أعمال المحكمة -->
+<div class="modal fade" id="courtScheduleModal" tabindex="-1" aria-labelledby="courtScheduleLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl modal-dialog-scrollable">
+    <div class="modal-content">
+
+      <div class="modal-header bg-dark text-white">
+        <h5 class="modal-title">جدول أعمال المحكمة</h5>
+        <button class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body">
+
+        <!-- 🔹 خيارات الفلترة -->
+        <div class="row mb-3">
+          
+          <div class="col-md-6">
+            <label class="form-label">تاريخ الجلسة:</label>
+            <input type="date" id="courtScheduleDate" class="form-control">
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label">حالة الجلسة:</label>
+            <select id="courtScheduleStatus" class="form-select">
+              <option value="">كل الحالات</option>
+            </select>
+          </div>
+
+        </div>
+
+        <div class="text-center mb-3">
+          <button class="btn btn-dark" onclick="loadCourtSchedule()">بحث</button>
+        </div>
+
+        <!-- 🔹 جدول النتائج -->
+        <div class="table-responsive">
+          <table class="table table-bordered text-center">
+            <thead class="table-light">
+              <tr>
+                <th>رقم الدعوى</th>
+                <th>التاريخ</th>
+                <th>الوقت</th>
+                <th>نوع الجلسة</th>
+                <th>حالة الجلسة</th>
+                <th>اسم المحكمة</th>
+                <th>اسم القاضي</th>
+              </tr>
+            </thead>
+            <tbody id="courtScheduleTable">
+              <tr><td colspan="7">لا توجد بيانات</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-secondary" data-bs-dismiss="modal">إغلاق</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+
+// فتح المودال
+function openCourtScheduleModal() {
+    const modal = new bootstrap.Modal(document.getElementById('courtScheduleModal'));
+    modal.show();
+
+    // تحميل الحالات فورًا
+    loadSessionStatuses();
+}
+
+
+// ===========================================
+// تحميل الحالات من المسار الصحيح
+// ===========================================
+function loadSessionStatuses() {
+    fetch('/session-statuses-court')
+        .then(res => res.json())
+        .then(statuses => {
+            const select = document.getElementById('courtScheduleStatus');
+            select.innerHTML = '<option value="">كل الحالات</option>';
+
+            statuses.forEach(s => {
+                select.innerHTML += `<option value="${s}">${s}</option>`;
+            });
+        })
+        .catch(() => {
+            alert("تعذر تحميل حالات الجلسات");
+        });
+}
+
+
+// ===========================================
+// تحميل جدول المحكمة
+// ===========================================
+function loadCourtSchedule() {
+
+    const params = {
+        date: document.getElementById('courtScheduleDate').value,
+        status: document.getElementById('courtScheduleStatus').value,
+    };
+
+    fetch('/court-schedule?' + new URLSearchParams(params))
+        .then(res => res.json())
+        .then(data => {
+            const tbody = document.getElementById("courtScheduleTable");
+            tbody.innerHTML = "";
+
+            if (!data.length) {
+                tbody.innerHTML = `<tr><td colspan="7">لا يوجد جلسات مطابقة</td></tr>`;
+                return;
+            }
+
+            data.forEach(item => {
+                tbody.innerHTML += `
+                    <tr>
+                        <td>${item.case_number ?? '-'}</td>
+                        <td>${item.date}</td>
+                        <td>${item.time}</td>
+                        <td>${item.session_type ?? '-'}</td>
+                        <td>${item.status ?? '-'}</td>
+                        <td>${item.tribunal_name ?? '-'}</td>
+                        <td>${item.judge_name ?? '-'}</td>
+                    </tr>
+                `;
+            });
+        })
+        .catch(err => {
+            console.error(err);
+            alert("حدث خطأ أثناء تحميل جدول المحكمة");
+        });
+}
+
+</script>
+
+<!-- 🔶 مودال جدول أعمال القاضي -->
+<div class="modal fade" id="judgeScheduleModal" tabindex="-1">
+  <div class="modal-dialog modal-xl modal-dialog-scrollable">
+    <div class="modal-content">
+
+      <div class="modal-header bg-dark text-white">
+        <h5 class="modal-title">جدول أعمال القاضي</h5>
+        <button class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body">
+
+        <!-- 🔹 فلاتر -->
+        <div class="row mb-4">
+
+          <!-- اختيار القاضي -->
+          <div class="col-md-6">
+            <label class="form-label">اختر القاضي:</label>
+            <select id="judgeSelect" class="form-select">
+              <option value="">اختر قاضٍ</option>
+            </select>
+          </div>
+
+          <!-- حالة الجلسة -->
+          <div class="col-md-6">
+            <label class="form-label">حالة الجلسة:</label>
+            <select id="judgeSessionStatus" class="form-select">
+              <option value="">كل الحالات</option>
+              <option value="محددة">محددة</option>
+              <option value="مستمرة">مستمرة</option>
+              <option value="مكتملة">مكتملة</option>
+              <option value="مؤجلة">مؤجلة</option>
+            </select>
+          </div>
+
+        </div>
+
+        <div class="text-center mb-3">
+          <button class="btn btn-dark" onclick="loadJudgeSchedule()">عرض الجدول</button>
+        </div>
+
+        <!-- 🔹 جدول النتائج -->
+        <div class="table-responsive">
+          <table class="table table-bordered text-center">
+            <thead class="table-light">
+              <tr>
+                <th>رقم الدعوى</th>
+                <th>تاريخ الجلسة</th>
+                <th>وقت الجلسة</th>
+                <th>المحكمة</th>
+                <th>نوع الجلسة</th>
+                <th>حالة الجلسة</th>
+                <th>السبب</th>
+                <th>التاريخ الأصلي</th>
+              </tr>
+            </thead>
+            <tbody id="judgeScheduleTable">
+              <tr><td colspan="8">لا توجد بيانات</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-secondary" data-bs-dismiss="modal">إغلاق</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+<script>
+
+/* ============================
+   🔹 تحميل القضاة من السيرفر
+============================ */
+function loadJudges() {
+    fetch('/judges')
+        .then(res => res.json())
+        .then(data => {
+            const select = document.getElementById("judgeSelect");
+            select.innerHTML = '<option value="">اختر قاضٍ</option>';
+
+            data.forEach(j => {
+                select.innerHTML += `<option value="${j.id}">${j.full_name}</option>`;
+            });
+        })
+        .catch(() => alert("تعذر تحميل قائمة القضاة"));
+}
+
+
+/* ====================================================
+   🔹 تحميل القضاة تلقائيًا عند فتح مودال جدول القاضي
+==================================================== */
+document.getElementById("judgeScheduleModal")
+    .addEventListener("shown.bs.modal", function () {
+        loadJudges();
+    });
+
+
+
+
+/* ============================
+   🔹 تحميل جدول أعمال القاضي
+============================ */
+function loadJudgeSchedule() {
+
+    const params = {
+        judge_id: document.getElementById("judgeSelect").value,
+        status: document.getElementById("judgeSessionStatus").value,
+    };
+
+    fetch('/judge-schedule?' + new URLSearchParams(params))
+        .then(res => res.json())
+        .then(data => {
+
+            const tbody = document.getElementById("judgeScheduleTable");
+            tbody.innerHTML = "";
+
+            if (!data.length) {
+                tbody.innerHTML = `<tr><td colspan="8">لا توجد جلسات مطابقة</td></tr>`;
+                return;
+            }
+
+            data.forEach(item => {
+                tbody.innerHTML += `
+                    <tr>
+                        <td>${item.case_number ?? '-'}</td>
+                        <td>${item.date}</td>
+                        <td>${item.time}</td>
+                        <td>${item.tribunal_name ?? '-'}</td>
+                        <td>${item.session_type ?? '-'}</td>
+                        <td>${item.status ?? '-'}</td>
+                        <td>${item.reason ?? '-'}</td>
+                        <td>${item.original_date ?? '-'}</td>
+                    </tr>
+                `;
+            });
+
+        })
+        .catch(err => {
+            console.error(err);
+            alert("حدث خطأ أثناء تحميل جدول أعمال القاضي");
+        });
+}
+
+</script>
+
+<!-- 🔶 مودال جدول الدعوى -->
+<div class="modal fade" id="caseScheduleModal" tabindex="-1">
+  <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content">
+
+      <div class="modal-header bg-dark text-white">
+        <h5 class="modal-title">جدول الدعوى</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body">
+
+        <div class="row mb-3">
+
+          <div class="col-md-3">
+            <label class="form-label">رقم المحكمة</label>
+            <input type="text" id="cs_tribunal" class="form-control form-control-sm" value="---" readonly>
+          </div>
+
+          <div class="col-md-3">
+            <label class="form-label">رقم القلم</label>
+            <input type="text" id="cs_department" class="form-control form-control-sm" value="---" readonly>
+          </div>
+
+          <div class="col-md-3">
+            <label class="form-label">السنة</label>
+            <input type="text" class="form-control form-control-sm" value="{{ date('Y') }}" readonly>
+          </div>
+
+          <div class="col-md-3">
+            <label class="form-label">رقم الدعوى</label>
+            <input type="text" id="cs_case_number" class="form-control form-control-sm"
+                   placeholder="أدخل رقم الدعوى">
+          </div>
+
+        </div>
+
+        <div class="table-responsive mt-3">
+          <table class="table table-bordered text-center align-middle">
+            <thead class="table-light">
+              <tr>
+                <th>تاريخ الجلسة</th>
+                <th>وقت الجلسة</th>
+                <th>نوع الحكم</th>
+                <th>نوع الجلسة</th>
+                <th>حالة الجلسة</th>
+                <th>القاضي</th>
+              </tr>
+            </thead>
+
+            <tbody id="cs_sessions_body">
+              <tr><td colspan="6">يرجى إدخال رقم الدعوى لعرض الجلسات</td></tr>
+            </tbody>
+
+          </table>
+        </div>
+
+      </div>
+
+      <div class="modal-footer justify-end">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إغلاق</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+
+    const input = document.getElementById('cs_case_number');
+    const tbody = document.getElementById('cs_sessions_body');
+
+    const tribunalInput = document.getElementById('cs_tribunal');
+    const departmentInput = document.getElementById('cs_department');
+
+    const caseScheduleUrlTemplate = @json(route('case.schedule', ['caseNumber' => 'CASE_NUMBER_PLACEHOLDER']));
+
+    input.addEventListener('keydown', function (e) {
+        if (e.key !== 'Enter') return;
+
+        const caseNumber = input.value.trim();
+        if (!caseNumber) {
+            alert('يرجى إدخال رقم الدعوى');
+            return;
+        }
+
+        const url = caseScheduleUrlTemplate.replace('CASE_NUMBER_PLACEHOLDER', encodeURIComponent(caseNumber));
+
+        fetch(url)
+            .then(response => response.json())
+            .then(data => {
+
+                tbody.innerHTML = '';
+
+                if (data.error) {
+                    tbody.innerHTML = `<tr><td colspan="6">${data.error}</td></tr>`;
+                    tribunalInput.value = '---';
+                    departmentInput.value = '---';
+                    return;
+                }
+
+                tribunalInput.value = data.tribunal_number ?? '---';
+                departmentInput.value = data.department_number ?? '---';
+
+                if (!data.sessions || data.sessions.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="6">لا توجد جلسات لهذه الدعوى</td></tr>';
+                    return;
+                }
+
+                data.sessions.forEach(s => {
+                    tbody.innerHTML += `
+                        <tr>
+                            <td>${s.session_date ?? '---'}</td>
+                            <td>${s.session_time ?? '---'}</td>
+                            <td>${s.judgment_type ?? '---'}</td>
+                            <td>${s.session_type ?? '---'}</td>
+                            <td>${s.status ?? '---'}</td>
+                            <td>${s.judge_name ?? '---'}</td>
+                        </tr>
+                    `;
+                });
+
+            })
+            .catch(err => {
+                console.error('❌ خطأ:', err);
+                alert('حدث خطأ أثناء تحميل الجلسات');
+            });
+
+    });
+});
+
+function closeCaseSchedule() {
+  const modalEl = document.getElementById('caseScheduleModal');
+  const modal = bootstrap.Modal.getInstance(modalEl);
+  if (modal) modal.hide();
+}
+</script>
+
+<style>
+  #caseScheduleModal .modal-body {
+    max-height: 70vh;
+    overflow-y: auto;
+  }
+
+  #caseScheduleModal .table th {
+    background-color: #f8f9fa;
+    font-weight: 600;
+    position: sticky;
+    top: 0;
+    z-index: 1;
+  }
+</style>
 
 <!--  نافذة جدول الطلبات -->
 <div class="modal fade" id="requestScheduleModal" tabindex="-1" aria-labelledby="requestScheduleLabel" aria-hidden="true">

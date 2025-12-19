@@ -179,11 +179,11 @@
     <li>
       <a href="#" id="sessions-trigger">الجلسات ▾</a>
       <ul>
-        <li><a href="#">جدول أعمال المحكمة</a></li>
-        <li><a href="#">جدول أعمال القاضي</a></li>
-        <li><a href="#">جدول الدعوى</a></li>
-        <li><a href="#" data-bs-toggle="modal" data-bs-target="#requestScheduleModal">جدول الطلبات</a></li>
-        <li><a href="#" onclick="openReportsListModal()">محاضر الجلسات</a></li>
+        <li><a onclick="openCourtScheduleModal()">جدول أعمال المحكمة</a></li>
+        <li><a onclick="$('#judgeScheduleModal').modal('show')">جدول أعمال القاضي</a></li>
+        <li><a onclick="$('#caseScheduleModal').modal('show')">جدول الدعوى</a></li>
+        <li><a onclick="$('#requestScheduleModal').modal('show')">جدول الطلبات</a></li>
+        <li><a onclick="openReportsListModal()">محاضر الجلسات</a></li>
       </ul>
     </li>
     <li><a href="#" data-bs-toggle="modal" data-bs-target="#participantsModal">المشاركين</a></li>
