@@ -3409,7 +3409,7 @@ document.addEventListener("DOMContentLoaded", function () {
         clearAlert();
 
         currentCaseId = json.id; // Store the case ID
-        caseType.value = json.title ?? "";
+        caseType.value = json.case_type ?? "";
         judgeName.value = json.judge_name ?? "";
         currentCaseData = json.participants ?? [];
 
@@ -3670,7 +3670,7 @@ document.addEventListener("DOMContentLoaded", function () {
         clearAlert();
 
         currentCaseId = json.id;
-        caseType.value = json.title ?? "";
+        caseType.value = json.case_type ?? "";
         judgeName.value = json.judge_name ?? "";
         currentCaseData = json.participants ?? [];
 
@@ -3923,7 +3923,7 @@ document.addEventListener("DOMContentLoaded", function () {
         clearAlert();
 
         currentCaseId = json.id;
-        caseType.value = json.title ?? "";
+        caseType.value = json.case_type ?? "";
         judgeName.value = json.judge_name ?? "";
         currentCaseData = json.participants ?? [];
 
@@ -4176,7 +4176,7 @@ document.addEventListener("DOMContentLoaded", function () {
         clearAlert();
 
         currentCaseId = json.id;
-        caseType.value = json.title ?? "";
+        caseType.value = json.case_type ?? "";
         judgeName.value = json.judge_name ?? "";
         currentCaseData = json.participants ?? [];
 
