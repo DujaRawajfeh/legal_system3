@@ -788,9 +788,7 @@
            padding:10px; min-width:180px;
            z-index:999999;">
     
-    <li class="dropdown-item text-primary" onclick="openReportsListModal()">
-         محاضر الجلسات
-    </li>
+
 
   
 </ul>

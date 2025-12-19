@@ -183,6 +183,9 @@
         <li><a href="#">جدول أعمال القاضي</a></li>
         <li><a href="#">جدول الدعوى</a></li>
         <li><a href="#" data-bs-toggle="modal" data-bs-target="#requestScheduleModal">جدول الطلبات</a></li>
+        <li class="dropdown-item text-primary" onclick="openReportsListModal()">
+         محاضر الجلسات
+    </li>
       </ul>
     </li>
     <li><a href="#" data-bs-toggle="modal" data-bs-target="#participantsModal">المشاركين</a></li>
