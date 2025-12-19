@@ -1458,17 +1458,17 @@ function closeCaseSchedule() {
           
           <div class="col-md-3">
             <label class="form-label">رقم المحكمة</label>
-            <input type="text" id="courtNumber" class="form-control form-control-sm" value="---" readonly>
+            <input type="text" id="tribunal_number" class="form-control form-control-sm" value="---" readonly>
           </div>
 
           <div class="col-md-3">
             <label class="form-label">القلم</label>
-            <input type="text" id="courtDesk" class="form-control form-control-sm" value="---" readonly>
+            <input type="text" id="department_number" class="form-control form-control-sm" value="---" readonly>
           </div>
 
           <div class="col-md-3">
             <label class="form-label">السنة</label>
-            <input type="text" id="courtYear" class="form-control form-control-sm" value="---" readonly>
+            <input type="text" id="court_year" class="form-control form-control-sm" value="---" readonly>
           </div>
 
           <div class="col-md-3">
@@ -5886,9 +5886,9 @@ function fetchRequestSchedule() {
 
             if (data.data.length > 0) {
                 const first = data.data[0];
-                document.getElementById('courtNumber').value = first.tribunal_number || '---';
-                document.getElementById('courtDesk').value = first.department_number || '---';
-                document.getElementById('courtYear').value = first.court_year || '---';
+                document.getElementById('tribunal_number').value = first.tribunal_number || '---';
+                document.getElementById('department_number').value = first.department_number || '---';
+                document.getElementById('court_year').value = first.court_year || '---';
             }
         } else {
             alert('لم يتم العثور على بيانات');
