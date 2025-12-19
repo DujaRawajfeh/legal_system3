@@ -2043,10 +2043,10 @@
       </div>
 
       <div class="modal-footer" style="font-family:'Cairo',sans-serif;">
-        <button id="notif-judgment-save" class="btn"
+        <!-- <button id="notif-judgment-save" class="btn"
                 style="background:#1a7f24;color:#fff;border:none;font-weight:bold;">
           حفظ وانهاء
-        </button>
+        </button> -->
         <button id="notif-judgment-notify" class="btn"
                 style="background:#27ae60;color:#fff;border:none;font-weight:bold;">
           تنفيذ تبليغ
@@ -4365,6 +4365,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const mainTrigger = document.getElementById("trigger-notifications");
     const menu = document.getElementById("notifications-menu");
+
+    if (!mainTrigger || !menu) return; // Exit if elements not found
 
     // عند الضغط على كلمة التباليغ
     mainTrigger.addEventListener("click", function () {
