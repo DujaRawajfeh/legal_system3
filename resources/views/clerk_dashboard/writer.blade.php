@@ -2889,7 +2889,7 @@ document.addEventListener('DOMContentLoaded', () => {
           <td>${p.national_id ?? ''}</td>
           <td>${p.type ?? ''}</td>
           <td>${p.job ?? ''}</td>
-          <td>${p.address ?? ''}</td>
+          <td>${p.residence ?? ''}</td>
           <td>${p.phone ?? ''}</td>
           <td>
             <select class="form-select form-select-sm">
