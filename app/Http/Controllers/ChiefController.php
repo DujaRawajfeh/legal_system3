@@ -10,16 +10,28 @@ use App\Models\JudgeUser;
 use App\Models\ArrestMemo;
 use Carbon\Carbon;
 use App\Models\RequestSchedule;
+use Illuminate\Support\Facades\Auth;
 
 use Illuminate\Support\Facades\Log;
+use App\Models\IncomingProsecutorCase;
 
 class ChiefController extends Controller
 {
     
-    public function dashboard()
-    {
-        return view('clerk_dashboard.chief'); 
-    }
+   public function dashboard()
+{
+    // المستخدم الحالي
+    $chief = Auth::user()->load(['tribunal', 'department']);
+
+    //  متغير ضروري لأن writer.blade.php يستخدمه
+    $records = IncomingProsecutorCase::select('records')
+        ->distinct()
+        ->whereNotNull('records')
+        ->orderBy('records')
+        ->get();
+
+    return view('clerk_dashboard.chief', compact('chief', 'records'));
+}
 
     //نافذه تحويل دعوى
    public function getJudges()
@@ -35,7 +47,7 @@ class ChiefController extends Controller
 
     } catch (\Exception $e) {
 
-        \Log::error("❌ خطأ getJudges:", [
+        \Log::error(" خطأ getJudges:", [
             'message' => $e->getMessage(),
             'file'    => $e->getFile(),
             'line'    => $e->getLine(),
@@ -139,7 +151,7 @@ public function saveAssignment(Request $request)
 
     } catch (\Exception $e) {
 
-        Log::error("❌ خطأ داخل saveAssignment:", [
+        Log::error(" خطأ داخل saveAssignment:", [
             'data_sent' => $request->all(),
             'message'   => $e->getMessage(),
             'line'      => $e->getLine(),
@@ -172,7 +184,7 @@ public function getEmployees(Request $request)
 
     } catch (\Exception $e) {
 
-        Log::error("❌ خطأ داخل getEmployees:", [
+        Log::error(" خطأ داخل getEmployees:", [
             'role'     => $request->role,
             'message'  => $e->getMessage(),
             'line'     => $e->getLine(),

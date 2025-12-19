@@ -14,13 +14,13 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::get('/', function () {return redirect()->route('login');});
 
 
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 
-Route::get('/writer', function () {
-    return redirect()->route('writer.dashboard');
-})->middleware('auth');
 
-Route::get('/writer/dashboard', [WriterController::class, 'dashboard'])->middleware('auth')->name('writer.dashboard');
+
+
+
 //تسجيل دعوى
 Route::post('/court-cases/store', [WriterController::class, 'storeCourtCase'])->name('courtCases.store');
 Route::post('/participants/store', [WriterController::class, 'storeParticipant']);
@@ -127,7 +127,6 @@ Route::get('/writer/arrest-memos/{caseNumber}', [WriterController::class, 'getAr
 
 
 
-Route::get('/judge', [JudgeController::class, 'index'])->name('judge.index');
 
 
 Route::get('/archiver', [ArchiverController::class, 'index'])->name('archiver.page');
@@ -150,7 +149,7 @@ Route::post('/typist/judgment/store', [TypistController::class, 'storeJudgment']
 
 
 // لوحة رئيس القسم
-Route::get('/chief/dashboard', [ChiefController::class, 'dashboard'])->name('chief.dashboard');
+//Route::get('/chief/dashboard', [ChiefController::class, 'dashboard'])->name('chief.dashboard');
 // جلب القضاة
 Route::get('/chief/judges', [ChiefController::class, 'getJudges'])->name('chief.judges');
 // تحويل الدعوى
@@ -210,18 +209,46 @@ Route::post('/update-password', [AuthController::class, 'updatePassword'])
 
 
 Route::get('/change-password', function () {
-    return view('login');
-})->name('password.change');
-
-
-
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->name('dashboard');
+    return view('auth.change-password');
+})
+->name('password.change')
+->middleware('auth');
 
 
 
 
+
+
+
+
+Route::middleware(['auth', 'password.expired'])->group(function () {
+
+    Route::get('/dashboard', function () {
+        return view('dashboard');
+    })->name('dashboard');
+
+    // الكاتب
+    Route::get('/writer/dashboard', [WriterController::class, 'dashboard'])
+        ->name('writer.dashboard');
+
+    // القاضي
+    Route::get('/judge', [JudgeController::class, 'index'])
+        ->name('judge.index');
+
+    // الكاتب الآلي
+    Route::get('/typist', [TypistController::class, 'index'])
+        ->name('typist.index');
+
+    // ✅ الأرشيف (Controller الصحيح)
+    Route::get('/archiver', [ArchiverController::class, 'index'])
+        ->name('archiver.page');
+
+
+     Route::get('/chief/dashboard', [ChiefController::class, 'dashboard'])
+        ->name('chief.dashboard');
+
+
+});
 
 
 

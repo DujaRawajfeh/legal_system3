@@ -208,6 +208,23 @@ body {
 .btn-close-white {
   filter: invert(1);
 }
+
+
+ .logout-btn {
+    background-color: #2f6fae;   /*تسجيل الدخول*/
+    border: none;
+    color: white;
+    padding: 5px 12px;
+    font-size: 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-family: "Cairo", sans-serif;
+    line-height: 1;
+}
+
+.logout-btn:hover {
+    background-color: #255b8f;   /* أغمق شوي عند المرور */
+}
 </style>
 </head>
 <body>
@@ -243,6 +260,13 @@ body {
     </li>
     <li><a href="{{ route('2fa.setup') }}" target="_blank">إعدادات الحماية</a></li>
   </ul>
+
+  <form method="POST" action="{{ route('logout') }}" class="logout-form">
+    @csrf
+    <button type="submit" class="logout-btn">
+        تسجيل الخروج
+    </button>
+</form>
 </nav>
 
   @extends('components.entry-search-bar')

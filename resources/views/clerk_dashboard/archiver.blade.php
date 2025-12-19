@@ -178,7 +178,18 @@
 
 <nav class="navbar">
     <div class="user-info">المؤرشف / {{ $archiver->full_name }}</div>
-    <li><a href="#" class="security-link" onclick="openWindow('securitysettings')">اعدادات الحماية</a></li>
+    <li>
+  <a href="{{ route('2fa.setup') }}" class="security-link" target="_blank">
+    إعدادات الحماية
+  </a>
+</li>
+
+<form method="POST" action="{{ route('logout') }}" class="logout-form">
+    @csrf
+    <button type="submit" class="logout-btn">
+        تسجيل الخروج
+    </button>
+</form>
 </nav>
 
 <div class="container content">
@@ -362,14 +373,7 @@ function viewDocument(url) {
   window.open(url, "_blank");
 }
 
-// ✅ فتح نافذة إعدادات الحماية
-function openWindow(page){
-  let width = 1000;
-  let height = 600;
-  let left = (screen.width - width) / 2;
-  let top = (screen.height - height) / 2;
-  window.open(page + '.html', '_blank', `width=${width},height=${height},top=${top},left=${left}`);
-}
+
 </script>
 </body>
 </html>

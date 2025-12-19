@@ -200,6 +200,14 @@ button:hover, .btn:hover {
     </ul>
   </div>
   <span class="department-name">القلم/ {{ $judge->department->name ?? '-' }}</span>
+
+
+  <form method="POST" action="{{ route('logout') }}" class="logout-form">
+    @csrf
+    <button type="submit" class="logout-btn">
+        تسجيل الخروج
+    </button>
+</form>
 </nav>
 
 

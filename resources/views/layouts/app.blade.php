@@ -107,6 +107,24 @@
     #case-options li:hover {
         background-color: #e9ecef;
     }
+
+
+
+   .logout-btn {
+    background-color: #2f6fae;   /*تسجيل الدخول*/
+    border: none;
+    color: white;
+    padding: 5px 12px;
+    font-size: 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-family: "Cairo", sans-serif;
+    line-height: 1;
+}
+
+.logout-btn:hover {
+    background-color: #255b8f;   /* أغمق شوي عند المرور */
+}
     </style>
 </head>
 
@@ -137,8 +155,8 @@
     <li><a href="#">مخاطبات الامن العام ▾</a>
       <ul>
         <li><a href="#" data-bs-toggle="modal" data-bs-target="#arrest-memo-modal">مذكرة توقيف</a></li>
-        <li><a href="#">مذكرة تمديد توقيف</a></li>
-        <li><a href="#">مذكرة افراج للموقوفين</a></li>
+        <li><a href="#"data-bs-toggle="modal"data-bs-target="#extend-arrest-memo-modal"> مذكرة تمديد توقيف</a></li>
+       <li><a href="#"data-bs-toggle="modal"data-bs-target="#release-memo-modal">مذكرة افراج للموقوفين</a></li>
       </ul>
     </li>
     <li><a href="#" id="trigger-notifications">تباليغ ▾</a>
@@ -148,7 +166,13 @@
         <li><a class="submenu-item" href="#" 
    data-bs-toggle="modal" 
    data-bs-target="#notif-witness-modal">مذكرة حضور خاصة بالشهود</a></li>
-        <li><a href="#">مذكرة تبليغ حكم</a></li>
+       <li>
+  <a href="#"
+     data-bs-toggle="modal"
+     data-bs-target="#notif-judgment-modal">
+     مذكرة تبليغ حكم
+  </a>
+</li>
         <li><a href="#" data-bs-toggle="modal" data-bs-target="#manage-notifications-modal">ادارة تباليغ الدعوى</a></li>
       </ul>
     </li>
@@ -164,7 +188,23 @@
     <li><a href="#" data-bs-toggle="modal" data-bs-target="#participantsModal">المشاركين</a></li>
     <li><a href="{{ route('2fa.setup') }}">اعدادات الحماية</a></li>
   </ul>
+
+
+  <li>
+    <form method="POST" action="{{ route('logout') }}" style="margin:0;">
+        @csrf
+        <button
+            type="submit"
+            class="logout-btn"
+        >
+            تسجيل الخروج
+        </button>
+    </form>
+</li>
 </nav>
+
+
+
 
 
 

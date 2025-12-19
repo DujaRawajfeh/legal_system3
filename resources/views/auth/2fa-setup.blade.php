@@ -188,7 +188,7 @@
     {{-- إذا غير مفعلة --}}
     @if(!auth()->user()->two_factor_enabled)
         <div>
-            <h4>📱 امسح هذا الرمز في تطبيق المصادقة:</h4>
+            <h4> امسح هذا الرمز في تطبيق المصادقة:</h4>
 
             @if(isset($qrSvg))
                 <div class="qr-section">{!! $qrSvg !!}</div>
@@ -205,7 +205,7 @@
             <label>أدخل الرمز من التطبيق:</label>
             <input type="text" name="totp_code" required autocomplete="off" placeholder="أدخل الرمز المكون من 6 أرقام">
             <div class="form-actions">
-                <button type="submit">✅ تفعيل المصادقة الثنائية</button>
+                <button type="submit"> تفعيل المصادقة الثنائية</button>
                 <a href="{{ url()->previous() }}" class="btn">إلغاء</a>
             </div>
         </form>
@@ -218,14 +218,14 @@
         <form method="POST" action="{{ route('2fa.disable') }}">
             @csrf
             <div class="form-actions">
-                <button type="submit" style="background:#b00;color:#fff">🔓 تعطيل المصادقة الثنائية</button>
+                <button type="submit" style="background:#b00;color:#fff"> تعطيل المصادقة الثنائية</button>
                 <a href="{{ url()->previous() }}" class="btn">رجوع</a>
             </div>
         </form>
 
         @if(is_array(auth()->user()->two_factor_recovery_codes) && count(auth()->user()->two_factor_recovery_codes) > 0)
             <div class="recovery-codes">
-                <h4>🔑 الرموز الاحتياطية - احتفظ بها في مكان آمن:</h4>
+                <h4> الرموز الاحتياطية - احتفظ بها في مكان آمن:</h4>
                 <ul>
                     @foreach(auth()->user()->two_factor_recovery_codes as $code)
                         <li>{{ $code }}</li>

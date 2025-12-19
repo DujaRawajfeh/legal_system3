@@ -168,7 +168,11 @@
 
 <div class="login-box">
 
-    <img src="{{ asset('images/jordan.jpg') }}" alt="شعار المملكة الأردنية الهاشمية">
+    <img
+  src="{{ asset('images/jordan-logo.png') }}"
+  alt="شعار المملكة الأردنية الهاشمية"
+  style="max-width:120px; height:auto;"
+>
 
     <div class="system-title">نظام دائرة المحاكم</div>
     <div class="subtitle">تسجيل الدخول</div>
@@ -201,33 +205,12 @@
         <button type="submit">دخول</button>
     </form>
 
-    <a href="#" class="forgot-password" onclick="openModal()">هل نسيت كلمة المرور؟</a>
+   
 
     <div class="footer">© جميع الحقوق محفوظة — دائرة المحاكم</div>
 </div>
 
-<!-- نافذة تغيير كلمة السر -->
-<div id="changePasswordModal" class="modal">
-    <div class="modal-content">
-        <h3>تغيير كلمة السر</h3>
-        <form method="POST" action="{{ route('password.update') }}">
-            @csrf
-            <input type="hidden" name="national_id" value="{{ old('national_id') }}">
 
-            <label>كلمة السر الحالية:</label>
-            <input type="password" name="current_password" required>
-
-            <label>كلمة السر الجديدة:</label>
-            <input type="password" name="new_password" required>
-
-            <label>تأكيد كلمة السر الجديدة:</label>
-            <input type="password" name="new_password_confirmation" required>
-
-            <button type="submit">تغيير</button>
-            <button type="button" onclick="closeModal()">إلغاء</button>
-        </form>
-    </div>
-</div>
 
 
 <script>
