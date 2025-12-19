@@ -3464,10 +3464,12 @@ document.addEventListener("DOMContentLoaded", function () {
       });
       
       tr.addEventListener('click', () => {
+        console.log('📋 Row clicked:', p.name);
         if (selectedRow) selectedRow.classList.remove('selected');
         tr.classList.add('selected');
         selectedRow = tr;
         selectedParticipant = p;
+        console.log('✅ Participant selected:', selectedParticipant);
       });
       
       tableBody.appendChild(tr);
@@ -3475,8 +3477,16 @@ document.addEventListener("DOMContentLoaded", function () {
   }
 
   // تنفيذ تبليغ - send to database
+  console.log('🔍 Notify button element:', notifyBtn);
+  console.log('🔍 Notify button element:', notifyBtn);
   if (notifyBtn) {
+    console.log('✅ Adding click event listener to notify button');
     notifyBtn.addEventListener('click', () => {
+      console.log('🔔 Notify button clicked!');
+      console.log('Selected row:', selectedRow);
+      console.log('Selected participant:', selectedParticipant);
+      console.log('Current case ID:', currentCaseId);
+
       if (!selectedRow || !selectedParticipant) {
         showAlert('⚠️ حدد طرفا من الجدول', 'warning');
         return;
@@ -3486,6 +3496,8 @@ document.addEventListener("DOMContentLoaded", function () {
       const rowIndex = selectedRow.dataset.index;
       const methodSelect = selectedRow.querySelector('.notification-method-select');
       const method = methodSelect.value;
+
+      console.log('Selected method:', method);
 
       if (!method) {
         showAlert('⚠️ اختر طريقة التبليغ من القائمة', 'warning');
