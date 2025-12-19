@@ -2743,90 +2743,203 @@
 </div>
 
 <!-- مذكرة إفراج للموقوفين -->
+<style>
+#release-memo-modal .modal-content {
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+}
+
+#release-memo-modal .modal-body {
+  font-family: 'Cairo', sans-serif;
+  padding: 20px;
+}
+
+#release-memo-modal h2 {
+  text-align: center;
+  margin-bottom: 18px;
+  font-size: 20px;
+}
+
+#release-memo-modal .case-number-wrapper {
+  margin-bottom: 20px;
+}
+
+#release-memo-modal .case-number-label {
+  font-weight: bold;
+  margin-bottom: 8px;
+  display: block;
+}
+
+#release-memo-modal .case-boxes {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+#release-memo-modal .case-boxes input {
+  width: 70px;
+  text-align: center;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+#release-memo-modal .row {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 14px;
+  align-items: center;
+}
+
+#release-memo-modal .col {
+  flex: 1;
+}
+
+#release-memo-modal label {
+  display: block;
+  margin-top: 10px;
+  font-weight: bold;
+}
+
+#release-memo-modal input,
+#release-memo-modal select {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+#release-memo-modal #release-case-type,
+#release-memo-modal #release-judge-name {
+  width: 420px;
+  padding: 8px;
+  font-size: 16px;
+}
+
+#release-memo-modal table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 15px;
+}
+
+#release-memo-modal table,
+#release-memo-modal th,
+#release-memo-modal td {
+  border: 1px solid #ccc;
+}
+
+#release-memo-modal th,
+#release-memo-modal td {
+  padding: 8px;
+  text-align: center;
+}
+
+#release-memo-modal th {
+  background: #000;
+  color: #fff;
+}
+
+#release-memo-modal tr.selected {
+  background: #d1e7fd;
+}
+
+#release-memo-modal tbody tr:hover {
+  background: #f0f8ff;
+  cursor: pointer;
+}
+
+#release-memo-modal .actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 18px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+#release-memo-modal .btn-release {
+  background: #0d6efd;
+  color: #fff;
+  padding: 10px 14px;
+  border-radius: 6px;
+  border: 0;
+  cursor: pointer;
+  font-family: 'Cairo', sans-serif;
+  font-weight: 600;
+}
+
+#release-memo-modal .btn-exit {
+  background: #c81e1e;
+  color: #fff;
+  padding: 10px 14px;
+  border-radius: 6px;
+  border: 0;
+  cursor: pointer;
+  font-family: 'Cairo', sans-serif;
+  font-weight: 600;
+}
+</style>
+
 <div class="modal fade" id="release-memo-modal" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-xl modal-dialog-centered">
     <div class="modal-content">
 
       <div class="modal-header">
-        <h5 class="modal-title">مذكرة إفراج للموقوفين</h5>
+        <h5 class="modal-title">مذكرة الإفراج عن الموقوفين</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
 
       <div class="modal-body">
 
-        <!-- Alerts -->
+        <!-- Alert -->
         <div id="release-alert"></div>
 
-        <!-- معلومات المحكمة -->
-        <div class="row text-center mb-3">
-          <div class="col-md-4">
-            <label class="text-muted">رقم المحكمة</label>
-            <div id="release-tribunal">-</div>
-          </div>
-          <div class="col-md-4">
-            <label class="text-muted">رقم القلم</label>
-            <div id="release-department">-</div>
-          </div>
-          <div class="col-md-4">
-            <label class="text-muted">السنة</label>
-            <div id="release-year">-</div>
-          </div>
-        </div>
-
         <!-- رقم الدعوى -->
-        <div class="row mb-3">
-          <div class="col-md-9">
-            <input type="text"
-                   id="release-case-number"
-                   class="form-control"
-                   placeholder="أدخل رقم الدعوى">
-          </div>
-          <div class="col-md-3 d-flex align-items-end">
-            <button class="btn btn-primary w-100" id="release-search-btn">بحث</button>
+        <div class="case-number-wrapper">
+          <label class="case-number-label">رقم الدعوى</label>
+          <div class="case-boxes">
+            <input type="text" id="release-case-serial" maxlength="4" placeholder="####">
+            <input type="text" id="release-court-number" placeholder="##" readonly>
+            <input type="text" id="release-pen-number" placeholder="x/y" readonly>
+            <input type="text" id="release-year-number" placeholder="YYYY" readonly>
           </div>
         </div>
 
         <!-- نوع الدعوى واسم القاضي -->
-        <div id="release-case-info" style="display:none;" class="row g-2 mb-3">
-          <div class="col-md-6">
+        <div class="row">
+          <div class="col">
             <label>نوع الدعوى</label>
-            <input type="text" id="release-case-type" class="form-control" readonly>
+            <input id="release-case-type" disabled>
           </div>
-          <div class="col-md-6">
+          <div class="col">
             <label>اسم القاضي</label>
-            <input type="text" id="release-judge-name" class="form-control" readonly>
+            <input id="release-judge-name" disabled>
           </div>
         </div>
 
         <!-- جدول الأطراف -->
-        <div id="release-participants-area" style="display:none;">
-          <h6>الأطراف</h6>
-
-          <div class="table-responsive">
-            <table class="table table-sm table-hover" id="release-participants-table">
-              <thead class="table-light">
-                <tr>
-                  <th style="width:60px">اختيار</th>
-                  <th>اسم الطرف</th>
-                  <th>نوع الطرف</th>
-                  <th>التهمة</th>
-                </tr>
-              </thead>
-              <tbody></tbody>
-            </table>
-          </div>
-        </div>
+        <label>الأطراف</label>
+        <table id="release-participants-table">
+          <thead>
+            <tr>
+              <th>الاسم</th>
+              <th>نوع الطرف</th>
+              <th>التهمة</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
 
       </div>
 
       <!-- أزرار -->
       <div class="modal-footer">
-        <button class="btn btn-success" id="release-save-btn" disabled>
-          الإفراج عن الموقوفين
-        </button>
-        <button class="btn btn-secondary" data-bs-dismiss="modal">
-          خروج
-        </button>
+        <div class="actions">
+          <button class="btn-release" id="release-save-btn">إفراج عن الموقوف</button>
+          <button class="btn-exit" data-bs-dismiss="modal">خروج</button>
+        </div>
       </div>
 
     </div>
@@ -2846,159 +2959,190 @@
 @endsection
 <script>
   //مذكرة الإفراج عن الموقوفين
-document.addEventListener('DOMContentLoaded', async () => {
+document.addEventListener('DOMContentLoaded', () => {
 
-  const alertBox   = document.getElementById('release-alert');
-  const searchBtn  = document.getElementById('release-search-btn');
-  const saveBtn    = document.getElementById('release-save-btn');
+  console.log('📌 مذكرة الإفراج - جاهز');
 
-  let selectedParticipants = [];
+  const alertBox = document.getElementById('release-alert');
+  const caseSerial = document.getElementById('release-case-serial');
+  const courtNumber = document.getElementById('release-court-number');
+  const penNumber = document.getElementById('release-pen-number');
+  const yearNumber = document.getElementById('release-year-number');
+  const caseTypeInput = document.getElementById('release-case-type');
+  const judgeNameInput = document.getElementById('release-judge-name');
+  const tbody = document.querySelector('#release-participants-table tbody');
+  const saveBtn = document.getElementById('release-save-btn');
 
-  /* =========================
-     📌 تحميل معلومات المحكمة (GET)
-  ========================= */
-  try {
-    const res = await fetch('/release-memo/default-info');
-    const data = await res.json();
+  let selectedRow = null;
+  let currentCaseData = null;
 
-    document.getElementById('release-tribunal').innerText =
-      data.tribunal?.number ?? '-';
-
-    document.getElementById('release-department').innerText =
-      data.department?.number ?? '-';
-
-    document.getElementById('release-year').innerText =
-      new Date().getFullYear();
-
-  } catch (e) {
-    console.error('❌ فشل تحميل معلومات المحكمة', e);
+  if (!caseSerial) {
+    console.warn('⚠️ release-case-serial not found');
+    return;
   }
 
-  /* =========================
-     🔍 البحث عن القضية (GET)
-  ========================= */
-  searchBtn.addEventListener('click', async () => {
+  // ⭐ Enter key على المربع الأول
+  caseSerial.addEventListener('keydown', async (e) => {
+    if (e.key !== 'Enter') return;
+    e.preventDefault();
 
-    alertBox.innerHTML = '';
-    selectedParticipants = [];
-    saveBtn.disabled = true;
-
-    const caseNumber =
-      document.getElementById('release-case-number').value.trim();
-
-    if (!caseNumber) {
-      alertBox.innerHTML =
-        '<div class="alert alert-danger">الرجاء إدخال رقم الدعوى</div>';
+    const serial = caseSerial.value.trim();
+    if (!serial) {
+      showAlert('danger', 'الرجاء إدخال رقم الدعوى');
       return;
     }
 
-    try {
-      const res = await fetch(
-        `/release-memo/fetch?case_number=${encodeURIComponent(caseNumber)}`
-      );
+    console.log('🔍 بحث عن:', serial);
+    await fetchCaseData(serial);
+  });
 
+  // ⭐ جلب بيانات القضية
+  async function fetchCaseData(caseNumber) {
+    try {
+      alertBox.innerHTML = '';
+      tbody.innerHTML = '';
+      selectedRow = null;
+      currentCaseData = null;
+
+      const res = await fetch(`/release-memo/fetch?case_number=${encodeURIComponent(caseNumber)}`);
       const data = await res.json();
 
+      console.log('📦 استلمت:', data);
+
       if (!res.ok || data.error) {
-        alertBox.innerHTML =
-          `<div class="alert alert-danger">${data.error}</div>`;
+        showAlert('danger', data.error || 'فشل البحث');
         return;
       }
 
-      /* عرض نوع الدعوى واسم القاضي */
-      document.getElementById('release-case-info').style.display = 'flex';
-      document.getElementById('release-case-type').value =
-        data.case_type ?? '';
-      document.getElementById('release-judge-name').value =
-        data.judge_name ?? '';
+      currentCaseData = data;
 
-      /* تعبئة جدول الأطراف */
-      const tbody =
-        document.querySelector('#release-participants-table tbody');
-      tbody.innerHTML = '';
+      // تعبئة المربعات
+      if (courtNumber) courtNumber.value = data.case_court || '';
+      if (penNumber) penNumber.value = data.case_pen || '';
+      if (yearNumber) yearNumber.value = data.case_year || '';
+      if (caseTypeInput) caseTypeInput.value = data.case_type || '';
+      if (judgeNameInput) judgeNameInput.value = data.judge_name || '';
 
-      data.participants.forEach(p => {
-        const row = document.createElement('tr');
+      // تعبئة الجدول
+      populateTable(data.participants || []);
 
-        row.innerHTML = `
-          <td>
-            <input type="checkbox" value="${p.name}">
-          </td>
-          <td>${p.name}</td>
-          <td>${p.type}</td>
-          <td>${p.charge ?? '-'}</td>
-        `;
+    } catch (err) {
+      console.error('❌', err);
+      showAlert('danger', 'فشل الاتصال بالسيرفر');
+    }
+  }
 
-        row.querySelector('input').addEventListener('change', e => {
-          if (e.target.checked) {
-            selectedParticipants.push(e.target.value);
-          } else {
-            selectedParticipants =
-              selectedParticipants.filter(v => v !== e.target.value);
-          }
-          saveBtn.disabled = selectedParticipants.length === 0;
+  // ⭐ تعبئة جدول الأطراف (3 أعمدة فقط)
+  function populateTable(participants) {
+    tbody.innerHTML = '';
+
+    if (participants.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="3">لا توجد أطراف</td></tr>';
+      return;
+    }
+
+    participants.forEach((p, index) => {
+      const row = document.createElement('tr');
+      row.dataset.name = p.name || '';
+      row.dataset.type = p.type || '';
+      row.dataset.charge = p.charge || '-';
+
+      row.innerHTML = `
+        <td>${p.name || ''}</td>
+        <td>${p.type || ''}</td>
+        <td>${p.charge || '-'}</td>
+      `;
+
+      // اختيار الصف عند الضغط
+      row.addEventListener('click', () => {
+        if (selectedRow) selectedRow.classList.remove('selected');
+        selectedRow = row;
+        selectedRow.classList.add('selected');
+        console.log('✅ تم اختيار:', row.dataset.name);
+      });
+
+      tbody.appendChild(row);
+    });
+  }
+
+  // ⭐ حفظ مذكرة الإفراج
+  if (saveBtn) {
+    saveBtn.addEventListener('click', async () => {
+      
+      console.log('💾 محاولة الحفظ...');
+      
+      if (!selectedRow) {
+        showAlert('danger', 'يرجى اختيار طرف واحد على الأقل');
+        return;
+      }
+
+      const caseNumber = caseSerial.value.trim();
+      if (!caseNumber) {
+        showAlert('danger', 'رقم الدعوى مطلوب');
+        return;
+      }
+
+      const releasedName = selectedRow.dataset.name;
+      
+      console.log('📤 إرسال:', { case_number: caseNumber, released_participant: releasedName });
+
+      try {
+        const res = await fetch('/release-memo/store', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+          },
+          body: JSON.stringify({
+            case_number: caseNumber,
+            released_participant: releasedName
+          })
         });
 
-        tbody.appendChild(row);
-      });
+        const data = await res.json();
+        console.log('📥 استجابة:', data);
 
-      document.getElementById('release-participants-area').style.display =
-        'block';
+        if (!res.ok || data.error) {
+          showAlert('danger', data.error || 'فشل الحفظ');
+          return;
+        }
 
-    } catch (e) {
-      console.error(e);
-      alertBox.innerHTML =
-        '<div class="alert alert-danger">فشل الاتصال بالسيرفر</div>';
-    }
-  });
+        showAlert('success', 'تم الإفراج عن الموقوف بنجاح');
+        
+        // إعادة تعيين
+        selectedRow.classList.remove('selected');
+        selectedRow = null;
 
-  /* =========================
-     💾 حفظ مذكرة الإفراج (POST)
-  ========================= */
-  saveBtn.addEventListener('click', async () => {
-
-    const caseNumber =
-      document.getElementById('release-case-number').value.trim();
-
-    if (selectedParticipants.length === 0) {
-      alertBox.innerHTML =
-        '<div class="alert alert-danger">يرجى اختيار طرف واحد على الأقل</div>';
-      return;
-    }
-
-    try {
-      const res = await fetch('/release-memo/store', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-CSRF-TOKEN':
-            document.querySelector('meta[name="csrf-token"]').content
-        },
-        body: JSON.stringify({
-          case_number: caseNumber,
-          released_participants: selectedParticipants
-        })
-      });
-
-      const data = await res.json();
-
-      if (!res.ok || data.error) {
-        alertBox.innerHTML =
-          `<div class="alert alert-danger">${data.error}</div>`;
-        return;
+      } catch (err) {
+        console.error('❌', err);
+        showAlert('danger', 'خطأ أثناء الحفظ');
       }
+    });
+  }
 
-      alertBox.innerHTML =
-        '<div class="alert alert-success">تم الإفراج عن الموقوفين بنجاح</div>';
+  // ⭐ عرض رسالة
+  function showAlert(type, message) {
+    alertBox.innerHTML = `<div class="alert alert-${type}">${message}</div>`;
+    setTimeout(() => { alertBox.innerHTML = ''; }, 5000);
+  }
 
-      saveBtn.disabled = true;
-
-    } catch (e) {
-      console.error(e);
-      alertBox.innerHTML =
-        '<div class="alert alert-danger">خطأ أثناء الحفظ</div>';
-    }
-  });
+  // ⭐ تنظيف عند إغلاق المودال
+  const modal = document.getElementById('release-memo-modal');
+  if (modal) {
+    modal.addEventListener('hidden.bs.modal', () => {
+      console.log('🔄 تنظيف المودال');
+      if (caseSerial) caseSerial.value = '';
+      if (courtNumber) courtNumber.value = '';
+      if (penNumber) penNumber.value = '';
+      if (yearNumber) yearNumber.value = '';
+      if (caseTypeInput) caseTypeInput.value = '';
+      if (judgeNameInput) judgeNameInput.value = '';
+      tbody.innerHTML = '';
+      alertBox.innerHTML = '';
+      selectedRow = null;
+      currentCaseData = null;
+    });
+  }
 
 });
 </script>
