@@ -3087,7 +3087,7 @@ document.addEventListener('DOMContentLoaded', () => {
       console.log('📤 إرسال:', { case_number: caseNumber, released_participant: releasedName });
 
       try {
-        const res = await fetch('/release-memo/store', {
+        const res = await fetch('/release-memo/default-info', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
