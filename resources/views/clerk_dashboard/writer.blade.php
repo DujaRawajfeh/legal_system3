@@ -2499,6 +2499,150 @@
 </div>
 
 <!-- مذكرة تمديد توقيف -->
+<style>
+#extend-arrest-memo-modal .modal-content {
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+}
+
+#extend-arrest-memo-modal .modal-body {
+  font-family: 'Cairo', sans-serif;
+  padding: 20px;
+}
+
+#extend-arrest-memo-modal h2 {
+  text-align: center;
+  margin-bottom: 18px;
+  font-size: 20px;
+}
+
+#extend-arrest-memo-modal .case-number-wrapper {
+  margin-bottom: 20px;
+}
+
+#extend-arrest-memo-modal .case-number-label {
+  font-weight: bold;
+  margin-bottom: 8px;
+  display: block;
+}
+
+#extend-arrest-memo-modal .case-boxes {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+#extend-arrest-memo-modal .case-boxes input {
+  width: 70px;
+  text-align: center;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+#extend-arrest-memo-modal .row {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 14px;
+  align-items: center;
+}
+
+#extend-arrest-memo-modal .col {
+  flex: 1;
+}
+
+#extend-arrest-memo-modal label {
+  display: block;
+  margin-top: 10px;
+  font-weight: bold;
+}
+
+#extend-arrest-memo-modal input,
+#extend-arrest-memo-modal select {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+#extend-arrest-memo-modal #extend-arrest-case-type {
+  width: 100%;
+  padding: 8px;
+  font-size: 16px;
+}
+
+#extend-arrest-memo-modal #extend-arrest-judge-name,
+#extend-arrest-memo-modal #extend-arrest-extension-days {
+  width: 420px;
+  padding: 8px;
+  font-size: 16px;
+}
+
+#extend-arrest-memo-modal table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 15px;
+}
+
+#extend-arrest-memo-modal table,
+#extend-arrest-memo-modal th,
+#extend-arrest-memo-modal td {
+  border: 1px solid #ccc;
+}
+
+#extend-arrest-memo-modal th,
+#extend-arrest-memo-modal td {
+  padding: 8px;
+  text-align: center;
+}
+
+#extend-arrest-memo-modal th {
+  background: #000;
+  color: #fff;
+}
+
+#extend-arrest-memo-modal tr.selected {
+  background: #d1e7fd;
+}
+
+#extend-arrest-memo-modal tbody tr:hover {
+  background: #f0f8ff;
+  cursor: pointer;
+}
+
+#extend-arrest-memo-modal .actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 18px;
+  justify-content: center;
+}
+
+#extend-arrest-memo-modal .btn-save {
+  background: #1a7f24;
+  color: #fff;
+  padding: 10px 14px;
+  border-radius: 6px;
+  border: 0;
+  cursor: pointer;
+  font-family: 'Cairo', sans-serif;
+  font-weight: 600;
+}
+
+#extend-arrest-memo-modal .btn-exit {
+  background: #c81e1e;
+  color: #fff;
+  padding: 10px 14px;
+  border-radius: 6px;
+  border: 0;
+  cursor: pointer;
+  font-family: 'Cairo', sans-serif;
+  font-weight: 600;
+}
+</style>
+
 <div class="modal fade" id="extend-arrest-memo-modal" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-xl modal-dialog-centered">
     <div class="modal-content">
@@ -2513,128 +2657,85 @@
         <!-- Alert -->
         <div id="extend-arrest-alert"></div>
 
-        <!-- معلومات المحكمة -->
-        <div class="row text-center mb-3">
-          <div class="col-md-4">
-            <label class="text-muted">رقم المحكمة</label>
-            <div id="extend-arrest-tribunal">-</div>
-          </div>
-
-          <div class="col-md-4">
-            <label class="text-muted">رقم القلم</label>
-            <div id="extend-arrest-department">-</div>
-          </div>
-
-          <div class="col-md-4">
-            <label class="text-muted">السنة</label>
-            <div id="extend-arrest-year">-</div>
-          </div>
-        </div>
-
         <!-- رقم الدعوى -->
-        <div class="row mb-3">
-          <div class="col-md-9">
-            <input type="text"
-                   id="extend-arrest-case-number"
-                   class="form-control"
-                   placeholder="أدخل رقم الدعوى">
-          </div>
-
-          <div class="col-md-3 d-flex align-items-end">
-            <button class="btn btn-primary w-100" id="extend-arrest-search-btn">
-              بحث
-            </button>
+        <div class="case-number-wrapper">
+          <label class="case-number-label">رقم الدعوى</label>
+          <div class="case-boxes">
+            <input type="text" id="extend-arrest-case-serial" maxlength="4" placeholder="####">
+            <input type="text" id="extend-arrest-court-number" placeholder="##" readonly>
+            <input type="text" id="extend-arrest-pen-number" placeholder="x/y" readonly>
+            <input type="text" id="extend-arrest-year-number" placeholder="YYYY" readonly>
           </div>
         </div>
 
         <!-- نوع الدعوى -->
-        <div id="extend-arrest-case-type-area" style="display:none;">
-          <label class="text-muted">نوع الدعوى:</label>
-          <div id="extend-arrest-case-title" class="fw-bold"></div>
+        <div class="row">
+          <div class="col">
+            <label>نوع الدعوى:</label>
+            <input id="extend-arrest-case-type" disabled>
+          </div>
         </div>
 
         <!-- جدول الأطراف -->
-        <div id="extend-arrest-participants-area" style="display:none;" class="mt-3">
-          <h6>الأطراف</h6>
+        <label>الأطراف</label>
+        <table id="extend-arrest-participants-table">
+          <thead>
+            <tr>
+              <th>الاسم</th>
+              <th>نوع الطرف</th>
+              <th>الوظيفة</th>
+              <th>مكان الإقامة</th>
+              <th>رقم الهاتف</th>
+              <th>التبليغ بواسطة</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
 
-          <div class="table-responsive">
-            <table class="table table-sm table-hover" id="extend-arrest-participants-table">
-              <thead class="table-light">
-                <tr>
-                  <th style="width:60px">اختيار</th>
-                  <th>الاسم</th>
-                  <th>نوع الطرف</th>
-                  <th>الوظيفة</th>
-                  <th>مكان الإقامة</th>
-                  <th>رقم الهاتف</th>
-                  <th>التبليغ بواسطة</th>
-                </tr>
-              </thead>
-              <tbody></tbody>
-            </table>
+        <!-- اسم القاضي وتمديد التوقيف -->
+        <div class="row">
+          <div class="col">
+            <label>اسم القاضي:</label>
+            <input id="extend-arrest-judge-name" disabled>
+          </div>
+          <div class="col">
+            <label>تمديد التوقيف (أيام):</label>
+            <input id="extend-arrest-extension-days" type="number" min="0">
           </div>
         </div>
 
-        <!-- بيانات إضافية -->
-        <div id="extend-arrest-extra-area" style="display:none;" class="mt-4">
-
-          <!-- اسم القاضي -->
-          <div class="mb-3">
-            <label>اسم القاضي</label>
-            <input type="text"
-                   id="extend-arrest-judge-name"
-                   class="form-control"
-                   readonly>
-          </div>
-
-          <!-- 🔴 تمديد التوقيف -->
-          <div class="mb-3">
-            <label>تمديد التوقيف (بالأيام)</label>
-            <input type="number"
-                   id="extend-arrest-extension-days"
-                   class="form-control"
-                   min="1"
-                   placeholder="أدخل عدد أيام التمديد">
-          </div>
-
-          <!-- سبب التوقيف -->
-          <div class="mb-3">
-            <label>سبب التوقيف</label>
-            <select id="extend-arrest-reason" class="form-control">
-              <option value="">اختر سبب التوقيف</option>
-              <option value="خشية الفرار">خشية الفرار</option>
-              <option value="منع التأثير على الشهود">منع التأثير على الشهود</option>
-              <option value="منع العبث بالأدلة">منع العبث بالأدلة</option>
-              <option value="لحماية المشتكي من الخطر">لحماية المشتكي من الخطر</option>
+        <!-- سبب التوقيف ومركز الإصلاح -->
+        <div class="row">
+          <div class="col">
+            <label>سبب التوقيف:</label>
+            <select id="extend-arrest-reason">
+              <option value="">اختر</option>
+              <option value="خطر الهروب">خطر الهروب</option>
+              <option value="خطر العبث بالأدلة">خطر العبث بالأدلة</option>
+              <option value="خطر الإتيان بجرائم جديدة">خطر الإتيان بجرائم جديدة</option>
+              <option value="عدم ثبوت إقامة">عدم ثبوت إقامة</option>
+              <option value="أمر أمني">أمر أمني</option>
             </select>
           </div>
-
-          <!-- مركز الإصلاح والتأهيل -->
-          <div class="mb-3">
-            <label>مركز الإصلاح والتأهيل</label>
-            <select id="extend-arrest-center" class="form-control">
+          <div class="col">
+            <label>مركز الإصلاح والتأهيل:</label>
+            <select id="extend-arrest-center">
               <option value="">اختر المركز</option>
-              <option value="مركز إصلاح وتأهيل ماركا">مركز إصلاح وتأهيل ماركا</option>
-              <option value="مركز إصلاح وتأهيل إربد">مركز إصلاح وتأهيل إربد</option>
-              <option value="مركز إصلاح وتأهيل الكرك">مركز إصلاح وتأهيل الكرك</option>
+              <option value="مركز الإصلاح المركزي">مركز الإصلاح المركزي</option>
+              <option value="مركز الإصلاح الجنوبي">مركز الإصلاح الجنوبي</option>
+              <option value="مركز تأهيل الشمال">مركز تأهيل الشمال</option>
             </select>
           </div>
-
         </div>
 
       </div>
 
       <!-- أزرار -->
       <div class="modal-footer">
-        <button class="btn btn-success" id="extend-arrest-save-btn" disabled>
-          حفظ
-        </button>
-        <button class="btn btn-primary" id="extend-arrest-save-close-btn" disabled>
-          حفظ وإنهاء
-        </button>
-        <button class="btn btn-secondary" data-bs-dismiss="modal">
-          إغلاق
-        </button>
+        <div class="actions">
+          <button class="btn-save" id="extend-arrest-save-btn">حفظ وانهاء</button>
+          <button class="btn-exit" data-bs-dismiss="modal">خروج</button>
+        </div>
       </div>
 
     </div>
@@ -2903,153 +3004,221 @@ document.addEventListener('DOMContentLoaded', async () => {
 </script>
 
 <script>
-  //مذكر تمديد توقيف
+  //مذكرة تمديد توقيف
 document.addEventListener('DOMContentLoaded', () => {
 
-  const searchBtn = document.getElementById('extend-arrest-search-btn');
-  const saveBtn   = document.getElementById('extend-arrest-save-btn');
-  const saveCloseBtn = document.getElementById('extend-arrest-save-close-btn');
+  const modalId = "extend-arrest-memo-modal";
+  const modalEl = document.getElementById(modalId);
 
+  const $ = id => document.getElementById(id);
+
+  // 4-box case number inputs
+  const caseSerial = $("extend-arrest-case-serial");
+  const courtNumber = $("extend-arrest-court-number");
+  const penNumber = $("extend-arrest-pen-number");
+  const yearNumber = $("extend-arrest-year-number");
+
+  const caseTypeInput = $("extend-arrest-case-type");
+  const participantsTableBody = document.querySelector("#extend-arrest-participants-table tbody");
+
+  const judgeNameInput = $("extend-arrest-judge-name");
+  const extensionDaysInput = $("extend-arrest-extension-days");
+  const reasonSelect = $("extend-arrest-reason");
+  const centerSelect = $("extend-arrest-center");
+
+  const saveBtn = $("extend-arrest-save-btn");
+  const alertBox = $("extend-arrest-alert");
+
+  let selectedRow = null;
   let selectedParticipant = null;
   let currentCaseId = null;
 
-  
-  searchBtn.addEventListener('click', async () => {
+  function showAlert(msg, type = "warning") {
+    if (!alertBox) return;
+    alertBox.innerHTML = `<div class="alert alert-${type}">${msg}</div>`;
+  }
 
-    const caseNumber = document.getElementById('extend-arrest-case-number').value.trim();
-    const alertBox = document.getElementById('extend-arrest-alert');
-    alertBox.innerHTML = '';
+  function clearAlert() { 
+    if (alertBox) alertBox.innerHTML = ""; 
+  }
 
-    if (!caseNumber) {
-      alertBox.innerHTML = '<div class="alert alert-danger">الرجاء إدخال رقم الدعوى</div>';
+  function resetUI() {
+    clearAlert();
+    if (caseTypeInput) caseTypeInput.value = "";
+    if (judgeNameInput) judgeNameInput.value = "";
+    if (participantsTableBody) participantsTableBody.innerHTML = "";
+    if (extensionDaysInput) extensionDaysInput.value = "";
+    if (reasonSelect) reasonSelect.value = "";
+    if (centerSelect) centerSelect.value = "";
+    selectedRow = null;
+    selectedParticipant = null;
+  }
+
+  // 🔍 البحث عند Enter في أول خانة
+  if (caseSerial) {
+    caseSerial.addEventListener("keypress", function(e) {
+      if (e.key === "Enter") {
+        searchCase();
+      }
+    });
+  }
+
+  function searchCase() {
+    resetUI();
+
+    const serial = caseSerial.value.trim();
+    if (serial.length !== 4) {
+      showAlert("⚠️ يرجى إدخال 4 أرقام في رقم الدعوى");
       return;
     }
 
-    try {
-      const res = await fetch('/writer/extend-arrest-memo', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
-        },
-        body: JSON.stringify({
-          case_number: caseNumber
-        })
-      });
+    showAlert("⏳ جاري جلب بيانات الدعوى ...", "info");
 
-      const data = await res.json();
+    fetch("/writer/extend-arrest-memo", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content
+      },
+      body: JSON.stringify({
+        case_number: serial
+      })
+    })
+    .then(res => res.json().then(j => ({ ok: res.ok, json: j })))
+    .then(({ ok, json }) => {
 
-      if (!res.ok || data.error) {
-        alertBox.innerHTML = `<div class="alert alert-danger">${data.error ?? 'خطأ غير متوقع'}</div>`;
+      if (!ok) throw json;
+
+      clearAlert();
+
+      // حفظ معرف القضية
+      currentCaseId = json.case?.id;
+
+      // تعبئة الخانات الأخرى
+      if (courtNumber) courtNumber.value = json.case?.tribunal?.number ?? "";
+      if (penNumber) penNumber.value = json.case?.department?.number ?? "";
+      if (yearNumber) yearNumber.value = json.case?.year ?? "";
+
+      // نوع الدعوى
+      if (caseTypeInput) caseTypeInput.value = json.case?.type ?? "";
+
+      // اسم القاضي
+      if (judgeNameInput) judgeNameInput.value = json.judge_name ?? "";
+
+      // عرض الأطراف
+      const parts = json.participants ?? [];
+      if (!parts.length) {
+        showAlert("⚠️ لا يوجد أطراف لهذه الدعوى");
         return;
       }
 
-      /*  معلومات المحكمة */
-      document.getElementById('extend-arrest-tribunal').innerText   = data.tribunal_number ?? '-';
-      document.getElementById('extend-arrest-department').innerText = data.department_number ?? '-';
-      document.getElementById('extend-arrest-year').innerText       = new Date().getFullYear();
+      if (participantsTableBody) {
+        participantsTableBody.innerHTML = "";
 
-      /*  اسم القاضي */
-      document.getElementById('extend-arrest-judge-name').value = data.judge_name ?? '';
+        parts.forEach(p => {
+          const tr = document.createElement("tr");
 
-      /* إظهار الأقسام */
-      document.getElementById('extend-arrest-case-type-area').style.display = 'block';
-      document.getElementById('extend-arrest-participants-area').style.display = 'block';
-      document.getElementById('extend-arrest-extra-area').style.display = 'block';
+          tr.innerHTML = `
+            <td>${p.name}</td>
+            <td>${p.type}</td>
+            <td>${p.job ?? ""}</td>
+            <td>${p.residence ?? ""}</td>
+            <td>${p.phone ?? ""}</td>
+            <td>الأمن العام</td>
+          `;
 
-      /*  تعبئة جدول الأطراف */
-      const tbody = document.querySelector('#extend-arrest-participants-table tbody');
-      tbody.innerHTML = '';
-      selectedParticipant = null;
+          // Click to select row
+          tr.addEventListener("click", () => {
+            if (selectedRow) {
+              selectedRow.classList.remove("selected");
+            }
+            tr.classList.add("selected");
+            selectedRow = tr;
+            selectedParticipant = p.name;
+          });
 
-      data.participants.forEach((p, index) => {
-        const row = document.createElement('tr');
-
-        row.innerHTML = `
-          <td>
-            <input type="radio" name="extend-participant" value="${p.name}">
-          </td>
-          <td>${p.name}</td>
-          <td>${p.type}</td>
-          <td>${p.job ?? '-'}</td>
-          <td>${p.address ?? '-'}</td>
-          <td>${p.phone ?? '-'}</td>
-          <td>قسم التبليغ</td>
-        `;
-
-        row.querySelector('input').addEventListener('change', () => {
-          selectedParticipant = p.name;
-          saveBtn.disabled = false;
-          saveCloseBtn.disabled = false;
+          participantsTableBody.appendChild(tr);
         });
+      }
 
-        tbody.appendChild(row);
-      });
-
-    } catch (err) {
+      showAlert("✅ تم تحميل بيانات الدعوى", "success");
+    })
+    .catch(err => {
       console.error(err);
-      alertBox.innerHTML = '<div class="alert alert-danger">فشل الاتصال بالسيرفر</div>';
-    }
-  });
+      showAlert(err.error ?? "❌ حدث خطأ أثناء جلب بيانات الدعوى", "danger");
+    });
+  }
 
-  
-  async function saveExtension(closeAfter = false) {
+  // 💾 زر الحفظ
+  if (saveBtn) {
+    saveBtn.addEventListener("click", function() {
+      clearAlert();
 
-    const alertBox = document.getElementById('extend-arrest-alert');
+      if (!selectedParticipant) {
+        showAlert("⚠️ يرجى اختيار طرف من الجدول");
+        return;
+      }
 
-    const extensionDays = document.getElementById('extend-arrest-extension-days').value;
-    const reason = document.getElementById('extend-arrest-reason').value;
-    const center = document.getElementById('extend-arrest-center').value;
-    const caseNumber = document.getElementById('extend-arrest-case-number').value.trim();
+      if (!extensionDaysInput.value) {
+        showAlert("⚠️ يرجى إدخال عدد أيام التمديد");
+        return;
+      }
 
-    if (!selectedParticipant || !extensionDays || !reason || !center) {
-      alertBox.innerHTML = '<div class="alert alert-danger">يرجى تعبئة جميع الحقول واختيار الطرف</div>';
-      return;
-    }
+      if (!reasonSelect.value) {
+        showAlert("⚠️ يرجى اختيار سبب التوقيف");
+        return;
+      }
 
-    try {
-      const res = await fetch('/writer/extend-arrest-memo', {
-        method: 'POST',
+      if (!centerSelect.value) {
+        showAlert("⚠️ يرجى اختيار مركز الإصلاح");
+        return;
+      }
+
+      const caseNumber = caseSerial.value.trim();
+
+      fetch("/writer/extend-arrest-memo", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
-          'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+          "Content-Type": "application/json",
+          "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content
         },
         body: JSON.stringify({
           case_number: caseNumber,
-          extension_days: extensionDays,
-          detention_reason: reason,
-          detention_center: center,
           participant_name: selectedParticipant,
+          extension_days: extensionDaysInput.value,
+          detention_reason: reasonSelect.value,
+          detention_center: centerSelect.value,
           save: true
         })
-      });
+      })
+      .then(res => res.json().then(j => ({ ok: res.ok, json: j })))
+      .then(({ ok, json }) => {
+        if (!ok) throw json;
 
-      const data = await res.json();
+        showAlert("✅ تم حفظ مذكرة تمديد التوقيف بنجاح", "success");
 
-      if (!res.ok || data.error) {
-        alertBox.innerHTML = `<div class="alert alert-danger">${data.error ?? 'فشل الحفظ'}</div>`;
-        return;
-      }
-
-      alertBox.innerHTML = `<div class="alert alert-success">${data.message}</div>`;
-
-      if (closeAfter) {
         setTimeout(() => {
-          const modal = bootstrap.Modal.getInstance(
-            document.getElementById('extend-arrest-memo-modal')
-          );
-          modal.hide();
-        }, 800);
-      }
-
-    } catch (err) {
-      console.error(err);
-      alertBox.innerHTML = '<div class="alert alert-danger">خطأ أثناء الحفظ</div>';
-    }
+          const modal = bootstrap.Modal.getInstance(modalEl);
+          if (modal) modal.hide();
+        }, 1000);
+      })
+      .catch(err => {
+        console.error(err);
+        showAlert(err.error ?? "❌ خطأ أثناء حفظ مذكرة التمديد", "danger");
+      });
+    });
   }
 
-  saveBtn.addEventListener('click', () => saveExtension(false));
-  saveCloseBtn.addEventListener('click', () => saveExtension(true));
+  // إعادة ضبط عند إغلاق النافذة
+  if (modalEl) {
+    modalEl.addEventListener("hidden.bs.modal", function() {
+      resetUI();
+      if (caseSerial) caseSerial.value = "";
+      if (courtNumber) courtNumber.value = "";
+      if (penNumber) penNumber.value = "";
+      if (yearNumber) yearNumber.value = "";
+    });
+  }
 
 });
 </script>
