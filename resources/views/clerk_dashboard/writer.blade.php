@@ -3103,7 +3103,7 @@ document.addEventListener('DOMContentLoaded', () => {
         return;
       }
 
-      const caseNumber = `${serial}/${court}/${pen}/${year}`;
+      const caseNumber = `${serial}`;
 
       try {
         const res = await fetch("/release-memo/store", {
