@@ -3020,7 +3020,22 @@ document.addEventListener('DOMContentLoaded', () => {
     if (alertBox) alertBox.innerHTML = "";
 
     try {
-      const res = await fetch("/release-memo/fetch", {
+      // First call: Get court/pen/year from getCaseNotifications
+      const notifRes = await fetch(`/writer/case-notifications/${encodeURIComponent(serial)}`);
+      const notifData = await notifRes.json();
+
+      if (!notifRes.ok || notifData.error) {
+        showAlert(notifData.error || "لا توجد قضية بهذا الرقم", "danger");
+        return;
+      }
+
+      // Fill court/pen/year from first endpoint
+      if (courtNumber) courtNumber.value = notifData.case_court || "";
+      if (penNumber) penNumber.value = notifData.case_pen || "";
+      if (yearNumber) yearNumber.value = notifData.case_year || "";
+
+      // Second call: Get case_type, judge_name, participants from fetchCaseParticipants
+      const caseRes = await fetch("/release-memo/fetch", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -3031,25 +3046,24 @@ document.addEventListener('DOMContentLoaded', () => {
         })
       });
 
-      const json = await res.json();
+      const caseData = await caseRes.json();
 
-      if (!res.ok || json.error) {
-        showAlert(json.error || "لا توجد قضية بهذا الرقم", "danger");
+      if (!caseRes.ok || caseData.error) {
+        showAlert(caseData.error || "لا توجد قضية بهذا الرقم", "danger");
         return;
       }
 
       currentCaseId = serial;
 
-      if (courtNumber) courtNumber.value = "";
-      if (penNumber) penNumber.value = "";
-      if (yearNumber) yearNumber.value = "";
-      if (caseTypeInput) caseTypeInput.value = json.case_type || "";
-      if (judgeNameInput) judgeNameInput.value = json.judge_name || "";
+      // Fill case_type and judge_name from second endpoint
+      if (caseTypeInput) caseTypeInput.value = caseData.case_type || "";
+      if (judgeNameInput) judgeNameInput.value = caseData.judge_name || "";
 
+      // Fill participants table
       if (participantsTableBody) {
         participantsTableBody.innerHTML = "";
-        if (json.participants && json.participants.length > 0) {
-          json.participants.forEach(p => {
+        if (caseData.participants && caseData.participants.length > 0) {
+          caseData.participants.forEach(p => {
             const tr = document.createElement("tr");
             tr.innerHTML = `
               <td>${p.name || ""}</td>
