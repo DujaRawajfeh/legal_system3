@@ -101,12 +101,12 @@
 </style>
 
 <!-- Main Content Area -->
-<div class="container-writer">
+<!-- <div class="container-writer">
   <section>
     <h2 id="main-title">القضايا التي يمكن متابعتها</h2>
     <hr class="title-line">
     <div class="cases-grid" id="casesGrid">
-      <!-- Cases will be loaded here dynamically -->
+      <!-- Cases will be loaded here dynamically --
       <div class="case-strip" data-key="2025/0012" data-type="case">
         <div class="case-info" id="case-box" data-status="مستمرة">
           <h3>القضية رقم: 2025/0012</h3>
@@ -119,7 +119,7 @@
       </div>
     </div>
   </section>
-</div>
+</div> -->
 
 <!--  قائمة الدعوى / الطلب الخاصة بالكاتب 
 <div id="writer-case-options"
