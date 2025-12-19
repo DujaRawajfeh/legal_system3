@@ -3020,50 +3020,29 @@ document.addEventListener('DOMContentLoaded', () => {
     if (alertBox) alertBox.innerHTML = "";
 
     try {
-      // First call: Get court/pen/year from getCaseNotifications
-      const notifRes = await fetch(`/writer/case-notifications/${encodeURIComponent(serial)}`);
-      const notifData = await notifRes.json();
+      // Get all data from one endpoint
+      const res = await fetch(`/writer/case-notifications/${encodeURIComponent(serial)}`);
+      const data = await res.json();
 
-      if (!notifRes.ok || notifData.error) {
-        showAlert(notifData.error || "لا توجد قضية بهذا الرقم", "danger");
-        return;
-      }
-
-      // Fill court/pen/year from first endpoint
-      if (courtNumber) courtNumber.value = notifData.case_court || "";
-      if (penNumber) penNumber.value = notifData.case_pen || "";
-      if (yearNumber) yearNumber.value = notifData.case_year || "";
-
-      // Second call: Get case_type, judge_name, participants from fetchCaseParticipants
-      const caseRes = await fetch("/release-memo/fetch", {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content
-        },
-        body: JSON.stringify({
-          case_number: serial
-        })
-      });
-
-      const caseData = await caseRes.json();
-
-      if (!caseRes.ok || caseData.error) {
-        showAlert(caseData.error || "لا توجد قضية بهذا الرقم", "danger");
+      if (!res.ok || data.error) {
+        showAlert(data.error || "لا توجد قضية بهذا الرقم", "danger");
         return;
       }
 
       currentCaseId = serial;
 
-      // Fill case_type and judge_name from second endpoint
-      if (caseTypeInput) caseTypeInput.value = caseData.case_type || "";
-      if (judgeNameInput) judgeNameInput.value = caseData.judge_name || "";
+      // Fill all fields from single endpoint
+      if (courtNumber) courtNumber.value = data.case_court || "";
+      if (penNumber) penNumber.value = data.case_pen || "";
+      if (yearNumber) yearNumber.value = data.case_year || "";
+      if (caseTypeInput) caseTypeInput.value = data.case_type || "";
+      if (judgeNameInput) judgeNameInput.value = data.judge_name || "";
 
       // Fill participants table
       if (participantsTableBody) {
         participantsTableBody.innerHTML = "";
-        if (caseData.participants && caseData.participants.length > 0) {
-          caseData.participants.forEach(p => {
+        if (data.participants && data.participants.length > 0) {
+          data.participants.forEach(p => {
             const tr = document.createElement("tr");
             tr.innerHTML = `
               <td>${p.name || ""}</td>
