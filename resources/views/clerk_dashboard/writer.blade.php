@@ -3544,6 +3544,11 @@ document.addEventListener("DOMContentLoaded", function () {
           return;
         }
 
+        // Fill court, pen, year fields
+        if (courtInput) courtInput.value = json.case_court || '';
+        if (penInput) penInput.value = json.case_pen || '';
+        if (yearInput) yearInput.value = json.case_year || '';
+
         tableBody.innerHTML = "";
         notifications.forEach(n => {
           const tr = document.createElement("tr");

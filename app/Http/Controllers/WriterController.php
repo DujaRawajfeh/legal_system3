@@ -1023,7 +1023,7 @@ public function getCaseNotifications($caseNumber)
     try {
 
         // 1️⃣ جلب القضية بناءً على رقم الدعوى الحقيقي (number)
-        $case = CourtCase::where('number', $caseNumber)->first();
+        $case = CourtCase::with(['tribunal', 'department'])->where('number', $caseNumber)->first();
 
         if (!$case) {
             return response()->json(['error' => 'رقم الدعوى غير موجود'], 404);
@@ -1059,6 +1059,9 @@ public function getCaseNotifications($caseNumber)
         // 3️⃣ إرجاع البيانات كـ JSON
         return response()->json([
             'case_number'   => $case->number,
+            'case_court'    => $case->tribunal->number ?? '',
+            'case_pen'      => $case->department->number ?? '',
+            'case_year'     => $case->year ?? '',
             'notifications' => $notifications,
         ]);
 
