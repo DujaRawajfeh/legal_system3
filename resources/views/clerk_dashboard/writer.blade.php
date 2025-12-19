@@ -3090,12 +3090,18 @@ document.addEventListener('DOMContentLoaded', () => {
         showAlert("يرجى اختيار طرف من الجدول", "warning");
         return;
       }
-      if (!caseSerial || !caseSerial.value.trim()) {
+      
+      const serial = caseSerial ? caseSerial.value.trim() : "";
+      const court = courtNumber ? courtNumber.value.trim() : "";
+      const pen = penNumber ? penNumber.value.trim() : "";
+      const year = yearNumber ? yearNumber.value.trim() : "";
+      
+      if (!serial) {
         showAlert("يرجى البحث عن القضية أولاً", "warning");
         return;
       }
 
-      const caseNumber = caseSerial.value.trim();
+      const caseNumber = `${serial}/${court}/${pen}/${year}`;
 
       try {
         const res = await fetch("/release-memo/store", {
