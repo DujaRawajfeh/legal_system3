@@ -1444,41 +1444,42 @@ function closeCaseSchedule() {
 
 <!--  نافذة جدول الطلبات -->
 <div class="modal fade" id="requestScheduleModal" tabindex="-1" aria-labelledby="requestScheduleLabel" aria-hidden="true">
-  <div class="modal-dialog modal-xl">
+  <div class="modal-dialog modal-xl modal-dialog-scrollable">
     <div class="modal-content">
 
-      <!-- رأس النافذة -->
-      <div class="modal-header">
+      <div class="modal-header bg-dark text-white">
         <h5 class="modal-title" id="requestScheduleLabel">جدول الطلبات</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="إغلاق"></button>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
       </div>
 
-      <!-- جسم النافذة -->
       <div class="modal-body">
 
-        <!-- معلومات المحكمة -->
-        <div class="mb-3">
-          <label class="form-label">رقم المحكمة:</label>
-          <span id="courtNumber">-</span>
-        </div>
-        <div class="mb-3">
-          <label class="form-label">القلم:</label>
-          <span id="courtDesk">-</span>
-        </div>
-        <div class="mb-3">
-          <label class="form-label">السنة:</label>
-          <span id="courtYear">-</span>
+        <div class="row mb-3">
+          
+          <div class="col-md-3">
+            <label class="form-label">رقم المحكمة</label>
+            <input type="text" id="courtNumber" class="form-control form-control-sm" value="---" readonly>
+          </div>
+
+          <div class="col-md-3">
+            <label class="form-label">القلم</label>
+            <input type="text" id="courtDesk" class="form-control form-control-sm" value="---" readonly>
+          </div>
+
+          <div class="col-md-3">
+            <label class="form-label">السنة</label>
+            <input type="text" id="courtYear" class="form-control form-control-sm" value="---" readonly>
+          </div>
+
+          <div class="col-md-3">
+            <label class="form-label">رقم الطلب</label>
+            <input type="text" class="form-control form-control-sm" id="requestNumberInput" placeholder="أدخل رقم الطلب" onkeydown="if(event.key === 'Enter') fetchRequestSchedule()">
+          </div>
+
         </div>
 
-        <!-- إدخال رقم الطلب -->
-        <div class="mb-4">
-          <label for="requestNumberInput" class="form-label">رقم الطلب:</label>
-          <input type="text" class="form-control" id="requestNumberInput" placeholder="أدخل رقم الطلب" onkeydown="if(event.key === 'Enter') fetchRequestSchedule()">
-        </div>
-
-        <!-- جدول الجلسات -->
-        <div class="table-responsive">
-          <table class="table table-bordered text-center">
+        <div class="table-responsive mt-3">
+          <table class="table table-bordered text-center align-middle">
             <thead class="table-light">
               <tr>
                 <th>تاريخ الجلسة</th>
@@ -1491,7 +1492,7 @@ function closeCaseSchedule() {
             </thead>
             <tbody id="requestSessionsBody">
               <tr>
-                <td colspan="6">-</td>
+                <td colspan="6">يرجى إدخال رقم الطلب لعرض الجلسات</td>
               </tr>
             </tbody>
           </table>
@@ -1499,7 +1500,6 @@ function closeCaseSchedule() {
 
       </div>
 
-      <!-- زر الإغلاق -->
       <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">إغلاق</button>
       </div>
@@ -5862,84 +5862,66 @@ document.addEventListener("DOMContentLoaded", function () {
 
 </script>
 <script>
-document.addEventListener("DOMContentLoaded", function () {
+function fetchRequestSchedule() {
+    const requestNumber = document.getElementById('requestNumberInput').value;
 
-    function fetchRequestSchedule() {
-        const requestNumber = document.getElementById('requestNumberInput').value;
+    if (!requestNumber) {
+        alert('يرجى إدخال رقم الطلب');
+        return;
+    }
 
-        if (!requestNumber) {
-            alert('يرجى إدخال رقم الطلب');
-            return;
-        }
+    fetch('/writer/request-schedule', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+        },
+        body: JSON.stringify({ request_number: requestNumber })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            console.log('Request Schedule Data:', data.data);
+            updateScheduleTable(data.data);
 
-        // ✅ تعديل المسار ليكون خاص بالكاتب
-        fetch('/writer/request-schedule', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-            },
-            body: JSON.stringify({ request_number: requestNumber })
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                updateScheduleTable(data.data);
-
-                if (data.data.length > 0) {
-                    const first = data.data[0];
-
-                    // ✅ عرض معلومات المحكمة
-                    console.log("📥 Full record:", first);
-                    console.log("🔑 Keys:", Object.keys(first));
-                    document.getElementById('courtNumber').textContent = first.tribunal_number || '-';
-                    document.getElementById('courtDesk').textContent = first.department_number || '-';
-                    document.getElementById('courtYear').textContent = first.court_year || '-';
-                }
-            } else {
-                alert('لم يتم العثور على بيانات');
+            if (data.data.length > 0) {
+                const first = data.data[0];
+                document.getElementById('courtNumber').value = first.tribunal_number || '---';
+                document.getElementById('courtDesk').value = first.department_number || '---';
+                document.getElementById('courtYear').value = first.court_year || '---';
             }
-        })
-        .catch(error => {
-            console.error('خطأ في الجلب:', error);
-            alert('حدث خطأ أثناء جلب البيانات');
-        });
-    }
-
-    function updateScheduleTable(sessions) {
-        const tbody = document.getElementById('requestSessionsBody');
-        tbody.innerHTML = ''; // مسح المحتوى السابق
-
-        if (sessions.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="6">لا توجد جلسات لهذا الطلب</td></tr>`;
-            return;
+        } else {
+            alert('لم يتم العثور على بيانات');
         }
+    })
+    .catch(error => {
+        console.error('خطأ في الجلب:', error);
+        alert('حدث خطأ أثناء جلب البيانات');
+    });
+}
 
-        sessions.forEach(session => {
-            const row = document.createElement('tr');
-            row.innerHTML = `
-                <td>${session.session_date || '-'}</td>
-                <td>${session.session_time || '-'}</td>
-                <td>${session.session_status || '-'}</td>
-                <td>${session.session_reason || '-'}</td>
-                <td>${session.original_date || '-'}</td>
-                <td>${session.judge_name || '-'}</td>
-            `;
-            tbody.appendChild(row);
-        });
+function updateScheduleTable(sessions) {
+    const tbody = document.getElementById('requestSessionsBody');
+    tbody.innerHTML = ''; // مسح المحتوى السابق
+
+    if (sessions.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6">لا توجد جلسات لهذا الطلب</td></tr>`;
+        return;
     }
 
-    // ✅ ربط الدالة بزر الإدخال إذا ضغط Enter
-    const input = document.getElementById('requestNumberInput');
-    if (input) {
-        input.addEventListener('keydown', function (event) {
-            if (event.key === 'Enter') {
-                fetchRequestSchedule();
-            }
-        });
-    }
-
-});
+    sessions.forEach(session => {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td>${session.session_date || '-'}</td>
+            <td>${session.session_time || '-'}</td>
+            <td>${session.session_status || '-'}</td>
+            <td>${session.session_reason || '-'}</td>
+            <td>${session.original_date || '-'}</td>
+            <td>${session.judge_name || '-'}</td>
+        `;
+        tbody.appendChild(row);
+    });
+}
 </script>
 
 
