@@ -3024,12 +3024,12 @@ document.addEventListener('DOMContentLoaded', () => {
       if (!res.ok) throw new Error("فشل في جلب البيانات");
 
       const json = await res.json();
-      if (!json.case_id) {
+      if (!json.case_number) {
         showAlert("لا توجد قضية بهذا الرقم", "danger");
         return;
       }
 
-      currentCaseId = json.case_id;
+      currentCaseId = json.case_number;
 
       if (courtNumber) courtNumber.value = json.case_court || "";
       if (penNumber) penNumber.value = json.case_pen || "";
