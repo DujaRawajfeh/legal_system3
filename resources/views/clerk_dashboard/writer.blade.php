@@ -2821,69 +2821,79 @@ document.addEventListener('DOMContentLoaded', () => {
 <script>
 //مذكرة تبليغ حكم
 document.addEventListener('DOMContentLoaded', () => {
+  console.log('🚀 مذكرة تبليغ حكم - Script loaded!');
 
   const searchBtn = document.getElementById('notif-judgment-search');
+  const notifyBtn = document.getElementById('notif-judgment-notify');
+  const alertBox = document.getElementById('notif-judgment-alert');
+
+  let selectedRow = null;
+  let selectedParticipant = null;
+  let currentCaseId = null;
 
   if (!searchBtn) {
-    console.error(' زر البحث غير موجود في الصفحة');
+    console.error('❌ زر البحث غير موجود في الصفحة');
     return;
+  }
+
+  console.log('📦 Elements check:', {
+    searchBtn: !!searchBtn,
+    notifyBtn: !!notifyBtn,
+    alertBox: !!alertBox
+  });
+
+  function showAlert(msg, type = 'info') {
+    alertBox.innerHTML = `<div class="alert alert-${type}">${msg}</div>`;
   }
 
   searchBtn.addEventListener('click', async () => {
     console.log('✅ تم الضغط على زر البحث');
 
-    const serial   = document.getElementById('notif-judgment-case-serial').value.trim();
-    const alertBox = document.getElementById('notif-judgment-alert');
+    const serial = document.getElementById('notif-judgment-case-serial').value.trim();
     alertBox.innerHTML = '';
+    selectedRow = null;
+    selectedParticipant = null;
+    currentCaseId = null;
 
     if (serial.length !== 4) {
-      alertBox.innerHTML =
-        '<div class="alert alert-danger">أدخلي رقم دعوى من 4 خانات</div>';
+      showAlert('أدخل رقم دعوى من 4 خانات', 'danger');
       return;
     }
 
     try {
-      const res  = await fetch(`/court-cases/${serial}?notification_type=تبليغ حكم`);
+      const res = await fetch(`/court-cases/${serial}?notification_type=تبليغ حكم`);
       const data = await res.json();
 
       if (!res.ok || data.error) {
-        alertBox.innerHTML =
-          `<div class="alert alert-danger">${data.error ?? 'خطأ غير متوقع'}</div>`;
+        showAlert(data.error ?? 'خطأ غير متوقع', 'danger');
         return;
       }
 
-      
+      console.log('📥 Data received:', data);
+
+      // Store case ID
+      currentCaseId = data.case_id || data.id;
+      console.log('💾 Stored case ID:', currentCaseId);
 
       // نوع الدعوى + اسم القاضي + الحكم
-      document.getElementById('notif-judgment-case-type').value =
-        data.case_type ?? '';
+      document.getElementById('notif-judgment-case-type').value = data.case_type ?? '';
+      document.getElementById('notif-judgment-judge-name').value = data.judge_name ?? '';
+      document.getElementById('notif-judgment-text').value = data.judgment ?? 'لا يوجد حكم نهائي لهذه الدعوى';
+      document.getElementById('notif-judgment-court-number').value = data.tribunal?.number ?? '';
+      document.getElementById('notif-judgment-pen-number').value = data.department?.number ?? '';
+      document.getElementById('notif-judgment-year-number').value = new Date().getFullYear();
 
-      document.getElementById('notif-judgment-judge-name').value =
-        data.judge_name ?? '';
-
-      document.getElementById('notif-judgment-text').value =
-        data.judgment ?? 'لا يوجد حكم نهائي لهذه الدعوى';
-
-      
-      document.getElementById('notif-judgment-court-number').value =
-        data.tribunal?.number ?? '';
-
-      document.getElementById('notif-judgment-pen-number').value =
-        data.department?.number ?? '';
-
-      document.getElementById('notif-judgment-year-number').value =
-        new Date().getFullYear();
-
-      
       const tbody = document.querySelector('#notif-judgment-parties-table tbody');
       tbody.innerHTML = '';
 
-      (data.participants || []).forEach(p => {
+      (data.participants || []).forEach((p, i) => {
         const tr = document.createElement('tr');
+        tr.dataset.index = i;
+        tr.style.cursor = 'pointer';
 
         tr.innerHTML = `
           <td>
-            <input type="radio" name="selected_party">
+            <input type="radio" name="selected_party" class="form-check-input">
           </td>
           <td>${p.name ?? ''}</td>
           <td>${p.national_id ?? ''}</td>
@@ -2892,14 +2902,37 @@ document.addEventListener('DOMContentLoaded', () => {
           <td>${p.residence ?? ''}</td>
           <td>${p.phone ?? ''}</td>
           <td>
-            <select class="form-select form-select-sm">
+            <select class="notification-method-select form-select form-select-sm" data-index="${i}">
               <option value="">اختر</option>
-              <option value="sms">SMS</option>
-              <option value="email">Email</option>
+              <option value="sms">رسالة قصيرة</option>
+              <option value="email">بريد إلكتروني</option>
               <option value="قسم التباليغ">قسم التباليغ</option>
             </select>
           </td>
         `;
+
+        // Stop propagation on select
+        const select = tr.querySelector('.notification-method-select');
+        select.addEventListener('click', (e) => e.stopPropagation());
+
+        // Row click handler
+        tr.addEventListener('click', () => {
+          console.log('📋 Row clicked:', p.name);
+          
+          // Deselect previous
+          if (selectedRow) {
+            selectedRow.classList.remove('table-primary');
+            selectedRow.querySelector('input[type="radio"]').checked = false;
+          }
+          
+          // Select current
+          tr.classList.add('table-primary');
+          tr.querySelector('input[type="radio"]').checked = true;
+          selectedRow = tr;
+          selectedParticipant = p;
+          
+          console.log('✅ Participant selected:', selectedParticipant);
+        });
 
         tbody.appendChild(tr);
       });
@@ -2907,11 +2940,81 @@ document.addEventListener('DOMContentLoaded', () => {
       console.log('✅ تم عرض جميع بيانات الدعوى بنجاح');
 
     } catch (e) {
-      alertBox.innerHTML =
-        '<div class="alert alert-danger">فشل الاتصال بالسيرفر</div>';
+      showAlert('فشل الاتصال بالسيرفر', 'danger');
       console.error('❌ Fetch error:', e);
     }
   });
+
+  // Notify button handler
+  if (notifyBtn) {
+    console.log('✅ Adding click event listener to notify button');
+    notifyBtn.addEventListener('click', async () => {
+      console.log('🔔 Notify button clicked!');
+      console.log('Selected participant:', selectedParticipant);
+      console.log('Current case ID:', currentCaseId);
+
+      if (!selectedRow || !selectedParticipant) {
+        showAlert('⚠️ حدد طرفاً من الجدول', 'warning');
+        return;
+      }
+
+      const methodSelect = selectedRow.querySelector('.notification-method-select');
+      const method = methodSelect.value;
+
+      console.log('Selected method:', method);
+
+      if (!method) {
+        showAlert('⚠️ اختر طريقة التبليغ من القائمة', 'warning');
+        return;
+      }
+
+      if (!currentCaseId) {
+        showAlert('⚠️ لا يوجد معرف للقضية', 'warning');
+        return;
+      }
+
+      console.log('📤 Sending notification:', {
+        case_id: currentCaseId,
+        participant_name: selectedParticipant.name,
+        method: method
+      });
+
+      notifyBtn.disabled = true;
+      notifyBtn.textContent = 'جاري الإرسال...';
+
+      try {
+        const res = await fetch("{{ route('notifications.save') }}", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content
+          },
+          body: JSON.stringify({
+            case_id: currentCaseId,
+            participant_name: selectedParticipant.name,
+            method: method
+          })
+        });
+
+        const data = await res.json();
+        console.log('📥 Response:', data);
+
+        if (!res.ok) {
+          throw data;
+        }
+
+        showAlert(`✅ تم حفظ التبليغ للطرف: ${selectedParticipant.name} بطريقة: ${method}`, 'success');
+
+      } catch (err) {
+        console.error('❌ Error:', err);
+        const errorMsg = err.error || err.message || 'حدث خطأ أثناء حفظ التبليغ';
+        showAlert(`❌ ${errorMsg}`, 'danger');
+      } finally {
+        notifyBtn.disabled = false;
+        notifyBtn.textContent = 'تنفيذ تبليغ';
+      }
+    });
+  }
 
 });
 </script>
