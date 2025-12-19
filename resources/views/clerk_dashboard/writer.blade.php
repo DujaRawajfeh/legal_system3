@@ -1,4 +1,4 @@
-@extends('layouts.app')
+﻿@extends('layouts.app')
 
 @section('title', 'لوحة الكاتب')
 
@@ -3408,7 +3408,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         clearAlert();
 
-        currentCaseId = json.id; // Store the case ID
+        currentCaseId = json.case_id || json.id; // Store the case ID
         caseType.value = json.case_type ?? "";
         judgeName.value = json.judge_name ?? "";
         currentCaseData = json.participants ?? [];
@@ -3498,6 +3498,12 @@ document.addEventListener("DOMContentLoaded", function () {
       }
 
       // Send to database
+      console.log('📤 Sending notification:', {
+        case_id: currentCaseId,
+        participant_name: selectedParticipant.name,
+        method: method
+      });
+
       notifyBtn.disabled = true;
       notifyBtn.textContent = "جاري الإرسال...";
 
@@ -3513,8 +3519,14 @@ document.addEventListener("DOMContentLoaded", function () {
           method: method
         })
       })
-      .then(res => res.json())
+      .then(res => {
+        if (!res.ok) {
+          return res.json().then(err => Promise.reject(err));
+        }
+        return res.json();
+      })
       .then(data => {
+        console.log(' Response:', data);
         showAlert(`✅ تم حفظ التبليغ للطرف: ${selectedParticipant.name} بطريقة: ${method}`, 'success');
       })
       .catch(err => {
@@ -3566,8 +3578,14 @@ document.addEventListener("DOMContentLoaded", function () {
           method: method
         })
       })
-      .then(res => res.json())
+      .then(res => {
+        if (!res.ok) {
+          return res.json().then(err => Promise.reject(err));
+        }
+        return res.json();
+      })
       .then(data => {
+        console.log(' Response:', data);
         showAlert('✅ تم الحفظ بنجاح', 'success');
         setTimeout(() => {
           const modal = bootstrap.Modal.getInstance(document.getElementById(modalId));
@@ -3669,7 +3687,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         clearAlert();
 
-        currentCaseId = json.id;
+        currentCaseId = json.case_id || json.id;
         caseType.value = json.case_type ?? "";
         judgeName.value = json.judge_name ?? "";
         currentCaseData = json.participants ?? [];
@@ -3769,8 +3787,14 @@ document.addEventListener("DOMContentLoaded", function () {
           method: method
         })
       })
-      .then(res => res.json())
+      .then(res => {
+        if (!res.ok) {
+          return res.json().then(err => Promise.reject(err));
+        }
+        return res.json();
+      })
       .then(data => {
+        console.log(' Response:', data);
         showAlert(`✅ تم حفظ التبليغ للطرف: ${selectedParticipant.name} بطريقة: ${method}`, 'success');
       })
       .catch(err => {
@@ -3820,8 +3844,14 @@ document.addEventListener("DOMContentLoaded", function () {
           method: method
         })
       })
-      .then(res => res.json())
+      .then(res => {
+        if (!res.ok) {
+          return res.json().then(err => Promise.reject(err));
+        }
+        return res.json();
+      })
       .then(data => {
+        console.log(' Response:', data);
         showAlert('✅ تم الحفظ بنجاح', 'success');
         setTimeout(() => {
           const modal = bootstrap.Modal.getInstance(document.getElementById(modalId));
@@ -3922,7 +3952,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         clearAlert();
 
-        currentCaseId = json.id;
+        currentCaseId = json.case_id || json.id;
         caseType.value = json.case_type ?? "";
         judgeName.value = json.judge_name ?? "";
         currentCaseData = json.participants ?? [];
@@ -4022,8 +4052,14 @@ document.addEventListener("DOMContentLoaded", function () {
           method: method
         })
       })
-      .then(res => res.json())
+      .then(res => {
+        if (!res.ok) {
+          return res.json().then(err => Promise.reject(err));
+        }
+        return res.json();
+      })
       .then(data => {
+        console.log(' Response:', data);
         showAlert(`✅ تم حفظ التبليغ للطرف: ${selectedParticipant.name} بطريقة: ${method}`, 'success');
       })
       .catch(err => {
@@ -4073,8 +4109,14 @@ document.addEventListener("DOMContentLoaded", function () {
           method: method
         })
       })
-      .then(res => res.json())
+      .then(res => {
+        if (!res.ok) {
+          return res.json().then(err => Promise.reject(err));
+        }
+        return res.json();
+      })
       .then(data => {
+        console.log(' Response:', data);
         showAlert('✅ تم الحفظ بنجاح', 'success');
         setTimeout(() => {
           const modal = bootstrap.Modal.getInstance(document.getElementById(modalId));
@@ -4175,7 +4217,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         clearAlert();
 
-        currentCaseId = json.id;
+        currentCaseId = json.case_id || json.id;
         caseType.value = json.case_type ?? "";
         judgeName.value = json.judge_name ?? "";
         currentCaseData = json.participants ?? [];
@@ -4275,8 +4317,14 @@ document.addEventListener("DOMContentLoaded", function () {
           method: method
         })
       })
-      .then(res => res.json())
+      .then(res => {
+        if (!res.ok) {
+          return res.json().then(err => Promise.reject(err));
+        }
+        return res.json();
+      })
       .then(data => {
+        console.log(' Response:', data);
         showAlert(`✅ تم حفظ التبليغ للطرف: ${selectedParticipant.name} بطريقة: ${method}`, 'success');
       })
       .catch(err => {
@@ -4326,8 +4374,14 @@ document.addEventListener("DOMContentLoaded", function () {
           method: method
         })
       })
-      .then(res => res.json())
+      .then(res => {
+        if (!res.ok) {
+          return res.json().then(err => Promise.reject(err));
+        }
+        return res.json();
+      })
       .then(data => {
+        console.log(' Response:', data);
         showAlert('✅ تم الحفظ بنجاح', 'success');
         setTimeout(() => {
           const modal = bootstrap.Modal.getInstance(document.getElementById(modalId));
@@ -4458,8 +4512,14 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         fetch(`/police-cases/by-center/${encodeURIComponent(center)}`)
-            .then(res => res.json())
-            .then(data => {
+            .then(res => {
+        if (!res.ok) {
+          return res.json().then(err => Promise.reject(err));
+        }
+        return res.json();
+      })
+      .then(data => {
+        console.log(' Response:', data);
 
                 tbody.innerHTML = '';
 
@@ -4728,8 +4788,14 @@ document.addEventListener("DOMContentLoaded", function () {
             },
             body: JSON.stringify(params)
         })
-        .then(res => res.json())
-        .then(data => {
+        .then(res => {
+        if (!res.ok) {
+          return res.json().then(err => Promise.reject(err));
+        }
+        return res.json();
+      })
+      .then(data => {
+        console.log(' Response:', data);
             console.log("📥 Civil Registry Results:", data);
 
             // ✅ خزّن البيانات في متغير عام للوصول من الـ Console
@@ -5160,8 +5226,14 @@ document.addEventListener('DOMContentLoaded', function () {
             },
             body: JSON.stringify(payload)
         })
-        .then(res => res.json())
-        .then(data => {
+        .then(res => {
+        if (!res.ok) {
+          return res.json().then(err => Promise.reject(err));
+        }
+        return res.json();
+      })
+      .then(data => {
+        console.log(' Response:', data);
 
             console.log("📥 Civil Registry Results:", data);
 
