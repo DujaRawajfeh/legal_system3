@@ -3339,6 +3339,7 @@ document.addEventListener("DOMContentLoaded", function () {
 <script>
     // تبليغ مشتكي عليه
 document.addEventListener("DOMContentLoaded", function () {
+  console.log('🚀 تبليغ مشتكي عليه - Script loaded!');
 
   const modalId = "notif-complainant-modal";
   const $ = id => document.getElementById(id);
@@ -3356,6 +3357,14 @@ document.addEventListener("DOMContentLoaded", function () {
   const saveBtn = $("notif-complainant-save");
   const notifyBtn = $("notif-complainant-notify");
   const alertBox = $("notif-complainant-alert");
+
+  console.log('📦 Elements check:', {
+    caseSerial: !!caseSerial,
+    searchBtn: !!searchBtn,
+    saveBtn: !!saveBtn,
+    notifyBtn: !!notifyBtn,
+    tableBody: !!tableBody
+  });
 
   let selectedRow = null;
   let selectedParticipant = null;
