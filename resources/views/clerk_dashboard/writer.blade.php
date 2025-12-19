@@ -3036,7 +3036,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       // Second call: Get case_type, judge_name, participants from fetchCaseParticipants
       const caseRes = await fetch("/release-memo/fetch", {
-        method: "POST",
+        method: "GET",
         headers: {
           "Content-Type": "application/json",
           "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content
