@@ -3020,20 +3020,29 @@ document.addEventListener('DOMContentLoaded', () => {
     if (alertBox) alertBox.innerHTML = "";
 
     try {
-      const res = await fetch(`/writer/case-notifications/${encodeURIComponent(serial)}`);
-      if (!res.ok) throw new Error("فشل في جلب البيانات");
+      const res = await fetch("/release-memo/fetch", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content
+        },
+        body: JSON.stringify({
+          case_number: serial
+        })
+      });
 
       const json = await res.json();
-      if (!json.case_number) {
-        showAlert("لا توجد قضية بهذا الرقم", "danger");
+
+      if (!res.ok || json.error) {
+        showAlert(json.error || "لا توجد قضية بهذا الرقم", "danger");
         return;
       }
 
-      currentCaseId = json.case_number;
+      currentCaseId = serial;
 
-      if (courtNumber) courtNumber.value = json.case_court || "";
-      if (penNumber) penNumber.value = json.case_pen || "";
-      if (yearNumber) yearNumber.value = json.case_year || "";
+      if (courtNumber) courtNumber.value = "";
+      if (penNumber) penNumber.value = "";
+      if (yearNumber) yearNumber.value = "";
       if (caseTypeInput) caseTypeInput.value = json.case_type || "";
       if (judgeNameInput) judgeNameInput.value = json.judge_name || "";
 
