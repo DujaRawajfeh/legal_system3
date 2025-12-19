@@ -2887,7 +2887,7 @@
     <div class="modal-content">
 
       <div class="modal-header">
-        <h5 class="modal-title">مذكرة الإفراج عن الموقوفين</h5>
+        <h5 class="modal-title">مذكرة إفراج للموقوفين</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
 
@@ -2961,186 +2961,180 @@
   //مذكرة الإفراج عن الموقوفين
 document.addEventListener('DOMContentLoaded', () => {
 
-  console.log('📌 مذكرة الإفراج - جاهز');
+  const modalId = "release-memo-modal";
+  const modalEl = document.getElementById(modalId);
 
-  const alertBox = document.getElementById('release-alert');
-  const caseSerial = document.getElementById('release-case-serial');
-  const courtNumber = document.getElementById('release-court-number');
-  const penNumber = document.getElementById('release-pen-number');
-  const yearNumber = document.getElementById('release-year-number');
-  const caseTypeInput = document.getElementById('release-case-type');
-  const judgeNameInput = document.getElementById('release-judge-name');
-  const tbody = document.querySelector('#release-participants-table tbody');
-  const saveBtn = document.getElementById('release-save-btn');
+  const $ = id => document.getElementById(id);
+
+  // 4-box case number inputs
+  const caseSerial = $("release-case-serial");
+  const courtNumber = $("release-court-number");
+  const penNumber = $("release-pen-number");
+  const yearNumber = $("release-year-number");
+
+  const caseTypeInput = $("release-case-type");
+  const judgeNameInput = $("release-judge-name");
+  const participantsTableBody = document.querySelector("#release-participants-table tbody");
+
+  const saveBtn = $("release-save-btn");
+  const alertBox = $("release-alert");
 
   let selectedRow = null;
-  let currentCaseData = null;
+  let selectedParticipant = null;
+  let currentCaseId = null;
 
-  if (!caseSerial) {
-    console.warn('⚠️ release-case-serial not found');
-    return;
+  function showAlert(msg, type = "warning") {
+    if (!alertBox) return;
+    const cls = type === "success" ? "alert-success" : type === "danger" ? "alert-danger" : "alert-warning";
+    alertBox.innerHTML = `<div class="alert ${cls}">${msg}</div>`;
+    setTimeout(() => { alertBox.innerHTML = ""; }, 5000);
   }
 
-  // ⭐ Enter key على المربع الأول
-  caseSerial.addEventListener('keydown', async (e) => {
-    if (e.key !== 'Enter') return;
-    e.preventDefault();
+  function clearForm() {
+    if (caseSerial) caseSerial.value = "";
+    if (courtNumber) courtNumber.value = "";
+    if (penNumber) penNumber.value = "";
+    if (yearNumber) yearNumber.value = "";
+    if (caseTypeInput) caseTypeInput.value = "";
+    if (judgeNameInput) judgeNameInput.value = "";
+    if (participantsTableBody) participantsTableBody.innerHTML = "";
+    if (alertBox) alertBox.innerHTML = "";
+    selectedRow = null;
+    selectedParticipant = null;
+    currentCaseId = null;
+  }
 
+  async function searchCase() {
+    if (!caseSerial) return;
     const serial = caseSerial.value.trim();
-    if (!serial) {
-      showAlert('danger', 'الرجاء إدخال رقم الدعوى');
+    if (serial === "") {
+      showAlert("الرجاء إدخال رقم الدعوى", "danger");
       return;
     }
 
-    console.log('🔍 بحث عن:', serial);
-    await fetchCaseData(serial);
-  });
+    selectedRow = null;
+    selectedParticipant = null;
+    currentCaseId = null;
 
-  // ⭐ جلب بيانات القضية
-  async function fetchCaseData(caseNumber) {
+    if (participantsTableBody) participantsTableBody.innerHTML = "";
+    if (alertBox) alertBox.innerHTML = "";
+
     try {
-      alertBox.innerHTML = '';
-      tbody.innerHTML = '';
-      selectedRow = null;
-      currentCaseData = null;
+      const res = await fetch(`/writer/case-notifications/${encodeURIComponent(serial)}`);
+      if (!res.ok) throw new Error("فشل في جلب البيانات");
 
-      const res = await fetch(`/release-memo/fetch?case_number=${encodeURIComponent(caseNumber)}`);
-      const data = await res.json();
-
-      console.log('📦 استلمت:', data);
-
-      if (!res.ok || data.error) {
-        showAlert('danger', data.error || 'فشل البحث');
+      const json = await res.json();
+      if (!json.case_id) {
+        showAlert("لا توجد قضية بهذا الرقم", "danger");
         return;
       }
 
-      currentCaseData = data;
+      currentCaseId = json.case_id;
 
-      // تعبئة المربعات
-      if (courtNumber) courtNumber.value = data.case_court || '';
-      if (penNumber) penNumber.value = data.case_pen || '';
-      if (yearNumber) yearNumber.value = data.case_year || '';
-      if (caseTypeInput) caseTypeInput.value = data.case_type || '';
-      if (judgeNameInput) judgeNameInput.value = data.judge_name || '';
+      if (courtNumber) courtNumber.value = json.case_court || "";
+      if (penNumber) penNumber.value = json.case_pen || "";
+      if (yearNumber) yearNumber.value = json.case_year || "";
+      if (caseTypeInput) caseTypeInput.value = json.case_type || "";
+      if (judgeNameInput) judgeNameInput.value = json.judge_name || "";
 
-      // تعبئة الجدول
-      populateTable(data.participants || []);
+      if (participantsTableBody) {
+        participantsTableBody.innerHTML = "";
+        if (json.participants && json.participants.length > 0) {
+          json.participants.forEach(p => {
+            const tr = document.createElement("tr");
+            tr.innerHTML = `
+              <td>${p.name || ""}</td>
+              <td>${p.type || ""}</td>
+              <td>${p.charge || ""}</td>
+            `;
 
-    } catch (err) {
-      console.error('❌', err);
-      showAlert('danger', 'فشل الاتصال بالسيرفر');
+            tr.addEventListener("click", () => {
+              if (selectedRow) {
+                selectedRow.classList.remove("selected");
+              }
+              selectedRow = tr;
+              selectedRow.classList.add("selected");
+
+              selectedParticipant = {
+                name: p.name || "",
+                type: p.type || "",
+                charge: p.charge || ""
+              };
+            });
+
+            participantsTableBody.appendChild(tr);
+          });
+        }
+      }
+
+    } catch (e) {
+      console.error(e);
+      showAlert("خطأ في الاتصال بالسيرفر", "danger");
     }
   }
 
-  // ⭐ تعبئة جدول الأطراف (3 أعمدة فقط)
-  function populateTable(participants) {
-    tbody.innerHTML = '';
-
-    if (participants.length === 0) {
-      tbody.innerHTML = '<tr><td colspan="3">لا توجد أطراف</td></tr>';
-      return;
-    }
-
-    participants.forEach((p, index) => {
-      const row = document.createElement('tr');
-      row.dataset.name = p.name || '';
-      row.dataset.type = p.type || '';
-      row.dataset.charge = p.charge || '-';
-
-      row.innerHTML = `
-        <td>${p.name || ''}</td>
-        <td>${p.type || ''}</td>
-        <td>${p.charge || '-'}</td>
-      `;
-
-      // اختيار الصف عند الضغط
-      row.addEventListener('click', () => {
-        if (selectedRow) selectedRow.classList.remove('selected');
-        selectedRow = row;
-        selectedRow.classList.add('selected');
-        console.log('✅ تم اختيار:', row.dataset.name);
-      });
-
-      tbody.appendChild(row);
+  // Enter key search
+  if (caseSerial) {
+    caseSerial.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        searchCase();
+      }
     });
   }
 
-  // ⭐ حفظ مذكرة الإفراج
+  // Save/Release button
   if (saveBtn) {
-    saveBtn.addEventListener('click', async () => {
-      
-      console.log('💾 محاولة الحفظ...');
-      
-      if (!selectedRow) {
-        showAlert('danger', 'يرجى اختيار طرف واحد على الأقل');
+    saveBtn.addEventListener("click", async () => {
+      if (!selectedParticipant) {
+        showAlert("يرجى اختيار طرف من الجدول", "warning");
+        return;
+      }
+      if (!caseSerial || !caseSerial.value.trim()) {
+        showAlert("يرجى البحث عن القضية أولاً", "warning");
         return;
       }
 
       const caseNumber = caseSerial.value.trim();
-      if (!caseNumber) {
-        showAlert('danger', 'رقم الدعوى مطلوب');
-        return;
-      }
-
-      const releasedName = selectedRow.dataset.name;
-      
-      console.log('📤 إرسال:', { case_number: caseNumber, released_participant: releasedName });
 
       try {
-        const res = await fetch('/release-memo/default-info', {
-          method: 'POST',
+        const res = await fetch("/release-memo/store", {
+          method: "POST",
           headers: {
-            'Content-Type': 'application/json',
-            'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+            "Content-Type": "application/json",
+            "X-CSRF-TOKEN": document.querySelector('meta[name="csrf-token"]').content
           },
           body: JSON.stringify({
             case_number: caseNumber,
-            released_participant: releasedName
+            released_participants: [selectedParticipant.name]
           })
         });
 
-        const data = await res.json();
-        console.log('📥 استجابة:', data);
+        if (!res.ok) throw new Error("فشل الحفظ");
 
-        if (!res.ok || data.error) {
-          showAlert('danger', data.error || 'فشل الحفظ');
-          return;
+        const data = await res.json();
+        if (data.error) {
+          showAlert(data.error, "danger");
+        } else {
+          showAlert("تم الإفراج عن الموقوف بنجاح", "success");
+          clearForm();
+          const modal = bootstrap.Modal.getInstance(modalEl);
+          if (modal) {
+            setTimeout(() => modal.hide(), 1500);
+          }
         }
 
-        showAlert('success', 'تم الإفراج عن الموقوف بنجاح');
-        
-        // إعادة تعيين
-        selectedRow.classList.remove('selected');
-        selectedRow = null;
-
-      } catch (err) {
-        console.error('❌', err);
-        showAlert('danger', 'خطأ أثناء الحفظ');
+      } catch (e) {
+        console.error(e);
+        showAlert("خطأ أثناء الحفظ", "danger");
       }
     });
   }
 
-  // ⭐ عرض رسالة
-  function showAlert(type, message) {
-    alertBox.innerHTML = `<div class="alert alert-${type}">${message}</div>`;
-    setTimeout(() => { alertBox.innerHTML = ''; }, 5000);
-  }
-
-  // ⭐ تنظيف عند إغلاق المودال
-  const modal = document.getElementById('release-memo-modal');
-  if (modal) {
-    modal.addEventListener('hidden.bs.modal', () => {
-      console.log('🔄 تنظيف المودال');
-      if (caseSerial) caseSerial.value = '';
-      if (courtNumber) courtNumber.value = '';
-      if (penNumber) penNumber.value = '';
-      if (yearNumber) yearNumber.value = '';
-      if (caseTypeInput) caseTypeInput.value = '';
-      if (judgeNameInput) judgeNameInput.value = '';
-      tbody.innerHTML = '';
-      alertBox.innerHTML = '';
-      selectedRow = null;
-      currentCaseData = null;
+  // Modal cleanup on hide
+  if (modalEl) {
+    modalEl.addEventListener("hidden.bs.modal", () => {
+      clearForm();
     });
   }
 
