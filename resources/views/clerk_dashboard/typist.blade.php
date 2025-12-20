@@ -258,7 +258,7 @@ body {
         <li><a onclick="$('#requestScheduleModal').modal('show')">جدول الطلبات</a></li>
       </ul>
     </li>
-    <li><a href="{{ route('2fa.setup') }}" target="_blank">إعدادات الحماية</a></li>
+    <li><a href="{{ route('2fa.setup') }}" target="_self">إعدادات الحماية</a></li>
   </ul>
 
   <form method="POST" action="{{ route('logout') }}" class="logout-form">

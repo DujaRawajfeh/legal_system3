@@ -187,7 +187,7 @@
       </ul>
     </li>
     <li><a href="#" data-bs-toggle="modal" data-bs-target="#participantsModal">المشاركين</a></li>
-    <li><a href="{{ route('2fa.setup') }}" target="_blank">اعدادات الحماية</a></li>
+    <li><a href="{{ route('2fa.setup') }}" target="_self">اعدادات الحماية</a></li>
   </ul>
 
 

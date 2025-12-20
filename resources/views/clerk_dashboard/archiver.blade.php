@@ -179,7 +179,7 @@
 <nav class="navbar">
     <div class="user-info">المؤرشف / {{ $archiver->full_name }}</div>
     <li>
-  <a href="{{ route('2fa.setup') }}" class="security-link" target="_blank">
+  <a href="{{ route('2fa.setup') }}" class="security-link" target="_self">
     إعدادات الحماية
   </a>
 </li>
