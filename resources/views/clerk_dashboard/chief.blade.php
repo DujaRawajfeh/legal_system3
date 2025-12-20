@@ -15,6 +15,61 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 </script>
 
+<!-- إضافة عناصر القائمة الخاصة برئيس القسم في قائمة الجلسات -->
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const sessionsTrigger = document.getElementById('sessions-trigger');
+    if (sessionsTrigger && sessionsTrigger.nextElementSibling) {
+        const sessionsMenu = sessionsTrigger.nextElementSibling;
+        
+        // إضافة "تحديد القضاة للكاتب/الطابعة"
+        const defineJudgeLi = document.createElement('li');
+        defineJudgeLi.innerHTML = '<a href="#" onclick="openWindow(\'define\')">تحديد القضاة للكاتب/الطابعة</a>';
+        sessionsMenu.appendChild(defineJudgeLi);
+        
+        // إضافة "تحويل الدعوى من هيئة الى اخرى"
+        const transformLi = document.createElement('li');
+        transformLi.innerHTML = '<a href="#" onclick="openWindow(\'transform\')">تحويل الدعوى من هيئة الى اخرى</a>';
+        sessionsMenu.appendChild(transformLi);
+    }
+});
+
+// دالة فتح النوافذ
+function openWindow(type) {
+    if (type === 'define') {
+        const modal = new bootstrap.Modal(document.getElementById('assignJudgeModal'));
+        modal.show();
+        
+        // تحميل الموظفين والقضاة
+        loadWriters();
+        loadTypists();
+        loadJudges();
+    } else if (type === 'transform') {
+        const modal = new bootstrap.Modal(document.getElementById('transferCaseModal'));
+        modal.show();
+        
+        // تحميل القضاة
+        axios.get("/chief/judges")
+            .then(res => {
+                let judges = res.data.judges;
+                let currentSelect = document.getElementById("current_judge");
+                let newSelect = document.getElementById("new_judge");
+                
+                currentSelect.innerHTML = `<option value="">اختر القاضي الحالي...</option>`;
+                newSelect.innerHTML = `<option value="">اختر القاضي الجديد...</option>`;
+                
+                judges.forEach(j => {
+                    currentSelect.innerHTML += `<option value="${j.id}">${j.full_name}</option>`;
+                    newSelect.innerHTML += `<option value="${j.id}">${j.full_name}</option>`;
+                });
+            })
+            .catch(() => {
+                alert("❌ خطأ أثناء جلب القضاة");
+            });
+    }
+}
+</script>
+
 <!-- إضافة زر تحويل القضايا داخل قائمة الدعوى/الطلب فقط لرئيس القسم -->
 <script>
 document.addEventListener("DOMContentLoaded", function () {
