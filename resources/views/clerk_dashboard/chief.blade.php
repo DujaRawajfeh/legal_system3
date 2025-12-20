@@ -34,6 +34,65 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 });
 
+// ⭐ تحميل الكتاب (دالة عامة)
+function loadWriters() {  
+    axios.get("/chief/employees?role=writer")  
+    .then(res => {  
+        let users = res.data.users;  
+        let select = document.getElementById("writerSelect");  
+
+        select.innerHTML = "";  
+        users.forEach(u => {  
+            select.innerHTML += `<option value="${u.id}">${u.full_name}</option>`;  
+        });  
+    })  
+    .catch(err => { 
+        console.error("❌ ERROR loadWriters:", err);
+        alert("❌ خطأ أثناء تحميل الكتاب"); 
+    });
+}
+
+// ⭐ تحميل الطابعات (دالة عامة)
+function loadTypists() {  
+    axios.get("/chief/employees?role=typist")  
+    .then(res => {  
+        let users = res.data.users;  
+        let select = document.getElementById("typistSelect");  
+
+        select.innerHTML = "";  
+        users.forEach(u => {  
+            select.innerHTML += `<option value="${u.id}">${u.full_name}</option>`;  
+        });  
+    })  
+    .catch(err => { 
+        console.error("❌ ERROR loadTypists:", err);
+        alert("❌ خطأ أثناء تحميل الطابعات");
+    });
+}
+
+// ⭐ تحميل القضاة (دالة عامة)
+function loadJudges() {  
+    axios.get("/chief/judges")  
+    .then(res => {  
+        let judges = res.data.judges;  
+
+        let wS = document.getElementById("writerJudgeSelect");  
+        let tS = document.getElementById("typistJudgeSelect");  
+
+        wS.innerHTML = "";  
+        tS.innerHTML = "";  
+
+        judges.forEach(j => {  
+            wS.innerHTML += `<option value="${j.id}">${j.full_name}</option>`;  
+            tS.innerHTML += `<option value="${j.id}">${j.full_name}</option>`;  
+        });  
+    })  
+    .catch(err => { 
+        console.error("❌ ERROR loadJudges:", err);
+        alert("❌ خطأ أثناء تحميل القضاة"); 
+    });
+}
+
 // دالة فتح النوافذ
 function openWindow(type) {
     if (type === 'define') {
@@ -314,65 +373,6 @@ document.addEventListener("DOMContentLoaded", () => {
         document.getElementById("typistSection").classList.remove("d-none");  
         document.getElementById("writerSection").classList.add("d-none");  
     });  
-
-    // ⭐ تحميل الكتاب  
-    function loadWriters() {  
-        axios.get("/chief/employees?role=writer")  
-        .then(res => {  
-            let users = res.data.users;  
-            let select = document.getElementById("writerSelect");  
-
-            select.innerHTML = "";  
-            users.forEach(u => {  
-                select.innerHTML += `<option value="${u.id}">${u.full_name}</option>`;  
-            });  
-        })  
-        .catch(err => { 
-            console.error("❌ ERROR loadWriters:", err);
-            alert("❌ خطأ أثناء تحميل الكتاب"); 
-        });
-    }  
-
-    // ⭐ تحميل الطابعات  
-    function loadTypists() {  
-        axios.get("/chief/employees?role=typist")  
-        .then(res => {  
-            let users = res.data.users;  
-            let select = document.getElementById("typistSelect");  
-
-            select.innerHTML = "";  
-            users.forEach(u => {  
-                select.innerHTML += `<option value="${u.id}">${u.full_name}</option>`;  
-            });  
-        })  
-        .catch(err => { 
-            console.error("❌ ERROR loadTypists:", err);
-            alert("❌ خطأ أثناء تحميل الطابعات");
-        });
-    }  
-
-    // ⭐ تحميل القضاة  
-    function loadJudges() {  
-        axios.get("/chief/judges")  
-        .then(res => {  
-            let judges = res.data.judges;  
-
-            let wS = document.getElementById("writerJudgeSelect");  
-            let tS = document.getElementById("typistJudgeSelect");  
-
-            wS.innerHTML = "";  
-            tS.innerHTML = "";  
-
-            judges.forEach(j => {  
-                wS.innerHTML += `<option value="${j.id}">${j.full_name}</option>`;  
-                tS.innerHTML += `<option value="${j.id}">${j.full_name}</option>`;  
-            });  
-        })  
-        .catch(err => { 
-            console.error("❌ ERROR loadJudges:", err);
-            alert("❌ خطأ أثناء تحميل القضاة"); 
-        });
-    }  
 
     // ⭐ حفظ القاضي للكاتب  
     document.getElementById("saveWriterJudge").addEventListener("click", () => {  
