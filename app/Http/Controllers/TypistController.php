@@ -55,7 +55,7 @@ class TypistController extends Controller
 }
 
 /**
- * ✅ تعرض نافذة جدول الدعوى للطابعة.
+ *  تعرض نافذة جدول الدعوى للطابعة.
  * تجمع بيانات المحكمة، القلم، والجلسات المرتبطة بالدعوى المحددة.
  * تُستخدم لعرض جدول الجلسات بشكل منسق داخل واجهة الطابعة.
  */
@@ -1050,25 +1050,27 @@ public function showTypistCases()
 
 
 //محضر المحاكمة
-
-public function showTrialReport(CaseSession $session)
+public function showTrialReport(Request $request, CaseSession $session)
 {
+    //  نحدد مصدر الصفحة
+    $source = $request->query('source', 'typist');
+
     $case   = $session->courtCase;
     $judge  = $case->judge;
     $typist = auth()->user();
 
-    // ⭐⭐ أهم نقطة: تحميل كل المحاضر المخزنة سابقاً لهذا الـ SESSION
+    //  كل المحاضر المخزنة سابقاً
     $reports = CourtSessionReport::where('case_session_id', $session->id)->get();
 
-    // ⭐ أقوال الأطراف الأساسية
+    //  أقوال الأطراف الأساسية
     $participants = $case->participants;
 
-    // ⭐ الأطراف المضافة (participant_id = null)
+    //  الأطراف المضافة
     $added_parties = $reports
         ->where('participant_id', null)
         ->where('name', '!=', null);
 
-    // ⭐ القرار القديم المحفوظ
+    //  القرار القديم
     $savedDecision = $reports
         ->where('decision_text', '!=', null)
         ->first();
@@ -1079,9 +1081,10 @@ public function showTrialReport(CaseSession $session)
         'judge',
         'typist',
         'participants',
-        'reports',          // ⬅ مهم جداً
+        'reports',
         'added_parties',
-        'savedDecision'
+        'savedDecision',
+        'source'  
     ));
 }
 public function storeTrialReport(Request $request, CaseSession $session)
@@ -1168,26 +1171,34 @@ public function storeTrialReport(Request $request, CaseSession $session)
 
 
 
-public function showAfterTrialReport(CaseSession $session)
+
+
+public function showAfterTrialReport(Request $request, CaseSession $session)
 {
+    //  تحديد مصدر الصفحة (writer / typist)
+    $source = $request->query('source', 'typist');
+
     $case = $session->courtCase;
     $judge = $case->judge;
     $typist = auth()->user();
 
-    // الأطراف الأساسيين
+    //  الأطراف الأساسيين
     $participants = $case->participants;
 
-    // ⭐ تحميل كل محاضر ما بعد
+    //  تحميل كل محاضر ما بعد
     $reports = CourtSessionReport::where('case_session_id', $session->id)
                                  ->where('report_mode', 'after')
                                  ->get();
 
-    // ⭐ الأطراف المضافة سابقاً
-    $added_parties = $reports->where('participant_id', null)
-                             ->where('name', '!=', null);
+    //  الأطراف المضافة سابقاً
+    $added_parties = $reports
+        ->where('participant_id', null)
+        ->where('name', '!=', null);
 
-    // ⭐ القرار المحفوظ
-    $savedDecision = $reports->where('decision_text', '!=', null)->first();
+    //  القرار المحفوظ
+    $savedDecision = $reports
+        ->where('decision_text', '!=', null)
+        ->first();
 
     return view('clerk_dashboard.after_trial_report', compact(
         'session',
@@ -1197,7 +1208,8 @@ public function showAfterTrialReport(CaseSession $session)
         'participants',
         'reports',
         'added_parties',
-        'savedDecision'
+        'savedDecision',
+        'source'  
     ));
 }
 public function storeAfterTrialReport(Request $request, CaseSession $session)

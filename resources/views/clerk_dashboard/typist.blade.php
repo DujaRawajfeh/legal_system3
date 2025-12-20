@@ -307,15 +307,28 @@ body {
                 </div>
                 
                 @if($session)
-                    <div class="case-actions">
-                        @if($session->status === 'محددة')
-                            <a href="{{ route('trial.report', $session->id) }}" class="action-btn">محضر المحاكمة</a>
-                        @elseif(in_array($session->status, ['مستمرة','مكتملة']))
-                            <a href="{{ route('trial.report', $session->id) }}" class="action-btn">محضر المحاكمة</a>
-                            <a href="{{ route('after.trial.report', $session->id) }}" class="action-btn">ما بعد</a>
-                        @endif
-                    </div>
-                @endif
+    <div class="case-actions">
+
+        @if($session->status === 'محددة')
+            <a href="{{ route('trial.report', ['session' => $session->id, 'source' => 'typist']) }}"
+               class="action-btn">
+               محضر المحاكمة
+            </a>
+
+        @elseif(in_array($session->status, ['مستمرة','مكتملة']))
+            <a href="{{ route('trial.report', ['session' => $session->id, 'source' => 'typist']) }}"
+               class="action-btn">
+               محضر المحاكمة
+            </a>
+
+            <a href="{{ route('after.trial.report', ['session' => $session->id, 'source' => 'typist']) }}"
+               class="action-btn">
+               ما بعد
+            </a>
+        @endif
+
+    </div>
+@endif
             </div>
         @empty
             <p style="color: #999; text-align: center; padding: 20px;">لا يوجد قضايا مرتبطة بأي قاضي.</p>

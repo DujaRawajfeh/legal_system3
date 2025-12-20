@@ -47,8 +47,11 @@
 <form method="POST" action="{{ route('trial.report.store', $session->id) }}">
 @csrf
 
-<!-- 🟦 مهم جداً: تحديد نوع المحضر -->
+<!-- 🟦 نوع المحضر -->
 <input type="hidden" name="report_mode" value="trial">
+
+<!-- 🟦 مصدر الصفحة (writer / typist) -->
+<input type="hidden" name="source" value="{{ $source }}">
 
 @foreach($participants as $part)
 
@@ -60,37 +63,31 @@
 @endphp
 
 <div class="mb-4">
-
     <h6>{{ $part->type ?? 'طرف' }}: {{ $part->name }}</h6>
 
     <label>أقوال الطرف:</label>
-    <textarea class="form-control" rows="3" 
-              name="participants[{{ $part->id }}][statement]">
-{{ $savedStatement->statement_text ?? '' }}
-    </textarea>
+    <textarea class="form-control" rows="3"
+              name="participants[{{ $part->id }}][statement]">{{ $savedStatement->statement_text ?? '' }}</textarea>
 
     <div class="finger-box">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
-            <path d="M8 13a.5.5 0 0 1 .5-.5..."></path>
+            <path d="M8 13a.5.5 0 0 1..."></path>
         </svg>
     </div>
-
 </div>
 @endforeach
 
 <hr>
 
-<!-- 🟦 الأطراف المضافة داخل المحضر -->
+<!-- 🟦 الأطراف المضافة -->
 <div id="newParties">
 @foreach($added_parties->where('report_mode', 'trial') as $ap)
 <div class="mb-3 border p-3">
     <h6>{{ $ap->role }} : {{ $ap->name }}</h6>
 
     <label>أقوال الطرف:</label>
-    <textarea class="form-control" rows="3" 
-              name="new_parties_existing[{{ $ap->id }}][statement]">
-{{ $ap->statement_text }}
-    </textarea>
+    <textarea class="form-control" rows="3"
+              name="new_parties_existing[{{ $ap->id }}][statement]">{{ $ap->statement_text }}</textarea>
 
     <div class="finger-box mt-2">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
@@ -115,9 +112,7 @@
 <h5>الــقـــرار</h5>
 
 <label>القرار النهائي:</label>
-<textarea class="form-control" rows="3" name="decision_text">
-{{ $savedDecision->decision_text ?? '' }}
-</textarea>
+<textarea class="form-control" rows="3" name="decision_text">{{ $savedDecision->decision_text ?? '' }}</textarea>
 
 <div class="finger-box mt-2">
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
@@ -129,7 +124,12 @@
 
 <div class="d-flex gap-3">
     <button type="submit" class="btn btn-primary mt-4">حفظ المحضر</button>
-    <a href="{{ route('typist.cases') }}" class="btn btn-danger mt-4">خروج</a>
+
+    <button type="button"
+            class="btn btn-danger mt-4"
+            onclick="closeAndReturn('{{ $source }}')">
+        خروج
+    </button>
 </div>
 
 </form>
@@ -155,7 +155,7 @@ function addNewParty() {
                oninput="updateRoleLabel(${partyIndex})">
 
         <label class="mt-2">أقوال الطرف:</label>
-        <textarea class="form-control" rows="3" 
+        <textarea class="form-control" rows="3"
                   name="new_parties[${partyIndex}][statement]"></textarea>
 
         <div class="finger-box mt-2">
@@ -177,6 +177,21 @@ function updateRoleLabel(i) {
         (role ? role : "طرف") + " : " + (name ? name : "");
 }
 </script>
+<script>
+function closeAndReturn(source) {
 
+    // محاولة إغلاق التاب الحالية
+    window.close();
+
+    // fallback لو المتصفح رفض الإغلاق
+    setTimeout(function () {
+        if (source === 'writer') {
+            window.location.href = "{{ route('writer.dashboard') }}";
+        } else {
+            window.location.href = "{{ route('typist.cases') }}";
+        }
+    }, 300);
+}
+</script>
 </body>
 </html>

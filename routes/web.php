@@ -168,9 +168,9 @@ Route::get('/chief/detained-list', [ChiefController::class, 'getDetainedList'])-
 
 //عرض محاضر الجلسات
 Route::get('/writer/reports/list', [WriterController::class, 'loadReportsList'])->name('writer.reports.list');
-// ✅ فتح محضر المحاكمة للكاتب (نفس دالة الطابعة)
+//  فتح محضر المحاكمة للكاتب (نفس دالة الطابعة)
 Route::get('/writer/trial-report/{session}', [TypistController::class, 'showTrialReport'])->name('writer.trial.report.show');
-// ✅ فتح محضر ما بعد للكاتب (نفس دالة الطابعة)
+//  فتح محضر ما بعد للكاتب (نفس دالة الطابعة)
 Route::get('/writer/after-trial-report/{session}', [TypistController::class, 'showAfterTrialReport'])->name('writer.after-trial.report.show');
 
 

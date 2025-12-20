@@ -985,7 +985,7 @@
     </div>
 </div>
 
-<!-- 🔶 مودال جدول أعمال المحكمة -->
+<!-- مودال جدول أعمال المحكمة -->
 <div class="modal fade" id="courtScheduleModal" tabindex="-1" aria-labelledby="courtScheduleLabel" aria-hidden="true">
   <div class="modal-dialog modal-xl modal-dialog-scrollable">
     <div class="modal-content">
@@ -6136,9 +6136,12 @@ async function loadReportsList() {
             return;
         }
 
-        // ✅ قوالب الروابط مع PLACEHOLDER
-        const trialUrlTemplate = `{{ route('writer.trial.report.show', ['session' => 'SESSION_ID']) }}`;
-        const afterUrlTemplate = `{{ route('writer.after-trial.report.show', ['session' => 'SESSION_ID']) }}`;
+        // ✅ قوالب الروابط (مع source=writer)
+        const trialUrlTemplate =
+            `{{ route('writer.trial.report.show', ['session' => 'SESSION_ID']) }}?source=writer`;
+
+        const afterUrlTemplate =
+            `{{ route('writer.after-trial.report.show', ['session' => 'SESSION_ID']) }}?source=writer`;
 
         let html = "";
 
@@ -6158,11 +6161,15 @@ async function loadReportsList() {
 
                     <div class="mt-2 d-flex gap-2">
                         ${modes.includes('trial')
-                            ? `<a class="btn btn-primary btn-sm" href="${trialUrl}" target="_blank">محضر المحاكمة</a>`
+                            ? `<a class="btn btn-primary btn-sm" href="${trialUrl}" target="_blank">
+                                   محضر المحاكمة
+                               </a>`
                             : ''}
 
                         ${modes.includes('after')
-                            ? `<a class="btn btn-secondary btn-sm" href="${afterUrl}" target="_blank">محضر ما بعد</a>`
+                            ? `<a class="btn btn-secondary btn-sm" href="${afterUrl}" target="_blank">
+                                   محضر ما بعد
+                               </a>`
                             : ''}
                     </div>
                 </div>
@@ -6177,8 +6184,6 @@ async function loadReportsList() {
     }
 }
 </script>
-
-
 
 
 
