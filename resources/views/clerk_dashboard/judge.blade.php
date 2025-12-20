@@ -192,7 +192,7 @@ button:hover, .btn:hover {
   <div class="left-section">
     <span class="judge-name">القاضي/ {{ $judge->full_name }}</span>
     <ul class="nav-links">
-      <li><a href="#" class="security-link" onclick="open2FAWindow()">اعدادات الحماية</a></li>
+      <li><a href="{{ route('2fa.setup') }}" class="security-link" target="_blank">اعدادات الحماية</a></li>
     </ul>
     <ul class="nav-tabs">
       <li><a href="#" class="active" onclick="showTab('casesTab', this)">الدعاوى</a></li>
@@ -591,20 +591,6 @@ document.getElementById('searchRequests')?.addEventListener('input', function(e)
         }
     }
 });
-
-// فتح نافذة المصادقة الثنائية كنافذة صغيرة
-function open2FAWindow() {
-    const width = 650;
-    const height = 700;
-    const left = (screen.width - width) / 2;
-    const top = (screen.height - height) / 2;
-    
-    window.open(
-        '{{ route("2fa.setup") }}',
-        '2FASetup',
-        `width=${width},height=${height},top=${top},left=${left},resizable=yes,scrollbars=yes`
-    );
-}
 </script>
 
 </body>
