@@ -2303,16 +2303,16 @@ function closeCaseSchedule() {
         <div class="table-responsive">
           <table class="table table-bordered table-hover" id="notif-witness-parties-table"
                  style="font-family: 'Cairo', sans-serif; font-size: 14px;">
-            <thead style="background-color: #000; color: #fff;">
+            <thead>
               <tr>
                 <!-- <th>اختيار</th> -->
-                <th>اسم الطرف</th>
-                <th>الرقم الوطني</th>
-                <th>نوع الطرف</th>
-                <th>المهنة</th>
-                <th>السكن</th>
-                <th>رقم الهاتف</th>
-                <th>طريقة التبليغ</th>
+                <th style="background:#000; color:#fff;">اسم الطرف</th>
+                <th style="background:#000; color:#fff;">الرقم الوطني</th>
+                <th style="background:#000; color:#fff;">نوع الطرف</th>
+                <th style="background:#000; color:#fff;">المهنة</th>
+                <th style="background:#000; color:#fff;">السكن</th>
+                <th style="background:#000; color:#fff;">رقم الهاتف</th>
+                <th style="background:#000; color:#fff;">طريقة التبليغ</th>
               </tr>
             </thead>
             <tbody></tbody>
@@ -2633,16 +2633,16 @@ function closeCaseSchedule() {
         <div class="table-responsive">
           <table class="table table-bordered table-hover" id="notif-judgment-parties-table"
                  style="font-size:14px;">
-            <thead style="background:#f8f9fa;">
+            <thead>
               <tr>
-                <th>اختيار</th>
-                <th>اسم الطرف</th>
-                <th>الرقم الوطني</th>
-                <th>نوع الطرف</th>
-                <th>المهنة</th>
-                <th>مكان الإقامة</th>
-                <th>رقم الهاتف</th>
-                <th>طريقة التبليغ</th>
+                <th style="background:#000; color:#fff;">اختيار</th>
+                <th style="background:#000; color:#fff;">اسم الطرف</th>
+                <th style="background:#000; color:#fff;">الرقم الوطني</th>
+                <th style="background:#000; color:#fff;">نوع الطرف</th>
+                <th style="background:#000; color:#fff;">المهنة</th>
+                <th style="background:#000; color:#fff;">مكان الإقامة</th>
+                <th style="background:#000; color:#fff;">رقم الهاتف</th>
+                <th style="background:#000; color:#fff;">طريقة التبليغ</th>
               </tr>
             </thead>
             <tbody></tbody>
