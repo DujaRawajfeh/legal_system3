@@ -230,7 +230,7 @@ body {
 </head>
 <body>
 
-<div class="court-bar">{{ optional(auth()->user()->tribunal)->name ?? 'محكمة بداية عمان' }} / القلم {{ optional(auth()->user()->department)->name ?? '-' }}</div>
+<div class="court-bar">{{ optional(auth()->user()->tribunal)->name ?? 'محكمة بداية عمان' }} / {{ optional(auth()->user()->department)->name ?? '-' }}</div>
 
 <nav class="navbar">
   <div class="user-info">الطابعة / {{ Auth::user()->full_name ?? 'مستخدم' }}</div>

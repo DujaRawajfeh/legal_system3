@@ -186,7 +186,7 @@ button:hover, .btn:hover {
 </head>
 <body>
 
-<div class="court-bar">{{ $judge->tribunal->name ?? '-' }} / القلم {{ $judge->department->name ?? '-' }}</div>
+<div class="court-bar">{{ $judge->tribunal->name ?? '-' }} / {{ $judge->department->name ?? '-' }}</div>
 
 <nav class="judge-bar">
   <div class="left-section">

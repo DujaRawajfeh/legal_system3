@@ -2318,19 +2318,12 @@ function closeCaseSchedule() {
 
       </div>
 
-      <div class="modal-footer" style="font-family: 'Cairo', sans-serif;">
-        <button type="button" id="notif-witness-save" class="btn"
-                style="background-color: #1a7f24; color: white; border:none; font-weight: bold;">
-          حفظ وانهاء
-        </button>
-        <button type="button" id="notif-witness-notify" class="btn"
-                style="background-color: #27ae60; color: white; border:none; font-weight: bold;">
-          تنفيذ تبليغ
-        </button>
-        <button type="button" class="btn" data-bs-dismiss="modal"
-                style="background-color: #e74c3c; color: white; border:none; font-weight: bold;">
-          خروج
-        </button>
+      <div class="modal-footer">
+        <div class="actions">
+          <button type="button" id="notif-witness-save" class="btn-save">حفظ وانهاء</button>
+          <button type="button" id="notif-witness-notify" class="btn-notify">تنفيذ تبليغ</button>
+          <button type="button" class="btn-exit" data-bs-dismiss="modal">خروج</button>
+        </div>
       </div>
 
     </div>
@@ -2346,6 +2339,49 @@ function closeCaseSchedule() {
   }
   #notif-witness-parties-table tbody tr.selected {
     background-color: #d1e7fd;
+  }
+
+  #notif-witness-modal .actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 18px;
+    justify-content: center;
+  }
+
+  #notif-witness-modal .btn-save {
+    background: #1a7f24;
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 6px;
+    border: 0;
+    cursor: pointer;
+    font-family: 'Cairo', sans-serif;
+    font-weight: bold;
+    font-size: 11px;
+  }
+
+  #notif-witness-modal .btn-notify {
+    background: #0d6efd;
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 6px;
+    border: 0;
+    cursor: pointer;
+    font-family: 'Cairo', sans-serif;
+    font-weight: bold;
+    font-size: 11px;
+  }
+
+  #notif-witness-modal .btn-exit {
+    background: #c81e1e;
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 6px;
+    border: 0;
+    cursor: pointer;
+    font-family: 'Cairo', sans-serif;
+    font-weight: bold;
+    font-size: 11px;
   }
 </style>
 
@@ -2612,24 +2648,49 @@ function closeCaseSchedule() {
 
       </div>
 
-      <div class="modal-footer" style="font-family:'Cairo',sans-serif;">
-        <!-- <button id="notif-judgment-save" class="btn"
-                style="background:#1a7f24;color:#fff;border:none;font-weight:bold;">
-          حفظ وانهاء
-        </button> -->
-        <button id="notif-judgment-notify" class="btn"
-                style="background:#27ae60;color:#fff;border:none;font-weight:bold;">
-          تنفيذ تبليغ
-        </button>
-        <button class="btn" data-bs-dismiss="modal"
-                style="background:#e74c3c;color:#fff;border:none;font-weight:bold;">
-          خروج
-        </button>
+      <div class="modal-footer">
+        <div class="actions">
+          <button id="notif-judgment-notify" class="btn-notify">تنفيذ تبليغ</button>
+          <button class="btn-exit" data-bs-dismiss="modal">خروج</button>
+        </div>
       </div>
 
     </div>
   </div>
 </div>
+
+<style>
+  #notif-judgment-modal .actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 18px;
+    justify-content: center;
+  }
+
+  #notif-judgment-modal .btn-notify {
+    background: #0d6efd;
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 6px;
+    border: 0;
+    cursor: pointer;
+    font-family: 'Cairo', sans-serif;
+    font-weight: bold;
+    font-size: 11px;
+  }
+
+  #notif-judgment-modal .btn-exit {
+    background: #c81e1e;
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 6px;
+    border: 0;
+    cursor: pointer;
+    font-family: 'Cairo', sans-serif;
+    font-weight: bold;
+    font-size: 11px;
+  }
+</style>
 
 
 
