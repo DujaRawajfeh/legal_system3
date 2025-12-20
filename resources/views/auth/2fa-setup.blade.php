@@ -206,7 +206,7 @@
             <input type="text" name="totp_code" required autocomplete="off" placeholder="أدخل الرمز المكون من 6 أرقام">
             <div class="form-actions">
                 <button type="submit"> تفعيل المصادقة الثنائية</button>
-                <a href="{{ url()->previous() }}" class="btn">إلغاء</a>
+                <button type="button" class="btn" onclick="goBack()">إلغاء</button>
             </div>
         </form>
     @else
@@ -219,7 +219,7 @@
             @csrf
             <div class="form-actions">
                 <button type="submit" style="background:#b00;color:#fff"> تعطيل المصادقة الثنائية</button>
-                <a href="{{ url()->previous() }}" class="btn">رجوع</a>
+                <button type="button" class="btn" onclick="goBack()">رجوع</button>
             </div>
         </form>
 
@@ -238,6 +238,27 @@
         @endif
     @endif
 </div>
+
+<script>
+function goBack() {
+    // إذا كانت النافذة مفتوحة في تبويب/نافذة جديدة
+    if (window.opener) {
+        window.close();
+    } 
+    // إذا كانت النافذة popup (من judge page)
+    else if (window.name === '2FASetup') {
+        window.close();
+    }
+    // إذا كان هناك صفحة سابقة في نفس التبويب
+    else if (document.referrer) {
+        window.history.back();
+    }
+    // الحالة الافتراضية - الرجوع للوحة التحكم
+    else {
+        window.location.href = '{{ route("dashboard") }}';
+    }
+}
+</script>
 
 </body>
 </html>
