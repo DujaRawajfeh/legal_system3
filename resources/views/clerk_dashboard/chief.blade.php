@@ -297,6 +297,81 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 </script>
 <!--  نافذة تحديد القضاة للكاتب / الطابعة -->
+<style>
+#assignJudgeModal .judge-tabs {
+    display: flex;
+    border-bottom: 2px solid #ddd;
+    margin-bottom: 20px;
+}
+
+#assignJudgeModal .judge-tab {
+    padding: 10px 20px;
+    cursor: pointer;
+    font-weight: bold;
+    border-bottom: 3px solid transparent;
+    background: none;
+    border: none;
+    color: #555;
+}
+
+#assignJudgeModal .judge-tab.active {
+    border-bottom-color: #37678e;
+    color: #37678e;
+}
+
+#assignJudgeModal .judge-tab-content {
+    display: none;
+}
+
+#assignJudgeModal .judge-tab-content.active {
+    display: block;
+}
+
+#assignJudgeModal label {
+    font-weight: bold;
+    display: block;
+    margin-top: 15px;
+    margin-bottom: 5px;
+}
+
+#assignJudgeModal select {
+    width: 100%;
+    padding: 8px 10px;
+    border: 1px solid #bfc3c7;
+    border-radius: 8px;
+    background-color: #fff;
+    font-size: 14px;
+}
+
+#assignJudgeModal .btn-area {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 25px;
+}
+
+#assignJudgeModal .btn-save {
+    background-color: #37678e;
+    color: #fff;
+    padding: 10px 20px;
+    border: 0;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 13px;
+}
+
+#assignJudgeModal .btn-close-modal {
+    background-color: #777;
+    color: #fff;
+    padding: 10px 20px;
+    border: 0;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 13px;
+}
+</style>
+
 <div class="modal fade" id="assignJudgeModal" tabindex="-1">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
@@ -308,44 +383,60 @@ document.addEventListener("DOMContentLoaded", function () {
 
       <div class="modal-body">
 
-        <!--  اختيار الكاتب أو الطابعة -->
-        <div class="d-flex gap-3 mb-3">
-            <button class="btn btn-outline-primary" id="chooseWriterBtn">الكاتب</button>
-            <button class="btn btn-outline-secondary" id="chooseTypistBtn">الطابعة</button>
+        <!-- Tabs -->
+        <div class="judge-tabs">
+            <button class="judge-tab active" onclick="switchJudgeTab('writer')">كاتب</button>
+            <button class="judge-tab" onclick="switchJudgeTab('typist')">طابعة</button>
         </div>
 
-        <!--  اختيار الكاتب -->
-        <div id="writerSection" class="d-none">
-            <h6 class="fw-bold mb-2">اختر الكاتب</h6>
-            <select id="writerSelect" class="form-select mb-3"></select>
+        <!-- Writer Tab -->
+        <div id="writerTabContent" class="judge-tab-content active">
+            <label>اختر الكاتب:</label>
+            <select id="writerSelect"></select>
 
-            <h6 class="fw-bold mb-2">اختر القاضي</h6>
-            <select id="writerJudgeSelect" class="form-select mb-3"></select>
+            <label>اختر القاضي:</label>
+            <select id="writerJudgeSelect"></select>
 
-            <button class="btn btn-success" id="saveWriterJudge">💾 حفظ</button>
+            <div class="btn-area">
+                <button class="btn-save" id="saveWriterJudge">حفظ</button>
+                <button class="btn-close-modal" data-bs-dismiss="modal">اغلاق</button>
+            </div>
         </div>
 
-        <!-- اختيار الطابعة -->
-        <div id="typistSection" class="d-none">
-            <h6 class="fw-bold mb-2">اختر الطابعة</h6>
-            <select id="typistSelect" class="form-select mb-3"></select>
+        <!-- Typist Tab -->
+        <div id="typistTabContent" class="judge-tab-content">
+            <label>اختر الطابعة:</label>
+            <select id="typistSelect"></select>
 
-            <h6 class="fw-bold mb-2">اختر القاضي</h6>
-            <select id="typistJudgeSelect" class="form-select mb-3"></select>
+            <label>اختر القاضي:</label>
+            <select id="typistJudgeSelect"></select>
 
-            <button class="btn btn-success" id="saveTypistJudge">💾 حفظ</button>
+            <div class="btn-area">
+                <button class="btn-save" id="saveTypistJudge">حفظ</button>
+                <button class="btn-close-modal" data-bs-dismiss="modal">اغلاق</button>
+            </div>
         </div>
 
-      </div>
-
-      <div class="modal-footer">
-        <button class="btn btn-danger" data-bs-dismiss="modal">إغلاق</button>
       </div>
 
     </div>
   </div>
 </div>
 <script>  
+// Tab switching function
+function switchJudgeTab(tabName) {
+    document.querySelectorAll('#assignJudgeModal .judge-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('#assignJudgeModal .judge-tab-content').forEach(c => c.classList.remove('active'));
+
+    document.querySelector(`#assignJudgeModal .judge-tab[onclick="switchJudgeTab('${tabName}')"]`).classList.add('active');
+    
+    if (tabName === 'writer') {
+        document.getElementById('writerTabContent').classList.add('active');
+    } else {
+        document.getElementById('typistTabContent').classList.add('active');
+    }
+}
+
 document.addEventListener("DOMContentLoaded", () => {  
 
     // ⭐ فتح نافذة تعيين القاضي من القائمة  
@@ -360,18 +451,6 @@ document.addEventListener("DOMContentLoaded", () => {
             loadTypists();  
             loadJudges();  
         }  
-    });  
-
-    // ⭐ زر اختيار الكاتب  
-    document.getElementById("chooseWriterBtn").addEventListener("click", () => {  
-        document.getElementById("writerSection").classList.remove("d-none");  
-        document.getElementById("typistSection").classList.add("d-none");  
-    });  
-
-    // ⭐ زر اختيار الطابعة  
-    document.getElementById("chooseTypistBtn").addEventListener("click", () => {  
-        document.getElementById("typistSection").classList.remove("d-none");  
-        document.getElementById("writerSection").classList.add("d-none");  
     });  
 
     // ⭐ حفظ القاضي للكاتب  
