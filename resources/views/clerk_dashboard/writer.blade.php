@@ -1975,7 +1975,7 @@ function closeCaseSchedule() {
         <!-- جدول الأطراف -->
         <label>الأطراف</label>
         <table id="notif-complainant-parties-table">
-          <thead>
+          <thead style="background-color: #000; color: #fff;">
             <tr>
               <th>اختيار</th>
               <th>الاسم</th>
@@ -2210,7 +2210,7 @@ function closeCaseSchedule() {
         <!-- جدول الأطراف -->
         <label>الأطراف</label>
         <table id="notif-session-complainant-parties-table">
-          <thead>
+          <thead style="background-color: #000; color: #fff;">
             <tr>
               <th>اختيار</th>
               <th>الاسم</th>
@@ -2303,9 +2303,9 @@ function closeCaseSchedule() {
         <div class="table-responsive">
           <table class="table table-bordered table-hover" id="notif-witness-parties-table"
                  style="font-family: 'Cairo', sans-serif; font-size: 14px;">
-            <thead style="background-color: #f8f9fa;">
+            <thead style="background-color: #000; color: #fff;">
               <tr>
-                <th>اختيار</th>
+                <!-- <th>اختيار</th> -->
                 <th>اسم الطرف</th>
                 <th>الرقم الوطني</th>
                 <th>نوع الطرف</th>
