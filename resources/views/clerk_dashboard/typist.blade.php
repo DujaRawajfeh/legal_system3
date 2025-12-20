@@ -1722,24 +1722,30 @@ document.getElementById('caseNumberInputJudgment').addEventListener("keydown", f
   <div class="modal-dialog modal-xl modal-dialog-scrollable">
     <div class="modal-content">
       <div class="modal-header bg-dark text-white">
-        <div class="w-100 d-flex justify-content-between align-items-center">
-          <h5 class="modal-title">إعادة تحديد جلسات الدعوى</h5>
-          <!-- ✅ إضافة معلومات رأس الصفحة -->
-          <!-- <div class="text-end">
-            <span class="me-3 fw-bold">رقم المحكمة: <span id="rescheduleTribunalNumber">-</span></span>
-            <span class="me-3 fw-bold">رقم القلم: <span id="rescheduleDepartmentNumber">-</span></span>
-            <span class="fw-bold">السنة: <span id="rescheduleCaseYear">-</span></span>
-          </div> -->
-        </div>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="إغلاق"></button>
+        <h5 class="modal-title">إعادة تحديد جلسات الدعوى</h5>
+        <button type="button" class="btn-close btn-close-white ms-2" data-bs-dismiss="modal" aria-label="إغلاق"></button>
       </div>
 
       <div class="modal-body">
 
-        <!-- إدخال رقم الدعوى -->
-        <div class="mb-3">
-          <label>رقم الدعوى:</label>
-          <input type="text" id="caseNumberInputReschedule" class="form-control" placeholder="أدخل رقم الدعوى واضغط Enter">
+        <!-- معلومات رأس الصفحة -->
+        <div class="row g-3 mb-4">
+          <div class="col-md-3">
+            <label>رقم المحكمة:</label>
+            <input type="text" id="rescheduleTribunalNumber" class="form-control" disabled>
+          </div>
+          <div class="col-md-3">
+            <label>رقم القلم:</label>
+            <input type="text" id="rescheduleDepartmentNumber" class="form-control" disabled>
+          </div>
+          <div class="col-md-3">
+            <label>السنة:</label>
+            <input type="text" id="rescheduleCaseYear" class="form-control" disabled>
+          </div>
+          <div class="col-md-3">
+            <label>رقم الدعوى:</label>
+            <input type="text" id="caseNumberInputReschedule" class="form-control" placeholder="أدخل رقم الدعوى واضغط Enter">
+          </div>
         </div>
 
         <!-- جدول تفاصيل الدعوى -->
@@ -1857,9 +1863,9 @@ function fetchCaseDetailsAndSession(caseNumber) {
       renderCaseDetails(caseData);
 
       // ✅ تعبئة رأس النافذة
-      document.getElementById("rescheduleTribunalNumber").textContent   = caseData.tribunal_number ?? '-';
-      document.getElementById("rescheduleDepartmentNumber").textContent = caseData.department_number ?? '-';
-      document.getElementById("rescheduleCaseYear").textContent         = caseData.year ?? '-';
+      document.getElementById("rescheduleTribunalNumber").value = caseData.tribunal_number ?? '-';
+      document.getElementById("rescheduleDepartmentNumber").value = caseData.department_number ?? '-';
+      document.getElementById("rescheduleCaseYear").value = caseData.year ?? '-';
 
       fetchOldSession(caseNumber);
     })
