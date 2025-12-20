@@ -154,52 +154,118 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 <!-- ⭐ نافذة تحويل الدعوى -->
+<style>
+#transferCaseModal label {
+    font-weight: bold;
+    margin-top: 10px;
+    display: block;
+    margin-bottom: 5px;
+}
+
+#transferCaseModal input,
+#transferCaseModal select {
+    padding: 8px 10px;
+    border: 1px solid #bfc3c7;
+    border-radius: 8px;
+    font-size: 14px;
+    width: 100%;
+}
+
+#transferCaseModal input:focus,
+#transferCaseModal select:focus {
+    border-color: #000;
+    outline: none;
+    box-shadow: 0 0 3px rgba(0,0,0,0.4);
+}
+
+#transferCaseModal .case-input-group {
+    display: flex;
+    gap: 10px;
+    align-items: flex-end;
+    margin-bottom: 15px;
+}
+
+#transferCaseModal .case-input-group input {
+    flex: 1;
+}
+
+#transferCaseModal .btn-search {
+    background-color: #000;
+    color: #fff;
+    padding: 8px 20px;
+    border: 0;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 13px;
+    white-space: nowrap;
+}
+
+#transferCaseModal .btn-area {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 25px;
+}
+
+#transferCaseModal .btn-save {
+    background-color: #000;
+    color: #fff;
+    padding: 10px 20px;
+    border: 0;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 13px;
+}
+
+#transferCaseModal .btn-close-modal {
+    background-color: #000;
+    color: #fff;
+    padding: 10px 20px;
+    border: 0;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 13px;
+}
+</style>
+
 <div class="modal fade" id="transferCaseModal" tabindex="-1">
-  <div class="modal-dialog modal-lg modal-dialog-scrollable">
+  <div class="modal-dialog modal-lg">
     <div class="modal-content">
 
-      <div class="modal-header bg-primary text-white">
+      <div class="modal-header bg-dark text-white">
         <h5 class="modal-title">تحويل الدعوى من هيئة إلى أخرى</h5>
         <button class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
       </div>
 
       <div class="modal-body">
 
+        <!-- رقم الدعوى -->
+        <label>رقم الدعوى:</label>
+        <div class="case-input-group">
+          <input type="text" id="transfer_case_number" placeholder="أدخل رقم الدعوى">
+          <button class="btn-search" onclick="searchCase()">بحث</button>
+        </div>
+
         <!-- الهيئة الحالية -->
-        <div class="mb-3">
-          <label class="form-label fw-bold">الهيئة الحالية</label>
-          <select id="current_judge" class="form-select">
-            <option value="">اختر القاضي الحالي...</option>
-          </select>
-        </div>
-
-        <div class="row mb-3">
-          <div class="col-md-6">
-            <label>رقم الدعوى</label>
-            <input type="text" id="transfer_case_number" class="form-control" placeholder="أدخل رقم الدعوى">
-          </div>
-
-          <div class="col-md-6">
-            <label>سنة الدعوى</label>
-            <input type="text" id="transfer_case_year" class="form-control" placeholder="أدخل السنة">
-          </div>
-        </div>
-
-        <hr>
+        <label>الهيئة الحالية:</label>
+        <select id="current_judge">
+          <option value="">اختر القاضي الحالي...</option>
+        </select>
 
         <!-- الهيئة الجديدة -->
-        <div class="mb-3">
-          <label class="form-label fw-bold">الهيئة الجديدة</label>
-          <select id="new_judge" class="form-select">
-            <option value="">اختر القاضي الجديد...</option>
-          </select>
+        <label>الهيئة الجديدة:</label>
+        <select id="new_judge">
+          <option value="">اختر القاضي الجديد...</option>
+        </select>
+
+        <!-- أزرار -->
+        <div class="btn-area">
+          <button class="btn-save" id="save_transfer">حفظ التحويل</button>
+          <button class="btn-close-modal" data-bs-dismiss="modal">انهاء</button>
         </div>
 
-      </div>
-
-      <div class="modal-footer">
-        <button id="save_transfer" class="btn btn-success">💾 حفظ التحويل</button>
-        <button class="btn btn-danger" data-bs-dismiss="modal">إغلاق</button>
       </div>
 
     </div>
@@ -208,6 +274,18 @@ document.addEventListener("DOMContentLoaded", function () {
 
 <script>
     //نافذه تحويل دعوى
+
+// Search function placeholder
+function searchCase() {
+    const caseNumber = document.getElementById("transfer_case_number").value;
+    if (!caseNumber) {
+        alert("يرجى إدخال رقم الدعوى");
+        return;
+    }
+    // يمكن إضافة منطق البحث هنا لاحقاً
+    console.log("Searching for case:", caseNumber);
+}
+
 document.addEventListener("DOMContentLoaded", function () {
 
     // فتح نافذة التحويل من القائمة
@@ -245,16 +323,14 @@ document.addEventListener("DOMContentLoaded", function () {
         let currentJudge = document.getElementById("current_judge").value;
         let newJudge     = document.getElementById("new_judge").value;
         let number       = document.getElementById("transfer_case_number").value;
-        let year         = document.getElementById("transfer_case_year").value;
 
-        if (!currentJudge || !newJudge || !number || !year) {
+        if (!currentJudge || !newJudge || !number) {
             alert("⚠️ يرجى تعبئة جميع الحقول");
             return;
         }
 
         axios.post("/chief/transfer-case", {
             case_number: number,
-            case_year: year,
             old_judge_id: currentJudge,
             new_judge_id: newJudge
         })
