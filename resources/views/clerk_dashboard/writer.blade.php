@@ -370,7 +370,7 @@
             </div>
 
             <!-- رقم الدعوى -->
-            <div class="section-title">رقم الدعوى</div>
+            <!-- <div class="section-title">رقم الدعوى</div> -->
             <div class="row g-3 mb-4">
               <div class="col-md-3">
                 <label class="form-label">رقم الدعوى</label>
