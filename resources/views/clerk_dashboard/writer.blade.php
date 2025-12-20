@@ -995,22 +995,22 @@
         <!-- 🔹 خيارات الفلترة -->
         <div class="row mb-3">
           
-          <div class="col-md-6">
+          <div class="col-md-5">
             <label class="form-label">تاريخ الجلسة:</label>
             <input type="date" id="courtScheduleDate" class="form-control">
           </div>
 
-          <div class="col-md-6">
+          <div class="col-md-5">
             <label class="form-label">حالة الجلسة:</label>
             <select id="courtScheduleStatus" class="form-select">
               <option value="">كل الحالات</option>
             </select>
           </div>
 
-        </div>
+          <div class="col-md-2 d-flex align-items-end">
+            <button class="btn btn-dark w-100" onclick="loadCourtSchedule()">بحث</button>
+          </div>
 
-        <div class="text-center mb-3">
-          <button class="btn btn-dark" onclick="loadCourtSchedule()">بحث</button>
         </div>
 
         <!-- 🔹 جدول النتائج -->
@@ -1134,7 +1134,7 @@ function loadCourtSchedule() {
         <div class="row mb-4">
 
           <!-- اختيار القاضي -->
-          <div class="col-md-6">
+          <div class="col-md-5">
             <label class="form-label">اختر القاضي:</label>
             <select id="judgeSelect" class="form-select">
               <option value="">اختر قاضٍ</option>
@@ -1142,7 +1142,7 @@ function loadCourtSchedule() {
           </div>
 
           <!-- حالة الجلسة -->
-          <div class="col-md-6">
+          <div class="col-md-5">
             <label class="form-label">حالة الجلسة:</label>
             <select id="judgeSessionStatus" class="form-select">
               <option value="">كل الحالات</option>
@@ -1153,10 +1153,10 @@ function loadCourtSchedule() {
             </select>
           </div>
 
-        </div>
+          <div class="col-md-2 d-flex align-items-end">
+            <button class="btn btn-dark w-100" onclick="loadJudgeSchedule()">عرض الجدول</button>
+          </div>
 
-        <div class="text-center mb-3">
-          <button class="btn btn-dark" onclick="loadJudgeSchedule()">عرض الجدول</button>
         </div>
 
         <!-- 🔹 جدول النتائج -->
@@ -2553,7 +2553,7 @@ function closeCaseSchedule() {
         </div>
 
         <!-- أزرار -->
-        <div class="btn-area" style="justify-content: center;">
+        <div class="btn-area" style="justify-content: end;">
           <button class="btn-end" data-bs-dismiss="modal">إغلاق</button>
         </div>
 
