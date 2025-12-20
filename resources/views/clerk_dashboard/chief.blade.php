@@ -315,8 +315,8 @@ document.addEventListener("DOMContentLoaded", function () {
 }
 
 #assignJudgeModal .judge-tab.active {
-    border-bottom-color: #37678e;
-    color: #37678e;
+    border-bottom-color: #000;
+    color: #000;
 }
 
 #assignJudgeModal .judge-tab-content {
@@ -350,7 +350,7 @@ document.addEventListener("DOMContentLoaded", function () {
 }
 
 #assignJudgeModal .btn-save {
-    background-color: #37678e;
+    background-color: #000;
     color: #fff;
     padding: 10px 20px;
     border: 0;
@@ -361,7 +361,7 @@ document.addEventListener("DOMContentLoaded", function () {
 }
 
 #assignJudgeModal .btn-close-modal {
-    background-color: #777;
+    background-color: #000;
     color: #fff;
     padding: 10px 20px;
     border: 0;
@@ -376,7 +376,7 @@ document.addEventListener("DOMContentLoaded", function () {
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
 
-      <div class="modal-header bg-primary text-white">
+      <div class="modal-header bg-dark text-white">
         <h5 class="modal-title">تحديد القضاة للكاتب / الطابعة</h5>
         <button class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
       </div>
