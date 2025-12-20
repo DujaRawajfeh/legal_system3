@@ -338,8 +338,8 @@
     <div class="modal-content">
 
       <div class="modal-header" style="background: black; color: white;">
-        <h5 class="modal-title">تسجيل دعوى جديدة</h5>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        <h5 class="modal-title">تسجيل دعوى </h5>
+        <button type="button" class="btn-close btn-close-white ms-2" data-bs-dismiss="modal"></button>
       </div>
 
       <div class="modal-body">
@@ -347,7 +347,7 @@
           <form id="caseForm">
 
             <!-- نوع الدعوى -->
-            <div class="section-title">نوع الدعوى</div>
+            <!-- <div class="section-title">نوع الدعوى</div> -->
             <div class="row g-3 mb-4">
               <div class="col-md-12">
                 <label class="form-label">نوع الدعوى</label>
@@ -390,13 +390,16 @@
               </div>
             </div>
 
-            <!-- القاضي -->
-            <div class="section-title">القاضي</div>
+            <!-- القاضي وموعد الجلسة -->
             <div class="row g-3 mb-4">
-              <div class="col-md-12">
+              <div class="col-md-6">
                 <label class="form-label">القاضي المعيّن تلقائيًا</label>
                 <input type="text" id="judge_name" class="form-control" readonly>
                 <input type="hidden" name="judge_id" id="judge_id">
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">موعد الجلسة</label>
+                <input type="text" id="session_date" class="form-control" readonly>
               </div>
             </div>
 
@@ -485,14 +488,6 @@
 
             <div class="text-center">
               <button type="button" id="addCaseParty" class="btn-add-party">➕ إضافة طرف آخر</button>
-            </div>
-
-            <!-- موعد الجلسة -->
-            <div class="row g-3 mt-3">
-              <div class="col-md-12">
-                <label class="form-label">موعد الجلسة</label>
-                <input type="text" id="session_date" class="form-control" readonly>
-              </div>
             </div>
 
           </form>
@@ -616,7 +611,7 @@
 
       <div class="modal-header" style="background: black; color: white;">
         <h5 class="modal-title">تسجيل طلب جديد</h5>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        <button type="button" class="btn-close btn-close-white ms-2" data-bs-dismiss="modal"></button>
       </div>
 
       <div class="modal-body">
@@ -758,9 +753,9 @@
        
 
             <!-- موعد الجلسة -->
+            <div class="section-title">موعد الجلسة</div>
             <div class="row g-3">
               <div class="col-md-12">
-                <label class="form-label">موعد الجلسة</label>
                 <input type="text" id="reqSessionDate" class="form-control" readonly>
               </div>
             </div>
@@ -802,7 +797,7 @@
 
       <div class="modal-header">
         <h5 class="modal-title">محاضر الجلسات</h5>
-        <button class="btn-close" data-bs-dismiss="modal"></button>
+        <button class="btn-close ms-2" data-bs-dismiss="modal"></button>
       </div>
 
       <div class="modal-body">
@@ -903,7 +898,7 @@
 
             <div class="modal-header">
                 <h5 class="modal-title">صفحة المشاركين</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                <button type="button" class="btn-close ms-2" data-bs-dismiss="modal"></button>
             </div>
 
             <div class="modal-body">
@@ -992,7 +987,7 @@
 
       <div class="modal-header bg-dark text-white">
         <h5 class="modal-title">جدول أعمال المحكمة</h5>
-        <button class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        <button class="btn-close btn-close-white ms-2" data-bs-dismiss="modal"></button>
       </div>
 
       <div class="modal-body">
@@ -1130,7 +1125,7 @@ function loadCourtSchedule() {
 
       <div class="modal-header bg-dark text-white">
         <h5 class="modal-title">جدول أعمال القاضي</h5>
-        <button class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        <button class="btn-close btn-close-white ms-2" data-bs-dismiss="modal"></button>
       </div>
 
       <div class="modal-body">
@@ -1296,7 +1291,7 @@ function openRequestScheduleModal() {
 
       <div class="modal-header bg-dark text-white">
         <h5 class="modal-title">جدول الدعوى</h5>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        <button type="button" class="btn-close btn-close-white ms-2" data-bs-dismiss="modal"></button>
       </div>
 
       <div class="modal-body">
@@ -1449,7 +1444,7 @@ function closeCaseSchedule() {
 
       <div class="modal-header bg-dark text-white">
         <h5 class="modal-title" id="requestScheduleLabel">جدول الطلبات</h5>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        <button type="button" class="btn-close btn-close-white ms-2" data-bs-dismiss="modal"></button>
       </div>
 
       <div class="modal-body">
@@ -1574,7 +1569,7 @@ function closeCaseSchedule() {
 
             <div class="modal-header">
                 <h5 class="modal-title">سحب الدعوى</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                <button type="button" class="btn-close ms-2" data-bs-dismiss="modal"></button>
             </div>
 
             <div class="modal-body">
@@ -1726,7 +1721,7 @@ function closeCaseSchedule() {
 
             <div class="modal-header">
                 <h5 class="modal-title">سحب دعوى من الشرطة</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                <button type="button" class="btn-close ms-2" data-bs-dismiss="modal"></button>
             </div>
 
             <div class="modal-body">
@@ -1944,7 +1939,7 @@ function closeCaseSchedule() {
 
       <div class="modal-header">
         <h5 class="modal-title">مذكرة تبليغ مشتكى عليه</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <button type="button" class="btn-close ms-2" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
 
       <div class="modal-body">
@@ -2178,7 +2173,7 @@ function closeCaseSchedule() {
 
       <div class="modal-header">
         <h5 class="modal-title">مذكرة تبليغ مشتكي موعد جلسة</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <button type="button" class="btn-close ms-2" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
 
       <div class="modal-body">
@@ -2249,7 +2244,7 @@ function closeCaseSchedule() {
 
       <div class="modal-header" style="background-color: #000; color: white; font-family: 'Cairo', sans-serif;">
         <h5 class="modal-title">مذكرة تبليغ شاهد موعد جلسة</h5>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        <button type="button" class="btn-close btn-close-white ms-2" data-bs-dismiss="modal"></button>
       </div>
 
       <div class="modal-body" style="font-family: 'Cairo', sans-serif;">
@@ -2479,7 +2474,7 @@ function closeCaseSchedule() {
 
       <div class="modal-header" style="background: #000; color: #fff;">
         <h5 class="modal-title">إدارة تباليغ الدعوى</h5>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        <button type="button" class="btn-close btn-close-white ms-2" data-bs-dismiss="modal"></button>
       </div>
 
       <div class="modal-body">
@@ -2536,7 +2531,7 @@ function closeCaseSchedule() {
 
       <div class="modal-header" style="background:#000;color:#fff;font-family:'Cairo',sans-serif;">
         <h5 class="modal-title">مذكرة تبليغ حكم</h5>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        <button type="button" class="btn-close btn-close-white ms-2" data-bs-dismiss="modal"></button>
       </div>
 
       <div class="modal-body" style="font-family:'Cairo',sans-serif;">
@@ -2801,7 +2796,7 @@ function closeCaseSchedule() {
 
       <div class="modal-header">
         <h5 class="modal-title">مذكرة توقيف</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        <button type="button" class="btn-close ms-2" data-bs-dismiss="modal"></button>
       </div>
 
       <div class="modal-body">
@@ -2901,7 +2896,7 @@ function closeCaseSchedule() {
       <!-- Header -->
       <div class="modal-header">
         <h5 class="modal-title">المذكرات</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        <button type="button" class="btn-close ms-2" data-bs-dismiss="modal"></button>
       </div>
 
       <div class="modal-body">
@@ -3103,7 +3098,7 @@ function closeCaseSchedule() {
 
       <div class="modal-header">
         <h5 class="modal-title">مذكرة تمديد توقيف</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        <button type="button" class="btn-close ms-2" data-bs-dismiss="modal"></button>
       </div>
 
       <div class="modal-body">
@@ -3342,7 +3337,7 @@ function closeCaseSchedule() {
 
       <div class="modal-header">
         <h5 class="modal-title">مذكرة إفراج للموقوفين</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        <button type="button" class="btn-close ms-2" data-bs-dismiss="modal"></button>
       </div>
 
       <div class="modal-body">
