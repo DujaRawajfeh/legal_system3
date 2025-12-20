@@ -7,7 +7,7 @@
 <!-- تغيير نص الهيدر لرئيس القسم -->
 <script>
 document.addEventListener("DOMContentLoaded", function () {
-    const userInfo = document.querySelector('.navbar .user-info');
+    const userInfo = document.querySelector('.navbar .user-info div');
     if (userInfo) {
         const userName = "{{ auth()->user()->full_name ?? 'مستخدم' }}";
         userInfo.textContent = `رئيس القسم / ${userName}`;

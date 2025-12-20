@@ -29,14 +29,13 @@
 
     /* الشريط الأسود */
     .navbar {
+        background-color: #111;
         padding: 6px 20px;
-        font-weight: 600;
-        font-size: 12px;
         display: flex;
         justify-content: space-between;
         align-items: center;
-        background-color: #111;
-        color: #fff;
+        font-weight: 600;
+        font-size: 12px;
         border-bottom: 2px solid #333;
     }
 
@@ -47,25 +46,25 @@
     }
 
     .navbar .user-info {
+        color: white;
+        white-space: nowrap;
         font-weight: 700;
         font-size: 13px;
-        white-space: nowrap;
-        color: #fff;
     }
 
-    .navbar ul {
+    .navbar .nav-links {
         list-style: none;
+        display: flex;
         margin: 0;
         padding: 0;
-        display: flex;
         gap: 10px;
     }
 
-    .navbar ul li {
-        position: relative;
+    .navbar .nav-links li {
+        display: inline-block;
     }
 
-    .navbar ul li a {
+    .navbar .security-link {
         color: #fff;
         text-decoration: none;
         font-weight: 600;
@@ -73,12 +72,32 @@
         border-radius: 5px;
         background-color: #222;
         transition: background 0.3s, color 0.3s, text-decoration 0.3s;
+    }
+
+    .navbar .security-link:hover {
+        text-decoration: underline;
+    }
+
+    .navbar ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        gap: 20px;
+    }
+
+    .navbar ul li {
+        position: relative;
+    }
+
+    .navbar ul li a {
+        color: white;
+        text-decoration: none;
         cursor: pointer;
     }
 
     .navbar ul li a:hover {
         text-decoration: underline;
-        background-color: #37678e;
     }
 
     .navbar ul li ul {
@@ -97,13 +116,6 @@
     }
 
     .navbar ul li ul li a {
-        color: #000;
-        background-color: #fff;
-        padding: 5px 10px;
-    }
-
-    .navbar ul li ul li a:hover {
-        background-color: #f0f0f0;
         color: #000;
     }
 
@@ -159,64 +171,67 @@
 <!-- الشريط الأسود -->
 <nav class="navbar">
   <div class="left-section">
-    <span class="user-info">الكاتب / {{ auth()->user()->full_name ?? 'محمد احمد' }}</span>
+    <div class="user-info">الكاتب / {{ auth()->user()->full_name ?? 'محمد احمد' }}</div>
     
+    <ul class="nav-links">
+      <li><a href="{{ route('2fa.setup') }}" class="security-link" target="_self">اعدادات الحماية</a></li>
+    </ul>
+
     <ul>
-    <li><a href="#" id="trigger-cases">الدعوى▾</a>
-      <ul>
-        <li><a href="#" data-bs-toggle="modal" data-bs-target="#registerCaseModal">تسجيل دعوى</a></li>
-        <li><a href="#" data-bs-toggle="modal" data-bs-target="#withdrawCaseModal">سحب دعوى/المدعي العام </a></li>
-        <li><a href="#" data-bs-toggle="modal" data-bs-target="#pullPoliceCaseModal">سحب دعوى من الشرطة</a></li>
-      </ul>
-    </li>
-    <li><a href="#">الطلب▾</a>
-      <ul>
-        <li><a href="#" id="open-register-request">تسجيل الطلبات </a></li>
-      </ul>
-    </li>
-    <li><a href="#">مخاطبات الامن العام ▾</a>
-      <ul>
-        <li><a href="#" data-bs-toggle="modal" data-bs-target="#arrest-memo-modal">مذكرة توقيف</a></li>
-        <li><a href="#"data-bs-toggle="modal"data-bs-target="#extend-arrest-memo-modal"> مذكرة تمديد توقيف</a></li>
-       <li><a href="#"data-bs-toggle="modal"data-bs-target="#release-memo-modal">مذكرة افراج للموقوفين</a></li>
-      </ul>
-    </li>
-    <li><a href="#" id="trigger-notifications">تباليغ ▾</a>
-      <ul>
-        <li><a href="#" data-bs-toggle="modal" data-bs-target="#notif-complainant-modal">مذكرة تبليغ مشتكى عليه</a></li>
-        <li><a href="#" data-bs-toggle="modal" data-bs-target="#notif-session-complainant-modal">مذكرة تبليغ مشتكي موعد جلسة</a></li>
-        <li><a class="submenu-item" href="#" 
-   data-bs-toggle="modal" 
-   data-bs-target="#notif-witness-modal">مذكرة حضور خاصة بالشهود</a></li>
-       <li>
-  <a href="#"
-     data-bs-toggle="modal"
-     data-bs-target="#notif-judgment-modal">
-     مذكرة تبليغ حكم
-  </a>
-</li>
-        <li><a href="#" data-bs-toggle="modal" data-bs-target="#manage-notifications-modal">ادارة تباليغ الدعوى</a></li>
-      </ul>
-    </li>
-    <li>
-      <a href="#" id="sessions-trigger">الجلسات ▾</a>
-      <ul>
-        <li><a onclick="openCourtScheduleModal()">جدول أعمال المحكمة</a></li>
-        <li><a onclick="openJudgeScheduleModal()">جدول أعمال القاضي</a></li>
-        <li><a onclick="openCaseScheduleModal()">جدول الدعوى</a></li>
-        <li><a onclick="openRequestScheduleModal()">جدول الطلبات</a></li>
-        <li><a onclick="openReportsListModal()">محاضر الجلسات</a></li>
-      </ul>
-    </li>
-    <li><a href="#" data-bs-toggle="modal" data-bs-target="#participantsModal">المشاركين</a></li>
-    <li><a href="{{ route('2fa.setup') }}" target="_self">اعدادات الحماية</a></li>
-  </ul>
+      <li><a href="#" id="trigger-cases">الدعوى▾</a>
+        <ul>
+          <li><a href="#" data-bs-toggle="modal" data-bs-target="#registerCaseModal">تسجيل دعوى</a></li>
+          <li><a href="#" data-bs-toggle="modal" data-bs-target="#withdrawCaseModal">سحب دعوى/المدعي العام </a></li>
+          <li><a href="#" data-bs-toggle="modal" data-bs-target="#pullPoliceCaseModal">سحب دعوى من الشرطة</a></li>
+        </ul>
+      </li>
+      <li><a href="#">الطلب▾</a>
+        <ul>
+          <li><a href="#" id="open-register-request">تسجيل الطلبات </a></li>
+        </ul>
+      </li>
+      <li><a href="#">مخاطبات الامن العام ▾</a>
+        <ul>
+          <li><a href="#" data-bs-toggle="modal" data-bs-target="#arrest-memo-modal">مذكرة توقيف</a></li>
+          <li><a href="#"data-bs-toggle="modal"data-bs-target="#extend-arrest-memo-modal"> مذكرة تمديد توقيف</a></li>
+         <li><a href="#"data-bs-toggle="modal"data-bs-target="#release-memo-modal">مذكرة افراج للموقوفين</a></li>
+        </ul>
+      </li>
+      <li><a href="#" id="trigger-notifications">تباليغ ▾</a>
+        <ul>
+          <li><a href="#" data-bs-toggle="modal" data-bs-target="#notif-complainant-modal">مذكرة تبليغ مشتكى عليه</a></li>
+          <li><a href="#" data-bs-toggle="modal" data-bs-target="#notif-session-complainant-modal">مذكرة تبليغ مشتكي موعد جلسة</a></li>
+          <li><a class="submenu-item" href="#" 
+     data-bs-toggle="modal" 
+     data-bs-target="#notif-witness-modal">مذكرة حضور خاصة بالشهود</a></li>
+         <li>
+    <a href="#"
+       data-bs-toggle="modal"
+       data-bs-target="#notif-judgment-modal">
+       مذكرة تبليغ حكم
+    </a>
+  </li>
+          <li><a href="#" data-bs-toggle="modal" data-bs-target="#manage-notifications-modal">ادارة تباليغ الدعوى</a></li>
+        </ul>
+      </li>
+      <li>
+        <a href="#" id="sessions-trigger">الجلسات ▾</a>
+        <ul>
+          <li><a onclick="openCourtScheduleModal()">جدول أعمال المحكمة</a></li>
+          <li><a onclick="openJudgeScheduleModal()">جدول أعمال القاضي</a></li>
+          <li><a onclick="openCaseScheduleModal()">جدول الدعوى</a></li>
+          <li><a onclick="openRequestScheduleModal()">جدول الطلبات</a></li>
+          <li><a onclick="openReportsListModal()">محاضر الجلسات</a></li>
+        </ul>
+      </li>
+      <li><a href="#" data-bs-toggle="modal" data-bs-target="#participantsModal">المشاركين</a></li>
+    </ul>
   </div>
 
-  <form method="POST" action="{{ route('logout') }}" class="logout-form">
+  <form method="POST" action="{{ route('logout') }}" style="margin:0;">
     @csrf
     <button type="submit" class="logout-btn">
-        تسجيل الخروج
+      تسجيل الخروج
     </button>
   </form>
 </nav>

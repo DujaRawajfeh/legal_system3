@@ -28,14 +28,13 @@ body {
 }
 
 .navbar {
+  background-color: #111;
   padding: 6px 20px;
-  font-weight: 600;
-  font-size: 12px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: #111;
-  color: #fff;
+  font-weight: 600;
+  font-size: 12px;
   border-bottom: 2px solid #333;
 }
 
@@ -46,25 +45,25 @@ body {
 }
 
 .navbar .user-info { 
+  color: white; 
+  white-space: nowrap;
   font-weight: 700;
   font-size: 13px;
-  white-space: nowrap;
-  color: #fff;
 }
 
-.navbar ul {
+.navbar .nav-links {
   list-style: none;
+  display: flex;
   margin: 0;
   padding: 0;
-  display: flex;
   gap: 10px;
 }
 
-.navbar ul li { 
-  position: relative; 
+.navbar .nav-links li {
+  display: inline-block;
 }
 
-.navbar ul li a {
+.navbar .security-link {
   color: #fff;
   text-decoration: none;
   font-weight: 600;
@@ -72,12 +71,32 @@ body {
   border-radius: 5px;
   background-color: #222;
   transition: background 0.3s, color 0.3s, text-decoration 0.3s;
+}
+
+.navbar .security-link:hover {
+  text-decoration: underline;
+}
+
+.navbar ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  gap: 20px;
+}
+
+.navbar ul li { 
+  position: relative; 
+}
+
+.navbar ul li a {
+  color: white;
+  text-decoration: none;
   cursor: pointer;
 }
 
 .navbar ul li a:hover { 
-  text-decoration: underline;
-  background-color: #37678e;
+  text-decoration: underline; 
 }
 
 .navbar ul li ul {
@@ -99,7 +118,6 @@ body {
 
 .navbar ul li ul li a {
   color: #000;
-  background-color: #fff;
   display: block;
   padding: 6px 10px;
   text-decoration: none;
@@ -107,8 +125,7 @@ body {
 }
 
 .navbar ul li ul li a:hover { 
-  background: #f0f0f0;
-  color: #000;
+  background: #e7f1ff; 
 }
 
 .secondary-navbar {
@@ -252,42 +269,46 @@ body {
 
 <nav class="navbar">
   <div class="left-section">
-    <span class="user-info">الطابعة / {{ Auth::user()->full_name ?? 'مستخدم' }}</span>
+    <div class="user-info">الطابعة / {{ Auth::user()->full_name ?? 'مستخدم' }}</div>
+    
+    <ul class="nav-links">
+      <li><a href="{{ route('2fa.setup') }}" class="security-link" target="_self">إعدادات الحماية</a></li>
+    </ul>
+
     <ul>
-    <li><a href="#">الدعوى ▾</a>
-      <ul>
-        <li><a onclick="$('#judgmentModal').modal('show')">أحكام الدعوى</a></li>
-        <li><a onclick="$('#setCaseSessionModal').modal('show')">تحديد جلسات الدعوى</a></li>
-        <li><a onclick="$('#rescheduleSessionModal').modal('show')">إعادة تحديد جلسات الدعوى</a></li>
-        <li><a onclick="$('#cancelSessionModal').modal('show')">إلغاء جلسات الدعوى</a></li>
-      </ul>
-    </li>
-    <li><a href="#">الطلب ▾</a>
-      <ul>
-        <li><a onclick="openRequestSetSessionModal()">تحديد جلسات الطلبات</a></li>
-        <li><a onclick="openRequestRescheduleModal()">إعادة تحديد جلسات الطلبات</a></li>
-        <li><a onclick="openCancelRequestModal()">إلغاء جلسات الطلبات</a></li>
-        <li><a onclick="openRequestJudgmentModal()">أحكام الطلبات</a></li>
-      </ul>
-    </li>
-    <li><a href="#">الجلسات ▾</a>
-      <ul>
-        <li><a onclick="openCourtScheduleModal()">جدول أعمال المحكمة</a></li>
-        <li><a onclick="$('#judgeScheduleModal').modal('show')">جدول أعمال القاضي</a></li>
-        <li><a onclick="$('#caseScheduleModal').modal('show')">جدول الدعوى</a></li>
-        <li><a onclick="$('#requestScheduleModal').modal('show')">جدول الطلبات</a></li>
-      </ul>
-    </li>
-    <li><a href="{{ route('2fa.setup') }}" target="_self">إعدادات الحماية</a></li>
-  </ul>
+      <li><a href="#">الدعوى ▾</a>
+        <ul>
+          <li><a onclick="$('#judgmentModal').modal('show')">أحكام الدعوى</a></li>
+          <li><a onclick="$('#setCaseSessionModal').modal('show')">تحديد جلسات الدعوى</a></li>
+          <li><a onclick="$('#rescheduleSessionModal').modal('show')">إعادة تحديد جلسات الدعوى</a></li>
+          <li><a onclick="$('#cancelSessionModal').modal('show')">إلغاء جلسات الدعوى</a></li>
+        </ul>
+      </li>
+      <li><a href="#">الطلب ▾</a>
+        <ul>
+          <li><a onclick="openRequestSetSessionModal()">تحديد جلسات الطلبات</a></li>
+          <li><a onclick="openRequestRescheduleModal()">إعادة تحديد جلسات الطلبات</a></li>
+          <li><a onclick="openCancelRequestModal()">إلغاء جلسات الطلبات</a></li>
+          <li><a onclick="openRequestJudgmentModal()">أحكام الطلبات</a></li>
+        </ul>
+      </li>
+      <li><a href="#">الجلسات ▾</a>
+        <ul>
+          <li><a onclick="openCourtScheduleModal()">جدول أعمال المحكمة</a></li>
+          <li><a onclick="$('#judgeScheduleModal').modal('show')">جدول أعمال القاضي</a></li>
+          <li><a onclick="$('#caseScheduleModal').modal('show')">جدول الدعوى</a></li>
+          <li><a onclick="$('#requestScheduleModal').modal('show')">جدول الطلبات</a></li>
+        </ul>
+      </li>
+    </ul>
   </div>
 
-  <form method="POST" action="{{ route('logout') }}" class="logout-form">
+  <form method="POST" action="{{ route('logout') }}" style="margin:0;">
     @csrf
     <button type="submit" class="logout-btn">
-        تسجيل الخروج
+      تسجيل الخروج
     </button>
-</form>
+  </form>
 </nav>
 
 @include('components.entry-search-bar')

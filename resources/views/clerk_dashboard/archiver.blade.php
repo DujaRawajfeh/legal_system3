@@ -23,43 +23,18 @@
 
 /* الشريط الأسود */
 .navbar {
-  padding: 6px 20px;
-  font-weight: 600;
-  font-size: 12px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background-color: #111;
-  color: #fff;
-  border-bottom: 2px solid #333;
-}
-
-.navbar .left-section {
+  background-color: #000;
+  padding: 12px 20px;
   display: flex;
   align-items: center;
-  gap: 15px;
+  font-weight: bold;
+  font-size: small;
+  gap: 40px;
 }
 
 .navbar .user-info {
-  font-weight: 700;
-  font-size: 13px;
+  color: white;
   white-space: nowrap;
-  color: #fff;
-}
-
-.navbar a {
-  color: #fff;
-  text-decoration: none;
-  font-weight: 600;
-  padding: 4px 8px;
-  border-radius: 5px;
-  background-color: #222;
-  transition: background 0.3s, color 0.3s, text-decoration 0.3s;
-}
-
-.navbar a:hover {
-  text-decoration: underline;
-  background-color: #37678e;
 }
 
   .container.content {
@@ -185,6 +160,15 @@
     color: #155724;
     text-align: center;
   }
+.security-link {
+  color: white;           /* اللون الأبيض */
+  text-decoration: none;   /* بدون خط افتراضي */
+}
+
+.security-link:hover {
+  text-decoration: underline; /* يظهر الخط عند المرور بالماوس فقط */
+  text-underline-offset: 2px; /* مسافة بين النص والخط */
+}
 
 </style>
 </head>
@@ -193,17 +177,19 @@
 <div class="court-bar">{{ optional(auth()->user()->tribunal)->name ?? 'محكمة بداية عمان' }} / {{ optional(auth()->user()->department)->name ?? '-' }}</div>
 
 <nav class="navbar">
-  <div class="left-section">
-    <span class="user-info">المؤرشف / {{ $archiver->full_name }}</span>
-    <a href="{{ route('2fa.setup') }}" target="_self">إعدادات الحماية</a>
-  </div>
+    <div class="user-info">المؤرشف / {{ $archiver->full_name }}</div>
+    <li>
+  <a href="{{ route('2fa.setup') }}" class="security-link" target="_self">
+    إعدادات الحماية
+  </a>
+</li>
 
-  <form method="POST" action="{{ route('logout') }}" class="logout-form">
-      @csrf
-      <button type="submit" class="logout-btn">
-          تسجيل الخروج
-      </button>
-  </form>
+<form method="POST" action="{{ route('logout') }}" class="logout-form">
+    @csrf
+    <button type="submit" class="logout-btn">
+        تسجيل الخروج
+    </button>
+</form>
 </nav>
 
 <div class="container content">
