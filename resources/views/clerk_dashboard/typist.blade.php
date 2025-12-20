@@ -1725,11 +1725,11 @@ document.getElementById('caseNumberInputJudgment').addEventListener("keydown", f
         <div class="w-100 d-flex justify-content-between align-items-center">
           <h5 class="modal-title">إعادة تحديد جلسات الدعوى</h5>
           <!-- ✅ إضافة معلومات رأس الصفحة -->
-          <div class="text-end">
+          <!-- <div class="text-end">
             <span class="me-3 fw-bold">رقم المحكمة: <span id="rescheduleTribunalNumber">-</span></span>
             <span class="me-3 fw-bold">رقم القلم: <span id="rescheduleDepartmentNumber">-</span></span>
             <span class="fw-bold">السنة: <span id="rescheduleCaseYear">-</span></span>
-          </div>
+          </div> -->
         </div>
         <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="إغلاق"></button>
       </div>
