@@ -5,13 +5,13 @@
         <label class="me-2 mb-0">النوع:</label>
 
         <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" name="entry_type" id="type_case" value="case" checked>
-            <label class="form-check-label" for="type_case">دعوى</label>
+            <input class="form-check-input" type="radio" name="entry_type" id="entrySearchTypeCase" value="case" checked>
+            <label class="form-check-label" for="entrySearchTypeCase">دعوى</label>
         </div>
 
         <div class="form-check form-check-inline">
-            <input class="form-check-input" type="radio" name="entry_type" id="type_request" value="request">
-            <label class="form-check-label" for="type_request">طلب</label>
+            <input class="form-check-input" type="radio" name="entry_type" id="entrySearchTypeRequest" value="request">
+            <label class="form-check-label" for="entrySearchTypeRequest">طلب</label>
         </div>
     </div>
 
@@ -23,33 +23,33 @@
                readonly value="{{ optional(auth()->user()->department)->number ?? '---' }}">
 
         {{-- ⭐ هذا هو الحقل الذي سنقرأ منه رقم الطلب --}}
-        <input id="entryNumberInput" type="text" class="form-control form-control-sm" placeholder="الرقم">
+        <input id="entrySearchNumberInput" type="text" class="form-control form-control-sm" placeholder="الرقم">
 
         <input type="text" class="form-control form-control-sm" placeholder="السنة" readonly value="{{ date('Y') }}">
     </div>
 </div>
 
 {{-- ⭐⭐⭐ نافذة تفاصيل الطلب (Popup) ⭐⭐⭐ --}}
-<div id="requestDetailsPopup" class="details-popup" style="display: none;">
+<div id="entrySearchRequestPopup" class="details-popup" style="display: none;">
     <div class="popup-content">
         <div class="popup-header">
             <h5>تفاصيل الطلب</h5>
-            <button type="button" class="popup-close" onclick="closeRequestPopup()">&times;</button>
+            <button type="button" class="popup-close" onclick="closeEntrySearchRequestPopup()">&times;</button>
         </div>
-        <div class="popup-body" id="requestDetailsBody">
+        <div class="popup-body" id="entrySearchRequestBody">
             <p class="text-center text-secondary">جاري التحميل...</p>
         </div>
     </div>
 </div>
 
 {{-- ⭐⭐⭐ نافذة تفاصيل الدعوى (Popup) ⭐⭐⭐ --}}
-<div id="caseDetailsPopup" class="details-popup" style="display: none;">
+<div id="entrySearchCasePopup" class="details-popup" style="display: none;">
     <div class="popup-content">
         <div class="popup-header">
             <h5>تفاصيل الدعوى</h5>
-            <button type="button" class="popup-close" onclick="closeCasePopup()">&times;</button>
+            <button type="button" class="popup-close" onclick="closeEntrySearchCasePopup()">&times;</button>
         </div>
-        <div class="popup-body" id="caseDetailsBody">
+        <div class="popup-body" id="entrySearchCaseBody">
             <p class="text-center text-secondary">جاري التحميل...</p>
         </div>
     </div>
@@ -62,8 +62,8 @@
 // =============================
 document.addEventListener('DOMContentLoaded', function () {
 
-    const entryTypeRequest = document.getElementById("type_request");
-    const entryInput = document.getElementById("entryNumberInput");
+    const entryTypeRequest = document.getElementById("entrySearchTypeRequest");
+    const entryInput = document.getElementById("entrySearchNumberInput");
 
     entryInput.addEventListener("keydown", function (e) {
 
@@ -75,7 +75,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 return;
             }
 
-            openRequestDetails(reqNumber);
+            openEntrySearchRequestDetails(reqNumber);
         }
     });
 
@@ -85,30 +85,30 @@ document.addEventListener('DOMContentLoaded', function () {
 // =============================
 //   فتح popup تفاصيل الطلب
 // =============================
-function openRequestDetails(requestNumber) {
-    const popup = document.getElementById("requestDetailsPopup");
-    const body  = document.getElementById("requestDetailsBody");
+function openEntrySearchRequestDetails(requestNumber) {
+    const popup = document.getElementById("entrySearchRequestPopup");
+    const body  = document.getElementById("entrySearchRequestBody");
 
     body.innerHTML = `<p class="text-center text-secondary">جاري التحميل...</p>`;
     popup.style.display = "flex";
 
-    loadRequestDetails(requestNumber);
+    loadEntrySearchRequestDetails(requestNumber);
 }
 
 // =============================
 //   إغلاق popup تفاصيل الطلب
 // =============================
-function closeRequestPopup() {
-    document.getElementById("requestDetailsPopup").style.display = "none";
+function closeEntrySearchRequestPopup() {
+    document.getElementById("entrySearchRequestPopup").style.display = "none";
 }
 
 
 // =============================
 //   جلب بيانات الطلب (POST)
 // =============================
-async function loadRequestDetails(requestNumber) {
+async function loadEntrySearchRequestDetails(requestNumber) {
 
-    const body = document.getElementById("requestDetailsBody");
+    const body = document.getElementById("entrySearchRequestBody");
 
     try {
         const response = await axios.post("{{ route('chief.request.details') }}", {
@@ -168,9 +168,8 @@ async function loadRequestDetails(requestNumber) {
 // =============================
 document.addEventListener("DOMContentLoaded", function () {
 
-    const entryTypeCase = document.getElementById("type_case");
-    const inputs = document.querySelectorAll('.third-bar input[type="text"]');
-    const caseNumberInput = inputs[2]; // رقم الدعوى
+    const entryTypeCase = document.getElementById("entrySearchTypeCase");
+    const caseNumberInput = document.getElementById("entrySearchNumberInput");
 
     caseNumberInput.addEventListener("keydown", function (e) {
 
@@ -183,7 +182,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 return;
             }
 
-            openCaseDetails(caseNum);
+            openEntrySearchCaseDetails(caseNum);
         }
 
     });
@@ -194,30 +193,30 @@ document.addEventListener("DOMContentLoaded", function () {
 // =============================
 //  فتح popup تفاصيل الدعوى
 // =============================
-function openCaseDetails(caseNumber) {
-    const popup = document.getElementById("caseDetailsPopup");
-    const body  = document.getElementById("caseDetailsBody");
+function openEntrySearchCaseDetails(caseNumber) {
+    const popup = document.getElementById("entrySearchCasePopup");
+    const body  = document.getElementById("entrySearchCaseBody");
 
     body.innerHTML = `<p class="text-center text-secondary">جاري التحميل...</p>`;
     popup.style.display = "flex";
 
-    loadCaseDetails(caseNumber);
+    loadEntrySearchCaseDetails(caseNumber);
 }
 
 // =============================
 //   إغلاق popup تفاصيل الدعوى
 // =============================
-function closeCasePopup() {
-    document.getElementById("caseDetailsPopup").style.display = "none";
+function closeEntrySearchCasePopup() {
+    document.getElementById("entrySearchCasePopup").style.display = "none";
 }
 
 
 // =============================
 //  جلب بيانات الدعوى من السيرفر
 // =============================
-async function loadCaseDetails(caseNumber) {
+async function loadEntrySearchCaseDetails(caseNumber) {
 
-    const body = document.getElementById("caseDetailsBody");
+    const body = document.getElementById("entrySearchCaseBody");
 
     try {
         const response = await axios.post("{{ route('chief.case.details') }}", {
