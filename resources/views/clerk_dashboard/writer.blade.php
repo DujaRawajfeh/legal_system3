@@ -1977,6 +1977,7 @@ function closeCaseSchedule() {
         <table id="notif-complainant-parties-table">
           <thead>
             <tr>
+              <th>اختيار</th>
               <th>الاسم</th>
               <th>الرقم الوطني</th>
               <th>نوع الطرف</th>
@@ -2211,6 +2212,7 @@ function closeCaseSchedule() {
         <table id="notif-session-complainant-parties-table">
           <thead>
             <tr>
+              <th>اختيار</th>
               <th>الاسم</th>
               <th>الرقم الوطني</th>
               <th>نوع الطرف</th>
@@ -2303,6 +2305,7 @@ function closeCaseSchedule() {
                  style="font-family: 'Cairo', sans-serif; font-size: 14px;">
             <thead style="background-color: #f8f9fa;">
               <tr>
+                <th>اختيار</th>
                 <th>اسم الطرف</th>
                 <th>الرقم الوطني</th>
                 <th>نوع الطرف</th>
