@@ -3309,7 +3309,7 @@ function closeCaseSchedule() {
 }
 
 #release-memo-modal .btn-release {
-  background: #0d6efd;
+  background: #28a745;
   color: #fff;
   padding: 10px 14px;
   border-radius: 6px;

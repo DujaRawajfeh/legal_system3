@@ -186,7 +186,7 @@ button:hover, .btn:hover {
 </head>
 <body>
 
-<div class="court-bar">محكمة {{ $judge->tribunal->name ?? '-' }}</div>
+<div class="court-bar">{{ $judge->tribunal->name ?? '-' }} / القلم {{ $judge->department->name ?? '-' }}</div>
 
 <nav class="judge-bar">
   <div class="left-section">
@@ -199,7 +199,6 @@ button:hover, .btn:hover {
       <li><a href="#" onclick="showTab('requestsTab', this)">الطلبات</a></li>
     </ul>
   </div>
-  <span class="department-name">القلم/ {{ $judge->department->name ?? '-' }}</span>
 
 
   <form method="POST" action="{{ route('logout') }}" class="logout-form">

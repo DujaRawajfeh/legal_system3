@@ -174,7 +174,7 @@
 </head>
 <body>
 
-<div class="court-bar">محكمة بداية عمان</div>
+<div class="court-bar">{{ optional(auth()->user()->tribunal)->name ?? 'محكمة بداية عمان' }} / القلم {{ optional(auth()->user()->department)->name ?? '-' }}</div>
 
 <nav class="navbar">
     <div class="user-info">المؤرشف / {{ $archiver->full_name }}</div>
