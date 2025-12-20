@@ -533,9 +533,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 <!-- جدول الموقوفين -->
-<div class="card mt-4">
-    <div class="card-header bg-danger text-white">
-        <h4 class="mb-0">الموقوفون المنتهية فترة توقيفهم أو قاربت على الانتهاء</h4>
+<div class="mt-4 ">
+    <div class="card-header text-black">
+        <h4 class="mb-0 pb-4">الموقوفون المنتهية فترة توقيفهم أو قاربت على الانتهاء</h4>
     </div>
 
     <div class="card-body">
