@@ -204,6 +204,7 @@
 </li>
 </nav>
 
+@include('components.entry-search-bar')
 
 
 

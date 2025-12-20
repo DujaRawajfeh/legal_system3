@@ -269,7 +269,7 @@ body {
 </form>
 </nav>
 
-  @extends('components.entry-search-bar')
+@include('components.entry-search-bar')
 
 
 
