@@ -178,29 +178,6 @@ document.addEventListener("DOMContentLoaded", function () {
     box-shadow: 0 0 3px rgba(0,0,0,0.4);
 }
 
-#transferCaseModal .case-input-group {
-    display: flex;
-    gap: 10px;
-    align-items: flex-end;
-    margin-bottom: 15px;
-}
-
-#transferCaseModal .case-input-group input {
-    flex: 1;
-}
-
-#transferCaseModal .btn-search {
-    background-color: #000;
-    color: #fff;
-    padding: 8px 20px;
-    border: 0;
-    border-radius: 6px;
-    cursor: pointer;
-    font-weight: bold;
-    font-size: 13px;
-    white-space: nowrap;
-}
-
 #transferCaseModal .btn-area {
     display: flex;
     justify-content: space-between;
@@ -243,10 +220,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         <!-- رقم الدعوى -->
         <label>رقم الدعوى:</label>
-        <div class="case-input-group">
-          <input type="text" id="transfer_case_number" placeholder="أدخل رقم الدعوى">
-          <button class="btn-search" onclick="searchCase()">بحث</button>
-        </div>
+        <input type="text" id="transfer_case_number" placeholder="أدخل رقم الدعوى">
 
         <!-- الهيئة الحالية -->
         <label>الهيئة الحالية:</label>
@@ -274,17 +248,6 @@ document.addEventListener("DOMContentLoaded", function () {
 
 <script>
     //نافذه تحويل دعوى
-
-// Search function placeholder
-function searchCase() {
-    const caseNumber = document.getElementById("transfer_case_number").value;
-    if (!caseNumber) {
-        alert("يرجى إدخال رقم الدعوى");
-        return;
-    }
-    // يمكن إضافة منطق البحث هنا لاحقاً
-    console.log("Searching for case:", caseNumber);
-}
 
 document.addEventListener("DOMContentLoaded", function () {
 

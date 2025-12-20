@@ -64,12 +64,10 @@ class ChiefController extends Controller
             'old_judge_id' => 'required|integer|exists:users,id',
             'new_judge_id' => 'required|integer|exists:users,id',
             'case_number'  => 'required|string',
-            'case_year'    => 'required|string',
         ]);
 
         // البحث عن القضية
         $courtCase = CourtCase::where('number', $validated['case_number'])
-                              ->where('year', $validated['case_year'])
                               ->where('judge_id', $validated['old_judge_id'])
                               ->first();
 
