@@ -4,6 +4,17 @@
 
 @section('chief-extra')
 
+<!-- تغيير نص الهيدر لرئيس القسم -->
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    const userInfo = document.querySelector('.navbar .user-info div');
+    if (userInfo) {
+        const userName = "{{ auth()->user()->full_name ?? 'مستخدم' }}";
+        userInfo.textContent = `رئيس القسم / ${userName}`;
+    }
+});
+</script>
+
 <!-- إضافة زر تحويل القضايا داخل قائمة الدعوى/الطلب فقط لرئيس القسم -->
 <script>
 document.addEventListener("DOMContentLoaded", function () {
