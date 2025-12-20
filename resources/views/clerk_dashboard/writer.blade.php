@@ -2278,8 +2278,8 @@ function closeCaseSchedule() {
         <!-- زر البحث -->
         <div class="row mb-3">
           <div class="col-md-12">
-            <button type="button" id="notif-witness-search" class="btn btn-primary w-100"
-                    style="background-color: #1a7f24; border:none; font-family: 'Cairo', sans-serif; font-weight: bold;">
+            <button type="button" id="notif-witness-search" class="btn"
+                    style="background: #000; color: #fff; border: none; font-family: 'Cairo', sans-serif; font-weight: bold; font-size: 11px; padding: 8px 20px; border-radius: 6px;">
               بحث
             </button>
           </div>
@@ -2597,8 +2597,8 @@ function closeCaseSchedule() {
         <!-- زر البحث -->
         <div class="row mb-3">
           <div class="col-12">
-            <button id="notif-judgment-search" class="btn w-100"
-                    style="background:#1a7f24;color:#fff;border:none;font-weight:bold;">
+            <button id="notif-judgment-search" class="btn"
+                    style="background:#000;color:#fff;border:none;font-weight:bold;font-size:11px;padding:8px 20px;border-radius:6px;">
               بحث
             </button>
           </div>
