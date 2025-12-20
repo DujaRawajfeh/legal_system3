@@ -20,8 +20,7 @@ body {
   background-color: #717172;
   color: #fff;
   text-align: right;
-  font-size: 0.9rem;
-  padding: 4px 15px;
+  font-size: 1rem;
 }
 
 /* الشريط الأسود للقاضي */

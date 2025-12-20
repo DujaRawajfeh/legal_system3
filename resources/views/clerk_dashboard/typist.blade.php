@@ -24,7 +24,6 @@ body {
   color: #fff;
   text-align: right;
   font-size: 1rem;
-  padding: 12px 20px;
 }
 
 .navbar {

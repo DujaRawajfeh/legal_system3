@@ -24,7 +24,6 @@
         color: #fff;
         text-align: right;
         font-size: 1rem;
-        padding: 8px 20px;
     }
 
     /* الشريط الأسود */
