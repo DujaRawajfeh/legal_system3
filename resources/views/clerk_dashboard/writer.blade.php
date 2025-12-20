@@ -4691,6 +4691,7 @@ document.addEventListener("DOMContentLoaded", function () {
       tr.dataset.index = i;
       
       tr.innerHTML = `
+        <td><input type="radio" name="party-select" value="${i}" style="cursor: pointer;"></td>
         <td>${p.name ?? ''}</td>
         <td>${p.national_id ?? ''}</td>
         <td>${p.type ?? ''}</td>
@@ -4707,6 +4708,17 @@ document.addEventListener("DOMContentLoaded", function () {
         </td>
       `;
       
+      // Handle radio button selection
+      const radio = tr.querySelector('input[type="radio"]');
+      radio.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (selectedRow) selectedRow.classList.remove('selected');
+        tr.classList.add('selected');
+        selectedRow = tr;
+        selectedParticipant = p;
+        console.log('✅ Participant selected:', selectedParticipant);
+      });
+      
       // Stop propagation on select to avoid row selection when clicking dropdown
       const select = tr.querySelector('.notification-method-select');
       select.addEventListener('click', (e) => {
@@ -4715,11 +4727,7 @@ document.addEventListener("DOMContentLoaded", function () {
       
       tr.addEventListener('click', () => {
         console.log('📋 Row clicked:', p.name);
-        if (selectedRow) selectedRow.classList.remove('selected');
-        tr.classList.add('selected');
-        selectedRow = tr;
-        selectedParticipant = p;
-        console.log('✅ Participant selected:', selectedParticipant);
+        radio.click();
       });
       
       tableBody.appendChild(tr);
@@ -4981,6 +4989,7 @@ document.addEventListener("DOMContentLoaded", function () {
       tr.dataset.index = i;
       
       tr.innerHTML = `
+        <td><input type="radio" name="party-select-session" value="${i}" style="cursor: pointer;"></td>
         <td>${p.name ?? ''}</td>
         <td>${p.national_id ?? ''}</td>
         <td>${p.type ?? ''}</td>
@@ -4997,16 +5006,22 @@ document.addEventListener("DOMContentLoaded", function () {
         </td>
       `;
       
+      const radio = tr.querySelector('input[type="radio"]');
+      radio.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (selectedRow) selectedRow.classList.remove('selected');
+        tr.classList.add('selected');
+        selectedRow = tr;
+        selectedParticipant = p;
+      });
+      
       const select = tr.querySelector('.notification-method-select');
       select.addEventListener('click', (e) => {
         e.stopPropagation();
       });
       
       tr.addEventListener('click', () => {
-        if (selectedRow) selectedRow.classList.remove('selected');
-        tr.classList.add('selected');
-        selectedRow = tr;
-        selectedParticipant = p;
+        radio.click();
       });
       
       tableBody.appendChild(tr);
