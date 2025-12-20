@@ -28,18 +28,28 @@ body {
 }
 
 .navbar {
-  background-color: #000;
-  padding: 12px 20px;
+  padding: 6px 20px;
+  font-weight: 600;
+  font-size: 12px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #111;
+  color: #fff;
+  border-bottom: 2px solid #333;
+}
+
+.navbar .left-section {
   display: flex;
   align-items: center;
-  font-weight: bold;
-  font-size: small;
-  gap: 40px;
+  gap: 15px;
 }
 
 .navbar .user-info { 
-  color: white; 
-  white-space: nowrap; 
+  font-weight: 700;
+  font-size: 13px;
+  white-space: nowrap;
+  color: #fff;
 }
 
 .navbar ul {
@@ -47,7 +57,7 @@ body {
   margin: 0;
   padding: 0;
   display: flex;
-  gap: 20px;
+  gap: 10px;
 }
 
 .navbar ul li { 
@@ -55,13 +65,19 @@ body {
 }
 
 .navbar ul li a {
-  color: white;
+  color: #fff;
   text-decoration: none;
+  font-weight: 600;
+  padding: 4px 8px;
+  border-radius: 5px;
+  background-color: #222;
+  transition: background 0.3s, color 0.3s, text-decoration 0.3s;
   cursor: pointer;
 }
 
 .navbar ul li a:hover { 
-  text-decoration: underline; 
+  text-decoration: underline;
+  background-color: #37678e;
 }
 
 .navbar ul li ul {
@@ -83,6 +99,7 @@ body {
 
 .navbar ul li ul li a {
   color: #000;
+  background-color: #fff;
   display: block;
   padding: 6px 10px;
   text-decoration: none;
@@ -90,7 +107,8 @@ body {
 }
 
 .navbar ul li ul li a:hover { 
-  background: #e7f1ff; 
+  background: #f0f0f0;
+  color: #000;
 }
 
 .secondary-navbar {
@@ -233,8 +251,9 @@ body {
 <div class="court-bar">{{ optional(auth()->user()->tribunal)->name ?? 'محكمة بداية عمان' }} / {{ optional(auth()->user()->department)->name ?? '-' }}</div>
 
 <nav class="navbar">
-  <div class="user-info">الطابعة / {{ Auth::user()->full_name ?? 'مستخدم' }}</div>
-  <ul>
+  <div class="left-section">
+    <span class="user-info">الطابعة / {{ Auth::user()->full_name ?? 'مستخدم' }}</span>
+    <ul>
     <li><a href="#">الدعوى ▾</a>
       <ul>
         <li><a onclick="$('#judgmentModal').modal('show')">أحكام الدعوى</a></li>
@@ -261,6 +280,7 @@ body {
     </li>
     <li><a href="{{ route('2fa.setup') }}" target="_self">إعدادات الحماية</a></li>
   </ul>
+  </div>
 
   <form method="POST" action="{{ route('logout') }}" class="logout-form">
     @csrf

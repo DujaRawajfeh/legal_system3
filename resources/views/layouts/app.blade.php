@@ -29,18 +29,28 @@
 
     /* الشريط الأسود */
     .navbar {
-        background-color: #000;
-        padding: 12px 20px;
+        padding: 6px 20px;
+        font-weight: 600;
+        font-size: 12px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background-color: #111;
+        color: #fff;
+        border-bottom: 2px solid #333;
+    }
+
+    .navbar .left-section {
         display: flex;
         align-items: center;
-        font-weight: bold;
-        font-size: small;
-        gap: 40px;
+        gap: 15px;
     }
 
     .navbar .user-info {
-        color: white;
+        font-weight: 700;
+        font-size: 13px;
         white-space: nowrap;
+        color: #fff;
     }
 
     .navbar ul {
@@ -48,7 +58,7 @@
         margin: 0;
         padding: 0;
         display: flex;
-        gap: 20px;
+        gap: 10px;
     }
 
     .navbar ul li {
@@ -56,13 +66,19 @@
     }
 
     .navbar ul li a {
-        color: white;
+        color: #fff;
         text-decoration: none;
+        font-weight: 600;
+        padding: 4px 8px;
+        border-radius: 5px;
+        background-color: #222;
+        transition: background 0.3s, color 0.3s, text-decoration 0.3s;
         cursor: pointer;
     }
 
     .navbar ul li a:hover {
         text-decoration: underline;
+        background-color: #37678e;
     }
 
     .navbar ul li ul {
@@ -81,6 +97,13 @@
     }
 
     .navbar ul li ul li a {
+        color: #000;
+        background-color: #fff;
+        padding: 5px 10px;
+    }
+
+    .navbar ul li ul li a:hover {
+        background-color: #f0f0f0;
         color: #000;
     }
 
@@ -135,11 +158,10 @@
 
 <!-- الشريط الأسود -->
 <nav class="navbar">
-  <div class="user-info">
-    <div>الكاتب / {{ auth()->user()->full_name ?? 'محمد احمد' }}</div>
-  </div>
-
-  <ul>
+  <div class="left-section">
+    <span class="user-info">الكاتب / {{ auth()->user()->full_name ?? 'محمد احمد' }}</span>
+    
+    <ul>
     <li><a href="#" id="trigger-cases">الدعوى▾</a>
       <ul>
         <li><a href="#" data-bs-toggle="modal" data-bs-target="#registerCaseModal">تسجيل دعوى</a></li>
@@ -189,19 +211,14 @@
     <li><a href="#" data-bs-toggle="modal" data-bs-target="#participantsModal">المشاركين</a></li>
     <li><a href="{{ route('2fa.setup') }}" target="_self">اعدادات الحماية</a></li>
   </ul>
+  </div>
 
-
-  <li>
-    <form method="POST" action="{{ route('logout') }}" style="margin:0;">
-        @csrf
-        <button
-            type="submit"
-            class="logout-btn"
-        >
-            تسجيل الخروج
-        </button>
-    </form>
-</li>
+  <form method="POST" action="{{ route('logout') }}" class="logout-form">
+    @csrf
+    <button type="submit" class="logout-btn">
+        تسجيل الخروج
+    </button>
+  </form>
 </nav>
 
 @include('components.entry-search-bar')
