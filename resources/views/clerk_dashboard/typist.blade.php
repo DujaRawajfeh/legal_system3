@@ -1325,7 +1325,7 @@ function closeCaseSchedule() {
   }
   
   .judgment-modal .tab.active, .judgment-modal .sub-tab.active {
-    background-color: #0078d7;
+    background-color: #000;
     color: white;
   }
   
@@ -1402,9 +1402,9 @@ function closeCaseSchedule() {
   <div class="modal-dialog modal-xl">
     <div class="modal-content">
 
-      <div class="modal-header" style="background-color: #f4f6f8; border-bottom: none;">
-        <h5 class="modal-title" style="color: #333;">أحكام الدعوى</h5>
-        <button class="btn-close" data-bs-dismiss="modal"></button>
+      <div class="modal-header bg-dark text-white">
+        <h5 class="modal-title">أحكام الدعوى</h5>
+        <button class="btn-close btn-close-white ms-2" data-bs-dismiss="modal"></button>
       </div>
 
       <div class="modal-body">
@@ -1415,7 +1415,7 @@ function closeCaseSchedule() {
             <div class="form-group" style="flex-direction: row; align-items: center; gap: 10px;">
               <label style="margin-bottom: 0;">رقم الدعوى:</label>
               <input type="text" id="caseNumberInputJudgment" class="form-control" placeholder="أدخل الرقم واضغط Enter" style="width: 180px;">
-              <button class="btn btn-primary" onclick="fetchCaseDataFromInput()" style="background-color: #0078d7; color: white;">بحث</button>
+              <button class="btn btn-primary" onclick="fetchCaseDataFromInput()" style="background-color: #000; color: white;">بحث</button>
             </div>
 
             <div class="form-group">
@@ -1559,7 +1559,7 @@ function closeCaseSchedule() {
         </div>
       </div>
 
-      <div class="modal-footer" style="background-color: #f4f6f8;">
+      <div class="modal-footer">
         <button class="btn btn-secondary" onclick="saveJudgment()">حفظ الحكم</button>
         <button class="btn btn-secondary" data-bs-dismiss="modal">اغلاق</button>
       </div>
