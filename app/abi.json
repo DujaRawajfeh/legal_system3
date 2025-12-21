@@ -1,0 +1,153 @@
+[
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "_caseNumber",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_documentNumber",
+				"type": "uint256"
+			},
+			{
+				"internalType": "string",
+				"name": "_documentType",
+				"type": "string"
+			}
+		],
+		"name": "archiveCase",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"anonymous": false,
+		"inputs": [
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "caseNumber",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "documentNumber",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"internalType": "string",
+				"name": "documentType",
+				"type": "string"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "archiveDate",
+				"type": "uint256"
+			},
+			{
+				"indexed": false,
+				"internalType": "address",
+				"name": "archivedBy",
+				"type": "address"
+			}
+		],
+		"name": "CaseArchived",
+		"type": "event"
+	},
+	{
+		"inputs": [],
+		"name": "archiveCounter",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			}
+		],
+		"name": "archivedCases",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "caseNumber",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "documentNumber",
+				"type": "uint256"
+			},
+			{
+				"internalType": "string",
+				"name": "documentType",
+				"type": "string"
+			},
+			{
+				"internalType": "uint256",
+				"name": "archiveDate",
+				"type": "uint256"
+			},
+			{
+				"internalType": "address",
+				"name": "archivedBy",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "_archiveId",
+				"type": "uint256"
+			}
+		],
+		"name": "getArchivedCase",
+		"outputs": [
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			},
+			{
+				"internalType": "string",
+				"name": "",
+				"type": "string"
+			},
+			{
+				"internalType": "uint256",
+				"name": "",
+				"type": "uint256"
+			},
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	}
+]
