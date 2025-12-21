@@ -1013,7 +1013,7 @@ public function showTypistCases()
 {
     $typist = auth()->user(); // المستخدم (الطابعة)
 
-    // 🔵 1) جلب القضاة المفروض تتابعهم الطابعة
+    //  جلب القضاة المفروض تتابعهم الطابعة
     $assignedJudges = \App\Models\JudgeUser::where('user_id', $typist->id)
                       ->pluck('judge_id')
                       ->toArray();
@@ -1026,12 +1026,12 @@ public function showTypistCases()
         ]);
     }
 
-    // 🔵 2) جلب أسماء القضاة للعرض في الصفحة
+    //  جلب أسماء القضاة للعرض في الصفحة
     $judgeNames = User::whereIn('id', $assignedJudges)
                     ->pluck('full_name')
                     ->toArray();
 
-    // 🔵 3) جلب القضايا الخاصة بالقضاة المحددين
+    //  جلب القضايا الخاصة بالقضاة المحددين
     $cases = \App\Models\CourtCase::whereIn('judge_id', $assignedJudges)
                 ->with('judge') // جلب اسم القاضي للقضية
                 ->orderBy('created_at', 'desc')
@@ -1115,9 +1115,8 @@ public function storeTrialReport(Request $request, CaseSession $session)
         }
     }
 
-    // =============================
-    // 2) حفظ الأطراف المضافة
-    // =============================
+
+    // حفظ الأطراف المضاف
     if ($request->new_parties) {
         foreach ($request->new_parties as $part) {
 
@@ -1135,7 +1134,7 @@ public function storeTrialReport(Request $request, CaseSession $session)
     }
 
    
-    // 3) حفظ القرار النهائي
+    //  حفظ القرار النهائي
     CourtSessionReport::create([
         'case_session_id' => $session->id,
         'court_case_id'   => $case->id,
@@ -1144,7 +1143,7 @@ public function storeTrialReport(Request $request, CaseSession $session)
         'statement_text'  => null,
         'fingerprint'     => $request->judge_fingerprint,
         'decision_text'   => $request->decision_text,
-        'report_mode'     => $mode,   // 🔵 لازم ينحفظ هون أيضاً
+        'report_mode'     => $mode,   
     ]);
 
     return redirect()->back()->with('success', 'تم حفظ المحضر بنجاح');
