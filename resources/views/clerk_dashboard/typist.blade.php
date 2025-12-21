@@ -8,6 +8,7 @@
 <title>صفحة الطابعة</title>
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap');
 
@@ -23,22 +24,57 @@ body {
   color: #fff;
   text-align: right;
   font-size: 1rem;
-  padding: 12px 20px;
+  padding: 8px 20px;
 }
 
 .navbar {
-  background-color: #000;
-  padding: 12px 20px;
+  background-color: #111;
+  padding: 6px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: 600;
+  font-size: 12px;
+  border-bottom: 2px solid #333;
+}
+
+.navbar .left-section {
   display: flex;
   align-items: center;
-  font-weight: bold;
-  font-size: small;
-  gap: 40px;
+  gap: 15px;
 }
 
 .navbar .user-info { 
   color: white; 
-  white-space: nowrap; 
+  white-space: nowrap;
+  font-weight: 700;
+  font-size: 13px;
+}
+
+.navbar .nav-links {
+  list-style: none;
+  display: flex;
+  margin: 0;
+  padding: 0;
+  gap: 10px;
+}
+
+.navbar .nav-links li {
+  display: inline-block;
+}
+
+.navbar .security-link {
+  color: #fff;
+  text-decoration: none;
+  font-weight: 600;
+  padding: 4px 8px;
+  border-radius: 5px;
+  background-color: #222;
+  transition: background 0.3s, color 0.3s, text-decoration 0.3s;
+}
+
+.navbar .security-link:hover {
+  text-decoration: underline;
 }
 
 .navbar ul {
@@ -208,44 +244,74 @@ body {
 .btn-close-white {
   filter: invert(1);
 }
+
+
+ .logout-btn {
+    background-color: #2f6fae;   /*تسجيل الدخول*/
+    border: none;
+    color: white;
+    padding: 5px 12px;
+    font-size: 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-family: "Cairo", sans-serif;
+    line-height: 1;
+}
+
+.logout-btn:hover {
+    background-color: #255b8f;   /* أغمق شوي عند المرور */
+}
 </style>
 </head>
 <body>
 
-<div class="court-bar">محكمة بداية عمان</div>
+<div class="court-bar">{{ optional(auth()->user()->tribunal)->name ?? 'محكمة بداية عمان' }} / {{ optional(auth()->user()->department)->name ?? '-' }}</div>
 
 <nav class="navbar">
-  <div class="user-info">الطابعة / {{ Auth::user()->full_name ?? 'مستخدم' }}</div>
-  <ul>
-    <li><a href="#">الدعوى ▾</a>
-      <ul>
-        <li><a onclick="$('#judgmentModal').modal('show')">أحكام الدعوى</a></li>
-        <li><a onclick="$('#setCaseSessionModal').modal('show')">تحديد جلسات الدعوى</a></li>
-        <li><a onclick="$('#rescheduleSessionModal').modal('show')">إعادة تحديد جلسات الدعوى</a></li>
-        <li><a onclick="$('#cancelSessionModal').modal('show')">إلغاء جلسات الدعوى</a></li>
-      </ul>
-    </li>
-    <li><a href="#">الطلب ▾</a>
-      <ul>
-        <li><a onclick="openRequestSetSessionModal()">تحديد جلسات الطلبات</a></li>
-        <li><a onclick="openRequestRescheduleModal()">إعادة تحديد جلسات الطلبات</a></li>
-        <li><a onclick="openCancelRequestModal()">إلغاء جلسات الطلبات</a></li>
-        <li><a onclick="openRequestJudgmentModal()">أحكام الطلبات</a></li>
-      </ul>
-    </li>
-    <li><a href="#">الجلسات ▾</a>
-      <ul>
-        <li><a onclick="openCourtScheduleModal()">جدول أعمال المحكمة</a></li>
-        <li><a onclick="$('#judgeScheduleModal').modal('show')">جدول أعمال القاضي</a></li>
-        <li><a onclick="$('#caseScheduleModal').modal('show')">جدول الدعوى</a></li>
-        <li><a onclick="$('#requestScheduleModal').modal('show')">جدول الطلبات</a></li>
-      </ul>
-    </li>
-    <li><a href="{{ route('2fa.setup') }}" target="_blank">إعدادات الحماية</a></li>
-  </ul>
+  <div class="left-section">
+    <div class="user-info">الطابعة / {{ Auth::user()->full_name ?? 'مستخدم' }}</div>
+    
+    <ul class="nav-links">
+      <li><a href="{{ route('2fa.setup') }}" class="security-link" target="_self">إعدادات الحماية</a></li>
+    </ul>
+
+    <ul>
+      <li><a href="#">الدعوى ▾</a>
+        <ul>
+          <li><a onclick="$('#judgmentModal').modal('show')">أحكام الدعوى</a></li>
+          <li><a onclick="$('#setCaseSessionModal').modal('show')">تحديد جلسات الدعوى</a></li>
+          <li><a onclick="$('#rescheduleSessionModal').modal('show')">إعادة تحديد جلسات الدعوى</a></li>
+          <li><a onclick="$('#cancelSessionModal').modal('show')">إلغاء جلسات الدعوى</a></li>
+        </ul>
+      </li>
+      <li><a href="#">الطلب ▾</a>
+        <ul>
+          <li><a onclick="openRequestSetSessionModal()">تحديد جلسات الطلبات</a></li>
+          <li><a onclick="openRequestRescheduleModal()">إعادة تحديد جلسات الطلبات</a></li>
+          <li><a onclick="openCancelRequestModal()">إلغاء جلسات الطلبات</a></li>
+          <li><a onclick="openRequestJudgmentModal()">أحكام الطلبات</a></li>
+        </ul>
+      </li>
+      <li><a href="#">الجلسات ▾</a>
+        <ul>
+          <li><a onclick="openCourtScheduleModal()">جدول أعمال المحكمة</a></li>
+          <li><a onclick="$('#judgeScheduleModal').modal('show')">جدول أعمال القاضي</a></li>
+          <li><a onclick="$('#caseScheduleModal').modal('show')">جدول الدعوى</a></li>
+          <li><a onclick="$('#requestScheduleModal').modal('show')">جدول الطلبات</a></li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+
+  <form method="POST" action="{{ route('logout') }}" style="margin:0;">
+    @csrf
+    <button type="submit" class="logout-btn">
+      تسجيل الخروج
+    </button>
+  </form>
 </nav>
 
-  @extends('components.entry-search-bar')
+@include('components.entry-search-bar')
 
 
 
@@ -283,15 +349,28 @@ body {
                 </div>
                 
                 @if($session)
-                    <div class="case-actions">
-                        @if($session->status === 'محددة')
-                            <a href="{{ route('trial.report', $session->id) }}" class="action-btn">محضر المحاكمة</a>
-                        @elseif(in_array($session->status, ['مستمرة','مكتملة']))
-                            <a href="{{ route('trial.report', $session->id) }}" class="action-btn">محضر المحاكمة</a>
-                            <a href="{{ route('after.trial.report', $session->id) }}" class="action-btn">ما بعد</a>
-                        @endif
-                    </div>
-                @endif
+    <div class="case-actions">
+
+        @if($session->status === 'محددة')
+            <a href="{{ route('trial.report', ['session' => $session->id, 'source' => 'typist']) }}"
+               class="action-btn">
+               محضر المحاكمة
+            </a>
+
+        @elseif(in_array($session->status, ['مستمرة','مكتملة']))
+            <a href="{{ route('trial.report', ['session' => $session->id, 'source' => 'typist']) }}"
+               class="action-btn">
+               محضر المحاكمة
+            </a>
+
+            <a href="{{ route('after.trial.report', ['session' => $session->id, 'source' => 'typist']) }}"
+               class="action-btn">
+               ما بعد
+            </a>
+        @endif
+
+    </div>
+@endif
             </div>
         @empty
             <p style="color: #999; text-align: center; padding: 20px;">لا يوجد قضايا مرتبطة بأي قاضي.</p>
@@ -368,22 +447,22 @@ document.addEventListener('DOMContentLoaded', function () {
         <!-- 🔹 خيارات الفلترة -->
         <div class="row mb-3">
           
-          <div class="col-md-6">
+          <div class="col-md-5">
             <label class="form-label">تاريخ الجلسة:</label>
             <input type="date" id="courtScheduleDate" class="form-control">
           </div>
 
-          <div class="col-md-6">
+          <div class="col-md-5">
             <label class="form-label">حالة الجلسة:</label>
             <select id="courtScheduleStatus" class="form-select">
               <option value="">كل الحالات</option>
             </select>
           </div>
 
-        </div>
+          <div class="col-md-2 d-flex align-items-end">
+            <button class="btn btn-dark w-100" onclick="loadCourtSchedule()">بحث</button>
+          </div>
 
-        <div class="text-center mb-3">
-          <button class="btn btn-dark" onclick="loadCourtSchedule()">بحث</button>
         </div>
 
         <!-- 🔹 جدول النتائج -->
@@ -507,7 +586,7 @@ function loadCourtSchedule() {
         <div class="row mb-4">
 
           <!-- اختيار القاضي -->
-          <div class="col-md-6">
+          <div class="col-md-5">
             <label class="form-label">اختر القاضي:</label>
             <select id="judgeSelect" class="form-select">
               <option value="">اختر قاضٍ</option>
@@ -515,7 +594,7 @@ function loadCourtSchedule() {
           </div>
 
           <!-- حالة الجلسة -->
-          <div class="col-md-6">
+          <div class="col-md-5">
             <label class="form-label">حالة الجلسة:</label>
             <select id="judgeSessionStatus" class="form-select">
               <option value="">كل الحالات</option>
@@ -526,10 +605,10 @@ function loadCourtSchedule() {
             </select>
           </div>
 
-        </div>
+          <div class="col-md-2 d-flex align-items-end">
+            <button class="btn btn-dark w-100" onclick="loadJudgeSchedule()">عرض الجدول</button>
+          </div>
 
-        <div class="text-center mb-3">
-          <button class="btn btn-dark" onclick="loadJudgeSchedule()">عرض الجدول</button>
         </div>
 
         <!-- 🔹 جدول النتائج -->
@@ -1246,7 +1325,7 @@ function closeCaseSchedule() {
   }
   
   .judgment-modal .tab.active, .judgment-modal .sub-tab.active {
-    background-color: #0078d7;
+    background-color: #000;
     color: white;
   }
   
@@ -1323,9 +1402,9 @@ function closeCaseSchedule() {
   <div class="modal-dialog modal-xl">
     <div class="modal-content">
 
-      <div class="modal-header" style="background-color: #f4f6f8; border-bottom: none;">
-        <h5 class="modal-title" style="color: #333;">أحكام الدعوى</h5>
-        <button class="btn-close" data-bs-dismiss="modal"></button>
+      <div class="modal-header bg-dark text-white">
+        <h5 class="modal-title">أحكام الدعوى</h5>
+        <button class="btn-close btn-close-white ms-2" data-bs-dismiss="modal"></button>
       </div>
 
       <div class="modal-body">
@@ -1336,7 +1415,7 @@ function closeCaseSchedule() {
             <div class="form-group" style="flex-direction: row; align-items: center; gap: 10px;">
               <label style="margin-bottom: 0;">رقم الدعوى:</label>
               <input type="text" id="caseNumberInputJudgment" class="form-control" placeholder="أدخل الرقم واضغط Enter" style="width: 180px;">
-              <button class="btn btn-primary" onclick="fetchCaseDataFromInput()" style="background-color: #0078d7; color: white;">بحث</button>
+              <button class="btn btn-primary" onclick="fetchCaseDataFromInput()" style="background-color: #000; color: white;">بحث</button>
             </div>
 
             <div class="form-group">
@@ -1480,7 +1559,7 @@ function closeCaseSchedule() {
         </div>
       </div>
 
-      <div class="modal-footer" style="background-color: #f4f6f8;">
+      <div class="modal-footer">
         <button class="btn btn-secondary" onclick="saveJudgment()">حفظ الحكم</button>
         <button class="btn btn-secondary" data-bs-dismiss="modal">اغلاق</button>
       </div>
@@ -1643,24 +1722,30 @@ document.getElementById('caseNumberInputJudgment').addEventListener("keydown", f
   <div class="modal-dialog modal-xl modal-dialog-scrollable">
     <div class="modal-content">
       <div class="modal-header bg-dark text-white">
-        <div class="w-100 d-flex justify-content-between align-items-center">
-          <h5 class="modal-title">إعادة تحديد جلسات الدعوى</h5>
-          <!-- ✅ إضافة معلومات رأس الصفحة -->
-          <div class="text-end">
-            <span class="me-3 fw-bold">رقم المحكمة: <span id="rescheduleTribunalNumber">-</span></span>
-            <span class="me-3 fw-bold">رقم القلم: <span id="rescheduleDepartmentNumber">-</span></span>
-            <span class="fw-bold">السنة: <span id="rescheduleCaseYear">-</span></span>
-          </div>
-        </div>
-        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="إغلاق"></button>
+        <h5 class="modal-title">إعادة تحديد جلسات الدعوى</h5>
+        <button type="button" class="btn-close btn-close-white ms-2" data-bs-dismiss="modal" aria-label="إغلاق"></button>
       </div>
 
       <div class="modal-body">
 
-        <!-- إدخال رقم الدعوى -->
-        <div class="mb-3">
-          <label>رقم الدعوى:</label>
-          <input type="text" id="caseNumberInputReschedule" class="form-control" placeholder="أدخل رقم الدعوى واضغط Enter">
+        <!-- معلومات رأس الصفحة -->
+        <div class="row g-3 mb-4">
+          <div class="col-md-3">
+            <label>رقم المحكمة:</label>
+            <input type="text" id="rescheduleTribunalNumber" class="form-control" disabled>
+          </div>
+          <div class="col-md-3">
+            <label>رقم القلم:</label>
+            <input type="text" id="rescheduleDepartmentNumber" class="form-control" disabled>
+          </div>
+          <div class="col-md-3">
+            <label>السنة:</label>
+            <input type="text" id="rescheduleCaseYear" class="form-control" disabled>
+          </div>
+          <div class="col-md-3">
+            <label>رقم الدعوى:</label>
+            <input type="text" id="caseNumberInputReschedule" class="form-control" placeholder="أدخل رقم الدعوى واضغط Enter">
+          </div>
         </div>
 
         <!-- جدول تفاصيل الدعوى -->
@@ -1778,9 +1863,9 @@ function fetchCaseDetailsAndSession(caseNumber) {
       renderCaseDetails(caseData);
 
       // ✅ تعبئة رأس النافذة
-      document.getElementById("rescheduleTribunalNumber").textContent   = caseData.tribunal_number ?? '-';
-      document.getElementById("rescheduleDepartmentNumber").textContent = caseData.department_number ?? '-';
-      document.getElementById("rescheduleCaseYear").textContent         = caseData.year ?? '-';
+      document.getElementById("rescheduleTribunalNumber").value = caseData.tribunal_number ?? '-';
+      document.getElementById("rescheduleDepartmentNumber").value = caseData.department_number ?? '-';
+      document.getElementById("rescheduleCaseYear").value = caseData.year ?? '-';
 
       fetchOldSession(caseNumber);
     })
@@ -2253,17 +2338,17 @@ document.addEventListener('DOMContentLoaded', function () {
           
           <div class="col-md-3">
             <label class="form-label">رقم المحكمة</label>
-            <input type="text" id="courtNumber" class="form-control form-control-sm" value="---" readonly>
+            <input type="text" id="tribunal_number" class="form-control form-control-sm" value="---" readonly>
           </div>
 
           <div class="col-md-3">
             <label class="form-label">القلم</label>
-            <input type="text" id="courtDesk" class="form-control form-control-sm" value="---" readonly>
+            <input type="text" id="department_number" class="form-control form-control-sm" value="---" readonly>
           </div>
 
           <div class="col-md-3">
             <label class="form-label">السنة</label>
-            <input type="text" id="courtYear" class="form-control form-control-sm" value="---" readonly>
+            <input type="text" id="court_year" class="form-control form-control-sm" value="---" readonly>
           </div>
 
           <div class="col-md-3">
@@ -2328,9 +2413,9 @@ function fetchRequestSchedule() {
 
             if (data.data.length > 0) {
                 const first = data.data[0];
-                document.getElementById('courtNumber').value = first.tribunal_number || '---';
-                document.getElementById('courtDesk').value = first.department_number || '---';
-                document.getElementById('courtYear').value = first.court_year || '---';
+                document.getElementById('tribunal_number').value = first.tribunal_number || '---';
+                document.getElementById('department_number').value = first.department_number || '---';
+                document.getElementById('court_year').value = first.court_year || '---';
             }
         } else {
             alert('لم يتم العثور على بيانات');

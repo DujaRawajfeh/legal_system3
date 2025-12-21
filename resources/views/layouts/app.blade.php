@@ -29,18 +29,53 @@
 
     /* الشريط الأسود */
     .navbar {
-        background-color: #000;
-        padding: 12px 20px;
+        background-color: #111;
+        padding: 6px 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-weight: 600;
+        font-size: 12px;
+        border-bottom: 2px solid #333;
+    }
+
+    .navbar .left-section {
         display: flex;
         align-items: center;
-        font-weight: bold;
-        font-size: small;
-        gap: 40px;
+        gap: 15px;
     }
 
     .navbar .user-info {
         color: white;
         white-space: nowrap;
+        font-weight: 700;
+        font-size: 13px;
+    }
+
+    .navbar .nav-links {
+        list-style: none;
+        display: flex;
+        margin: 0;
+        padding: 0;
+        gap: 10px;
+    }
+
+    .navbar .nav-links li {
+        display: inline-block;
+    }
+
+    .navbar .security-link {
+        color: #fff;
+        text-decoration: none;
+        font-weight: 600;
+        padding: 4px 8px;
+        border-radius: 5px;
+        background-color: #222;
+        transition: background 0.3s, color 0.3s, text-decoration 0.3s;
+    }
+
+    .navbar .security-link:hover {
+        text-decoration: underline;
     }
 
     .navbar ul {
@@ -107,64 +142,103 @@
     #case-options li:hover {
         background-color: #e9ecef;
     }
+
+
+
+   .logout-btn {
+    background-color: #2f6fae;   /*تسجيل الدخول*/
+    border: none;
+    color: white;
+    padding: 5px 12px;
+    font-size: 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-family: "Cairo", sans-serif;
+    line-height: 1;
+}
+
+.logout-btn:hover {
+    background-color: #255b8f;   /* أغمق شوي عند المرور */
+}
     </style>
 </head>
 
 <body>
 
 <!-- الشريط العلوي الرمادي -->
-<div class="court-bar">{{ optional(auth()->user()->tribunal)->name ?? 'محكمة بداية عمان' }}</div>
+<div class="court-bar">{{ optional(auth()->user()->tribunal)->name ?? 'محكمة بداية عمان' }} / {{ optional(auth()->user()->department)->name ?? '-' }}</div>
 
 <!-- الشريط الأسود -->
 <nav class="navbar">
-  <div class="user-info">
-    <div>الكاتب / {{ auth()->user()->full_name ?? 'محمد احمد' }}</div>
+  <div class="left-section">
+    <div class="user-info">الكاتب / {{ auth()->user()->full_name ?? 'محمد احمد' }}</div>
+    
+    <ul class="nav-links">
+      <li><a href="{{ route('2fa.setup') }}" class="security-link" target="_self">اعدادات الحماية</a></li>
+    </ul>
+
+    <ul>
+      <li><a href="#" id="trigger-cases">الدعوى▾</a>
+        <ul>
+          <li><a href="#" data-bs-toggle="modal" data-bs-target="#registerCaseModal">تسجيل دعوى</a></li>
+          <li><a href="#" data-bs-toggle="modal" data-bs-target="#withdrawCaseModal">سحب دعوى/المدعي العام </a></li>
+          <li><a href="#" data-bs-toggle="modal" data-bs-target="#pullPoliceCaseModal">سحب دعوى من الشرطة</a></li>
+        </ul>
+      </li>
+      <li><a href="#">الطلب▾</a>
+        <ul>
+          <li><a href="#" id="open-register-request">تسجيل الطلبات </a></li>
+        </ul>
+      </li>
+      <li><a href="#">مخاطبات الامن العام ▾</a>
+        <ul>
+          <li><a href="#" data-bs-toggle="modal" data-bs-target="#arrest-memo-modal">مذكرة توقيف</a></li>
+          <li><a href="#"data-bs-toggle="modal"data-bs-target="#extend-arrest-memo-modal"> مذكرة تمديد توقيف</a></li>
+         <li><a href="#"data-bs-toggle="modal"data-bs-target="#release-memo-modal">مذكرة افراج للموقوفين</a></li>
+        </ul>
+      </li>
+      <li><a href="#" id="trigger-notifications">تباليغ ▾</a>
+        <ul>
+          <li><a href="#" data-bs-toggle="modal" data-bs-target="#notif-complainant-modal">مذكرة تبليغ مشتكى عليه</a></li>
+          <li><a href="#" data-bs-toggle="modal" data-bs-target="#notif-session-complainant-modal">مذكرة تبليغ مشتكي موعد جلسة</a></li>
+          <li><a class="submenu-item" href="#" 
+     data-bs-toggle="modal" 
+     data-bs-target="#notif-witness-modal">مذكرة حضور خاصة بالشهود</a></li>
+         <li>
+    <a href="#"
+       data-bs-toggle="modal"
+       data-bs-target="#notif-judgment-modal">
+       مذكرة تبليغ حكم
+    </a>
+  </li>
+          <li><a href="#" data-bs-toggle="modal" data-bs-target="#manage-notifications-modal">ادارة تباليغ الدعوى</a></li>
+        </ul>
+      </li>
+      <li>
+        <a href="#" id="sessions-trigger">الجلسات ▾</a>
+        <ul>
+          <li><a onclick="openCourtScheduleModal()">جدول أعمال المحكمة</a></li>
+          <li><a onclick="openJudgeScheduleModal()">جدول أعمال القاضي</a></li>
+          <li><a onclick="openCaseScheduleModal()">جدول الدعوى</a></li>
+          <li><a onclick="openRequestScheduleModal()">جدول الطلبات</a></li>
+          <li><a onclick="openReportsListModal()">محاضر الجلسات</a></li>
+        </ul>
+      </li>
+      <li><a href="#" data-bs-toggle="modal" data-bs-target="#participantsModal">المشاركين</a></li>
+    </ul>
   </div>
 
-  <ul>
-    <li><a href="#" id="trigger-cases">الدعوى▾</a>
-      <ul>
-        <li><a href="#" data-bs-toggle="modal" data-bs-target="#registerCaseModal">تسجيل دعوى</a></li>
-        <li><a href="#" data-bs-toggle="modal" data-bs-target="#withdrawCaseModal">سحب دعوى/المدعي العام </a></li>
-        <li><a href="#" data-bs-toggle="modal" data-bs-target="#pullPoliceCaseModal">سحب دعوى من الشرطة</a></li>
-      </ul>
-    </li>
-    <li><a href="#">الطلب▾</a>
-      <ul>
-        <li><a href="#" id="open-register-request">تسجيل الطلبات </a></li>
-      </ul>
-    </li>
-    <li><a href="#">مخاطبات الامن العام ▾</a>
-      <ul>
-        <li><a href="#" data-bs-toggle="modal" data-bs-target="#arrest-memo-modal">مذكرة توقيف</a></li>
-        <li><a href="#">مذكرة تمديد توقيف</a></li>
-        <li><a href="#">مذكرة افراج للموقوفين</a></li>
-      </ul>
-    </li>
-    <li><a href="#" id="trigger-notifications">تباليغ ▾</a>
-      <ul>
-        <li><a href="#" data-bs-toggle="modal" data-bs-target="#notif-complainant-modal">مذكرة تبليغ مشتكى عليه</a></li>
-        <li><a href="#" data-bs-toggle="modal" data-bs-target="#notif-session-complainant-modal">مذكرة تبليغ مشتكي موعد جلسة</a></li>
-        <li><a class="submenu-item" href="#" 
-   data-bs-toggle="modal" 
-   data-bs-target="#notif-witness-modal">مذكرة حضور خاصة بالشهود</a></li>
-        <li><a href="#">مذكرة تبليغ حكم</a></li>
-        <li><a href="#" data-bs-toggle="modal" data-bs-target="#manage-notifications-modal">ادارة تباليغ الدعوى</a></li>
-      </ul>
-    </li>
-    <li>
-      <a href="#" id="sessions-trigger">الجلسات ▾</a>
-      <ul>
-        <li><a href="#">جدول أعمال المحكمة</a></li>
-        <li><a href="#">جدول أعمال القاضي</a></li>
-        <li><a href="#">جدول الدعوى</a></li>
-        <li><a href="#" data-bs-toggle="modal" data-bs-target="#requestScheduleModal">جدول الطلبات</a></li>
-      </ul>
-    </li>
-    <li><a href="#" data-bs-toggle="modal" data-bs-target="#participantsModal">المشاركين</a></li>
-    <li><a href="{{ route('2fa.setup') }}">اعدادات الحماية</a></li>
-  </ul>
+  <form method="POST" action="{{ route('logout') }}" style="margin:0;">
+    @csrf
+    <button type="submit" class="logout-btn">
+      تسجيل الخروج
+    </button>
+  </form>
 </nav>
+
+@include('components.entry-search-bar')
+
+
 
 
 
@@ -233,6 +307,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
     const entryTypeRequest = document.getElementById("type_request");
     const entryInput = document.getElementById("entryNumberInput");
+
+    if (!entryInput || !entryTypeRequest) return; // Exit if elements not found
 
     entryInput.addEventListener("keydown", function (e) {
 
@@ -341,6 +417,8 @@ document.addEventListener("DOMContentLoaded", function () {
     const entryTypeCase = document.getElementById("type_case");
     const inputs = document.querySelectorAll('.third-bar input[type="text"]');
     const caseNumberInput = inputs[2]; // رقم الدعوى
+
+    if (!caseNumberInput || !entryTypeCase) return; // Exit if elements not found
 
     caseNumberInput.addEventListener("keydown", function (e) {
 
@@ -491,14 +569,18 @@ async function loadCaseDetails(caseNumber) {
 
 
 <script>
-document.getElementById('trigger-security').addEventListener('click', function() {
-    let menu = document.getElementById('security-menu');
-    if (menu.style.display === 'none' || menu.style.display === '') {
-        menu.style.display = 'block';
-    } else {
-        menu.style.display = 'none';
-    }
-});
+const securityTrigger = document.getElementById('trigger-security');
+const securityMenu = document.getElementById('security-menu');
+
+if (securityTrigger && securityMenu) {
+    securityTrigger.addEventListener('click', function() {
+        if (securityMenu.style.display === 'none' || securityMenu.style.display === '') {
+            securityMenu.style.display = 'block';
+        } else {
+            securityMenu.style.display = 'none';
+        }
+    });
+}
 </script>
 @stack('scripts')
 

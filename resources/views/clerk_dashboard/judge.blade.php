@@ -20,8 +20,8 @@ body {
   background-color: #717172;
   color: #fff;
   text-align: right;
-  font-size: 0.9rem;
-  padding: 4px 15px;
+  font-size: 1rem;
+  padding: 8px 20px;
 }
 
 /* الشريط الأسود للقاضي */
@@ -186,20 +186,27 @@ button:hover, .btn:hover {
 </head>
 <body>
 
-<div class="court-bar">محكمة {{ $judge->tribunal->name ?? '-' }}</div>
+<div class="court-bar">{{ $judge->tribunal->name ?? '-' }} / {{ $judge->department->name ?? '-' }}</div>
 
 <nav class="judge-bar">
   <div class="left-section">
     <span class="judge-name">القاضي/ {{ $judge->full_name }}</span>
     <ul class="nav-links">
-      <li><a href="#" class="security-link" onclick="open2FAWindow()">اعدادات الحماية</a></li>
+      <li><a href="{{ route('2fa.setup') }}" class="security-link" target="_self">اعدادات الحماية</a></li>
     </ul>
     <ul class="nav-tabs">
       <li><a href="#" class="active" onclick="showTab('casesTab', this)">الدعاوى</a></li>
       <li><a href="#" onclick="showTab('requestsTab', this)">الطلبات</a></li>
     </ul>
   </div>
-  <span class="department-name">القلم/ {{ $judge->department->name ?? '-' }}</span>
+
+
+  <form method="POST" action="{{ route('logout') }}" class="logout-form">
+    @csrf
+    <button type="submit" class="logout-btn">
+        تسجيل الخروج
+    </button>
+</form>
 </nav>
 
 
@@ -583,20 +590,6 @@ document.getElementById('searchRequests')?.addEventListener('input', function(e)
         }
     }
 });
-
-// فتح نافذة المصادقة الثنائية كنافذة صغيرة
-function open2FAWindow() {
-    const width = 650;
-    const height = 700;
-    const left = (screen.width - width) / 2;
-    const top = (screen.height - height) / 2;
-    
-    window.open(
-        '{{ route("2fa.setup") }}',
-        '2FASetup',
-        `width=${width},height=${height},top=${top},left=${left},resizable=yes,scrollbars=yes`
-    );
-}
 </script>
 
 </body>

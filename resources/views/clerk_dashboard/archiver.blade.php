@@ -19,22 +19,58 @@
   color: #fff;
   text-align: right;
   font-size: 1rem;
+  padding: 8px 20px;
 }
 
 /* الشريط الأسود */
 .navbar {
-  background-color: #000;
-  padding: 12px 20px;
+  background-color: #111;
+  padding: 6px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: 600;
+  font-size: 12px;
+  border-bottom: 2px solid #333;
+}
+
+.navbar .left-section {
   display: flex;
   align-items: center;
-  font-weight: bold;
-  font-size: small;
-  gap: 40px;
+  gap: 15px;
 }
 
 .navbar .user-info {
   color: white;
   white-space: nowrap;
+  font-weight: 700;
+  font-size: 13px;
+}
+
+.navbar .nav-links {
+  list-style: none;
+  display: flex;
+  margin: 0;
+  padding: 0;
+  gap: 10px;
+}
+
+.navbar .nav-links li {
+  display: inline-block;
+}
+
+.navbar .security-link {
+  color: #fff;
+  text-decoration: none;
+  font-weight: 600;
+  padding: 4px 8px;
+  border-radius: 5px;
+  background-color: #222;
+  transition: background 0.3s, color 0.3s, text-decoration 0.3s;
+}
+
+.navbar .security-link:hover {
+  text-decoration: underline;
 }
 
   .container.content {
@@ -160,25 +196,28 @@
     color: #155724;
     text-align: center;
   }
-.security-link {
-  color: white;           /* اللون الأبيض */
-  text-decoration: none;   /* بدون خط افتراضي */
-}
-
-.security-link:hover {
-  text-decoration: underline; /* يظهر الخط عند المرور بالماوس فقط */
-  text-underline-offset: 2px; /* مسافة بين النص والخط */
-}
 
 </style>
 </head>
 <body>
 
-<div class="court-bar">محكمة بداية عمان</div>
+<div class="court-bar">{{ optional(auth()->user()->tribunal)->name ?? 'محكمة بداية عمان' }} / {{ optional(auth()->user()->department)->name ?? '-' }}</div>
 
 <nav class="navbar">
+  <div class="left-section">
     <div class="user-info">المؤرشف / {{ $archiver->full_name }}</div>
-    <li><a href="#" class="security-link" onclick="openWindow('securitysettings')">اعدادات الحماية</a></li>
+    
+    <ul class="nav-links">
+      <li><a href="{{ route('2fa.setup') }}" class="security-link" target="_self">إعدادات الحماية</a></li>
+    </ul>
+  </div>
+
+  <form method="POST" action="{{ route('logout') }}" style="margin:0;">
+    @csrf
+    <button type="submit" class="logout-btn">
+      تسجيل الخروج
+    </button>
+  </form>
 </nav>
 
 <div class="container content">
@@ -362,14 +401,7 @@ function viewDocument(url) {
   window.open(url, "_blank");
 }
 
-// ✅ فتح نافذة إعدادات الحماية
-function openWindow(page){
-  let width = 1000;
-  let height = 600;
-  let left = (screen.width - width) / 2;
-  let top = (screen.height - height) / 2;
-  window.open(page + '.html', '_blank', `width=${width},height=${height},top=${top},left=${left}`);
-}
+
 </script>
 </body>
 </html>

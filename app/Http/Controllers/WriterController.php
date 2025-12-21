@@ -206,82 +206,56 @@ public function getNextAvailableJudge()
  * جلب تفاصيل قضية حسب رقمها، تشمل نوع الدعوى، رقم المحكمة، والأطراف المرتبطين.
  */
 public function fetchCaseDetails($number, Request $request)
-{     
-   
-
-
-    // تسجيل بداية الطلب
+{
     \Log::info(' بدء جلب تفاصيل القضية من نافذة المذكرات', [
-        'case_number'       => $number,
-        'query_params'      => $request->all(),
+        'case_number'  => $number,
+        'query_params' => $request->all(),
     ]);
 
-    // ⬅ جلب بيانات القضية مع العلاقات
     $case = CourtCase::where('number', $number)
-        ->with(['tribunal', 'department', 'participants'])
+        ->with([
+            'tribunal',
+            'department',
+            'participants',
+            'judge'
+        ])
         ->first();
 
     if (!$case) {
-        \Log::warning('🚫 رقم القضية غير موجود عند جلب تفاصيل المذكرة', [
+        \Log::warning(' رقم القضية غير موجود عند جلب تفاصيل المذكرة', [
             'case_number' => $number,
         ]);
 
-        return response()->json(['error' => 'رقم القضية غير موجود'], 422); 
+        return response()->json(['error' => 'رقم القضية غير موجود'], 422);
     }
 
-    // تحميل الحكم النهائي بشكل مؤكد
     $case->load('caseJudgment');
 
-    // استخراج نوع المذكرة
     $notificationType = is_array($request->query('notification_type'))
         ? $request->query('notification_type')['type'] ?? null
         : $request->query('notification_type');
 
     try {
-        // فلترة الأطراف حسب نوع المذكرة
         $filteredParticipants = $this->filterParticipantsByNotificationType(
             $case->participants,
             $notificationType
         );
 
-        // استبدال الأطراف بالفلترة
         $case->participants = $filteredParticipants;
+
+    
 
     } catch (\Exception $e) {
 
-        \Log::error('❌ خطأ أثناء فلترة الأطراف في fetchCaseDetails', [
+        \Log::error(' خطأ أثناء فلترة الأطراف في fetchCaseDetails', [
             'case_number'       => $number,
             'notification_type' => $notificationType,
             'message'           => $e->getMessage(),
-            'file'              => $e->getFile(),
-            'line'              => $e->getLine(),
         ]);
 
         return response()->json(['error' => $e->getMessage()], 422);
     }
 
-    //  لو المذكرة من نوع "تبليغ حكم"
-    if ($notificationType && str_contains($notificationType, 'تبليغ حكم')) {
-
-        if (!$case->caseJudgment || !$case->caseJudgment->judgment_summary) {
-
-            \Log::warning('ℹ لا يوجد حكم نهائي لهذه الدعوى عند طلب مذكرة تبليغ حكم', [
-                'case_number'       => $number,
-                'case_id'           => $case->id,
-                'notification_type' => $notificationType,
-            ]);
-
-        } else {
-
-            \Log::info('✅ تم العثور على حكم نهائي مرتبط بالقضية', [
-                'case_number'       => $number,
-                'case_id'           => $case->id,
-                'judgment_summary'  => $case->caseJudgment->judgment_summary,
-            ]);
-        }
-    }
-
-    // ✅ تسجيل نجاح العملية
     \Log::info('✅ تم جلب تفاصيل القضية بنجاح من fetchCaseDetails', [
         'case_number'       => $number,
         'case_id'           => $case->id,
@@ -289,7 +263,17 @@ public function fetchCaseDetails($number, Request $request)
         'participants_count'=> $case->participants->count(),
     ]);
 
-    return response()->json($case);
+    // ✅ التعديل الوحيد هنا
+    return response()->json([
+        'case_id'    => $case->id,
+        'number'     => $case->number,
+        'case_type'  => $case->type,
+        'judge_name' => $case->judge->full_name ?? '-',
+        'tribunal'    => $case->tribunal,
+        'department'  => $case->department,
+        'participants'=> $case->participants,
+        'judgment' => $case->caseJudgment? $case->caseJudgment->judgment_summary: null,
+    ]);
 }
 public function saveNotification(Request $request)
 {
@@ -327,8 +311,8 @@ public function saveNotification(Request $request)
     } 
     catch (\Throwable $e) {
 
-        // 🔥 Logging كامل للخطأ
-        \Log::error('❌ خطأ أثناء حفظ التبليغ:', [
+        //  Logging كامل للخطأ
+        \Log::error(' خطأ أثناء حفظ التبليغ:', [
             'error_message' => $e->getMessage(),
             'case_id_received' => $request->case_id,
             'participant_name_received' => $request->participant_name,
@@ -1019,7 +1003,8 @@ public function fetchCaseParticipants(Request $request)
         'judge_name' => optional($courtCase->judge)->full_name,
         'participants' => $participants,
     ]);
-}//مذكرة الإفراج عن الموقوفين
+}
+//مذكرة الإفراج عن الموقوفين
 public function defaultInfo()
 {
     $tribunal = Tribunal::first();
@@ -1039,7 +1024,7 @@ public function getCaseNotifications($caseNumber)
     try {
 
         // 1️⃣ جلب القضية بناءً على رقم الدعوى الحقيقي (number)
-        $case = CourtCase::where('number', $caseNumber)->first();
+        $case = CourtCase::with(['tribunal', 'department', 'judge'])->where('number', $caseNumber)->first();
 
         if (!$case) {
             return response()->json(['error' => 'رقم الدعوى غير موجود'], 404);
@@ -1072,9 +1057,18 @@ public function getCaseNotifications($caseNumber)
                 ];
             });
 
-        // 3️⃣ إرجاع البيانات كـ JSON
+        // 3️⃣ جلب الأطراف
+        $participants = Participant::where('court_case_id', $case->id)->get();
+
+        // 4️⃣ إرجاع البيانات كـ JSON
         return response()->json([
             'case_number'   => $case->number,
+            'case_court'    => $case->tribunal->number ?? '',
+            'case_pen'      => $case->department->number ?? '',
+            'case_year'     => $case->year ?? '',
+            'case_type'     => $case->type ?? '',
+            'judge_name'    => optional($case->judge)->full_name ?? '',
+            'participants'  => $participants,
             'notifications' => $notifications,
         ]);
 
@@ -1159,6 +1153,10 @@ public function getArrestMemos($caseNumber)
 
 
 
+
+
+
+
 //نافذة تسجيل طلب
 public function storeRequest(Request $request)
 {
@@ -1231,7 +1229,7 @@ public function storeRequest(Request $request)
 
     } catch (\Exception $e) {
 
-        Log::error('❌ خطأ أثناء إنشاء الطلب', [
+        Log::error(' خطأ أثناء إنشاء الطلب', [
             'message' => $e->getMessage(),
             'file'    => $e->getFile(),
             'line'    => $e->getLine(),
@@ -1398,18 +1396,18 @@ public function loadReportsList()
 {
     try {
 
-        Log::info('📝 بدء تحميل قائمة محاضر الجلسات للكاتب', [
+        Log::info(' بدء تحميل قائمة محاضر الجلسات للكاتب', [
             'writer_id' => auth()->id(),
         ]);
 
         $writer = auth()->user();
 
-        // 🟦 1) جلب القضاة اللي الكاتب إله صلاحية عليهم
+        //  1) جلب القضاة اللي الكاتب إله صلاحية عليهم
         $allowedJudges = \App\Models\JudgeUser::where('user_id', $writer->id)
                             ->pluck('judge_id')
                             ->toArray();
 
-        Log::info('👨‍⚖️ القضاة المسموحين للكاتب', [
+        Log::info(' القضاة المسموحين للكاتب', [
             'writer_id'      => $writer->id,
             'allowedJudges'  => $allowedJudges,
         ]);
@@ -1425,7 +1423,7 @@ public function loadReportsList()
             ]);
         }
 
-        // 🟦 2) جلب جلسات فيها محاضر + تجميع حسب الجلسة ونوع المحضر
+        //  جلب جلسات فيها محاضر + تجميع حسب الجلسة ونوع المحضر
         $sessions = CourtSessionReport::select('case_session_id', 'report_mode')
             ->groupBy('case_session_id', 'report_mode')
             ->get();
@@ -1449,12 +1447,12 @@ public function loadReportsList()
 
             $case = $session->courtCase;
 
-            // ⭐ فلترة حسب القاضي المسند للكاتب
+            //  فلترة حسب القاضي المسند للكاتب
             if (!in_array($case->judge_id, $allowedJudges)) {
                 continue;
             }
 
-            // ⭐ تجهيز السطر
+            //  تجهيز السطر
             if (!isset($result[$session->id])) {
                 $result[$session->id] = [
                     'session_id' => $session->id,
@@ -1470,7 +1468,7 @@ public function loadReportsList()
             $result[$session->id]['modes'][] = $record->report_mode;
         }
 
-        Log::info('✅ تم تجهيز النتيجة لمحاضر الجلسات', [
+        Log::info(' تم تجهيز النتيجة لمحاضر الجلسات', [
             'writer_id' => $writer->id,
             'sessions_count' => count($result),
         ]);
@@ -1481,7 +1479,7 @@ public function loadReportsList()
 
     } catch (\Exception $e) {
 
-        Log::error('❌ خطأ في loadReportsList', [
+        Log::error(' خطأ في loadReportsList', [
             'writer_id' => auth()->id(),
             'message'   => $e->getMessage(),
             'trace'     => $e->getTraceAsString(),

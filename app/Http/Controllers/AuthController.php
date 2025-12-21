@@ -12,6 +12,7 @@ use Illuminate\Support\Str;
 
 
 
+
 use BaconQrCode\Renderer\ImageRenderer;
 use BaconQrCode\Renderer\RendererStyle\RendererStyle;
 use BaconQrCode\Renderer\Image\SvgImageBackEnd;
@@ -36,22 +37,16 @@ public function login(Request $request)
     if ($user) {
         if ($user && Hash::check($request->password, $user->password)) {
 
-            // ⭐ تحقق من تاريخ آخر تغيير كلمة السر
-            if ($user->password_changed_at && \Carbon\Carbon::parse($user->password_changed_at)->lt(now()->subMonths(3))) {
-                // نمرر الرقم الوطني للنافذة
-                return redirect()->route('password.change')
-                    ->withInput(['national_id' => $request->national_id])
-                    ->withErrors(['password' => 'انتهت صلاحية كلمة السر، يجب تغييرها قبل تسجيل الدخول.']);
-            }
+            
 
-            // ⭐ تحقق من تفعيل المصادقة الثنائية
+            //  تحقق من تفعيل المصادقة الثنائية
             if ($user->two_factor_enabled) {
                 // نخزن المستخدم مؤقتًا لحين إدخال رمز TOTP
                 session(['pending_2fa_user' => $user->id]);
                 return redirect()->route('2fa.verify.form');
             }
 
-            // ⭐ تسجيل الدخول العادي إذا ما في 2FA
+            //  تسجيل الدخول العادي إذا ما في 2FA
             Auth::login($user);
             session(['active_role' => $user->role]);
 
@@ -75,9 +70,8 @@ public function login(Request $request)
 public function updatePassword(Request $request)
 {
     $request->validate([
-        'national_id'       => 'required',
-        'current_password'  => 'required',
-        'new_password'      => [
+        'current_password' => 'required',
+        'new_password' => [
             'required',
             'string',
             'min:8',
@@ -92,44 +86,52 @@ public function updatePassword(Request $request)
         'new_password.regex' => 'كلمة السر يجب أن تحتوي على حرف صغير، حرف كبير، رقم، ورمز خاص.',
     ]);
 
-    // 👇 جلب المستخدم من الداتابيس بالرقم الوطني
-    $user = User::where('national_id', $request->national_id)->first();
+    //  المستخدم الحالي (بدون رقم وطني)
+    $user = auth()->user();
 
-    if (!$user) {
-        return back()->withErrors(['national_id' => 'المستخدم غير موجود']);
+    //  التحقق من كلمة السر الحالية
+    if (!Hash::check($request->current_password, $user->password)) {
+        return back()->withErrors([
+            'current_password' => 'كلمة السر الحالية غير صحيحة'
+        ]);
     }
 
-    // تحقق من كلمة السر الحالية
-   if (!Hash::check($request->current_password, $user->password)) {
-    return back()->withErrors(['current_password' => 'كلمة السر الحالية غير صحيحة']);
-}
-
-    // تحديث كلمة السر وتاريخ التغيير
+    //  تحديث كلمة السر وتاريخ التغيير
     $user->password = Hash::make($request->new_password);
     $user->password_changed_at = now();
     $user->save();
 
-    // ⭐ تسجيل دخول المستخدم من جديد بعد التغيير
+    //  إعادة تسجيل الدخول
     Auth::login($user);
     session(['active_role' => $user->role]);
 
-    // التوجيه حسب الدور
+    //  التوجيه حسب الدور
     switch ($user->role) {
         case 'writer':
-            return redirect()->route('writer.dashboard')->with('success', 'تم تغيير كلمة السر بنجاح');
+            return redirect()->route('writer.dashboard')
+                ->with('success', 'تم تغيير كلمة السر بنجاح');
+
         case 'chief':
-            return redirect()->route('chief.dashboard')->with('success', 'تم تغيير كلمة السر بنجاح');
+            return redirect()->route('chief.dashboard')
+                ->with('success', 'تم تغيير كلمة السر بنجاح');
+
         case 'judge':
-            return redirect()->route('judge.index')->with('success', 'تم تغيير كلمة السر بنجاح');
+            return redirect()->route('judge.index')
+                ->with('success', 'تم تغيير كلمة السر بنجاح');
+
         case 'typist':
-            return redirect()->route('typist.index')->with('success', 'تم تغيير كلمة السر بنجاح');
+            return redirect()->route('typist.index')
+                ->with('success', 'تم تغيير كلمة السر بنجاح');
+
         case 'archiver':
-            return redirect()->route('archiver.page')->with('success', 'تم تغيير كلمة السر بنجاح');
+            return redirect()->route('archiver.page')
+                ->with('success', 'تم تغيير كلمة السر بنجاح');
+
         default:
-            return redirect('/')->with('success', 'تم تغيير كلمة السر بنجاح');
+            return redirect('/')
+                ->with('success', 'تم تغيير كلمة السر بنجاح');
     }
 }
-
 
 
 
@@ -248,7 +250,7 @@ public function verify2FA(Request $request)
     // نجاح → كمّلي الدخول
     session()->forget('pending_2fa_user');
 
-    Auth::login($user); // ⭐ استخدمي Auth::login بدل loginUsingId
+    Auth::login($user); //  استخدمي Auth::login بدل loginUsingId
 
     $request->session()->regenerate(); // تثبيت الجلسة
 
@@ -262,27 +264,42 @@ public function verify2FA(Request $request)
 
 
 
-
-
-
-
-
-
-
-
-
-
 protected function redirectByRole($user)
 {
     switch ($user->role) {
+
         case 'writer':
             return redirect()->route('writer.dashboard');
+
         case 'typist':
             return redirect()->route('typist.index');
-        case 'clerk':
-            return redirect()->route('clerk.dashboard');
+
+        case 'chief':
+            return redirect()->route('chief.dashboard');
+
+        case 'judge':
+            return redirect()->route('judge.index'); 
+
+
+         case 'archiver':
+            return redirect()->route('archiver.page'); 
+
+
         default:
-            return redirect()->route('home');
+            abort(403); 
     }
+}
+
+
+
+
+
+public function logout(Request $request)
+{
+    Auth::logout();                
+    $request->session()->invalidate(); 
+    $request->session()->regenerateToken(); 
+
+    return redirect()->route('login');
 }
 }
