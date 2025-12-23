@@ -12,7 +12,8 @@ class IncomingPoliceCasesSeeder extends Seeder
     {
         DB::table('incoming_police_cases')->insert([
 
-            // 🟦 القضية 1 — شرطة شمال عمان
+            // 
+            // القضية 1 — شرطة شمال عمان
             [
                 'center_name' => 'شرطة شمال عمان',
                 'police_case_number' => 'P-2025-001',
@@ -49,7 +50,7 @@ class IncomingPoliceCasesSeeder extends Seeder
                 'updated_at' => Carbon::now(),
             ],
 
-            // 🟦 القضية 2 — شرطة جنوب عمان
+            //  القضية 2 — شرطة جنوب عمان
             [
                 'center_name' => 'شرطة جنوب عمان',
                 'police_case_number' => 'P-2025-002',
@@ -86,7 +87,7 @@ class IncomingPoliceCasesSeeder extends Seeder
                 'updated_at' => Carbon::now(),
             ],
 
-            // 🟦 القضية 3 — شرطة شمال عمان (مرة ثانية)
+            //  القضية 3 — شرطة شمال عمان (مرة ثانية)
             [
                 'center_name' => 'شرطة شمال عمان',
                 'police_case_number' => 'P-2025-003',
@@ -123,7 +124,7 @@ class IncomingPoliceCasesSeeder extends Seeder
                 'updated_at' => Carbon::now(),
             ],
 
-            // 🟦 القضية 4 — شرطة شمال عمان (مرة ثالثة)
+            //  القضية 4 — شرطة شمال عمان (مرة ثالثة)
             [
                 'center_name' => 'شرطة شمال عمان',
                 'police_case_number' => 'P-2025-004',
@@ -160,7 +161,7 @@ class IncomingPoliceCasesSeeder extends Seeder
                 'updated_at' => Carbon::now(),
             ],
 
-            // 🟦 القضية 5 — شرطة غرب عمان
+            //  القضية 5 — شرطة غرب عمان
             [
                 'center_name' => 'شرطة غرب عمان',
                 'police_case_number' => 'P-2025-005',

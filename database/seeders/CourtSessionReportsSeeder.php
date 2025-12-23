@@ -2,16 +2,208 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class CourtSessionReportsSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
-        //
+        DB::table('court_session_reports')->insert([
+
+            // ====== Case Session 34 | Court Case 7 ======
+            [
+                'case_session_id' => 34,
+                'court_case_id' => 7,
+                'participant_id' => 81,
+                'name' => 'أحمد خالد',
+                'role' => 'مشتكي',
+                'report_mode' => 'trial',
+                'statement_text' => 'أفاد المشتكي أنّ المتهم هدده سابقاً، وشاهده يلاحق شقيقه قبل يوم من وقوع الجريمة.',
+                'fingerprint' => null,
+                'report_text' => null,
+                'decision_text' => null,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'case_session_id' => 34,
+                'court_case_id' => 7,
+                'participant_id' => 82,
+                'name' => 'سامي يوسف',
+                'role' => 'مشتكى عليه',
+                'report_mode' => 'trial',
+                'statement_text' => 'أنكر المتهم جميع التهم، وذكر أنه كان في عمله وقت الحادثة ولم يغادر الموقع.',
+                'fingerprint' => null,
+                'report_text' => null,
+                'decision_text' => null,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'case_session_id' => 34,
+                'court_case_id' => 7,
+                'participant_id' => 83,
+                'name' => 'ليلى محمود',
+                'role' => 'شاهد',
+                'report_mode' => 'trial',
+                'statement_text' => 'صرّح شاهد الإثبات أنه شاهد المتهم قرب مسرح الجريمة يحمل أداة حادة قبل دقائق من وقوع الحادثة.',
+                'fingerprint' => null,
+                'report_text' => null,
+                'decision_text' => null,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'case_session_id' => 34,
+                'court_case_id' => 7,
+                'participant_id' => null,
+                'name' => 'صلاح احمد',
+                'role' => 'شاهد نفي',
+                'report_mode' => 'trial',
+                'statement_text' => 'أفاد شاهد النفي أن المتهم كان برفقته في مقهى بعيد عن مكان الجريمة وقت وقوع الحادثة.',
+                'fingerprint' => null,
+                'report_text' => null,
+                'decision_text' => null,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'case_session_id' => 34,
+                'court_case_id' => 7,
+                'participant_id' => null,
+                'name' => null,
+                'role' => null,
+                'report_mode' => 'trial',
+                'statement_text' => null,
+                'fingerprint' => null,
+                'report_text' => null,
+                'decision_text' =>
+                    'تقرر المحكمة إحالة المتهم إلى محكمة الجنايات الكبرى بتهمة القتل العمد مع سبق الإصرار وفق المواد القانونية المختصة.',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+
+            // ====== AFTER REPORT ======
+            [
+                'case_session_id' => 34,
+                'court_case_id' => 7,
+                'participant_id' => 81,
+                'name' => 'أحمد خالد',
+                'role' => 'مشتكي',
+                'report_mode' => 'after',
+                'statement_text' =>
+                    'أكد المشتكي استمرار تهديدات المتهم لعائلته وطلب تشديد الإجراءات لحمايته.',
+                'fingerprint' => null,
+                'report_text' => null,
+                'decision_text' => null,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'case_session_id' => 34,
+                'court_case_id' => 7,
+                'participant_id' => 82,
+                'name' => 'سامي يوسف',
+                'role' => 'مشتكى عليه',
+                'report_mode' => 'after',
+                'statement_text' =>
+                    'أعاد المتهم إنكاره للجريمة وطلب مواجهة الشهود لإثبات براءته.',
+                'fingerprint' => null,
+                'report_text' => null,
+                'decision_text' => null,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'case_session_id' => 34,
+                'court_case_id' => 7,
+                'participant_id' => 83,
+                'name' => 'ليلى محمود',
+                'role' => 'شاهد',
+                'report_mode' => 'after',
+                'statement_text' =>
+                    'جدد شاهد الإثبات أقواله مؤكداً أنه رأى المتهم بالقرب من موقع الجريمة بنفس التوقيت المذكور سابقاً.',
+                'fingerprint' => null,
+                'report_text' => null,
+                'decision_text' => null,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'case_session_id' => 34,
+                'court_case_id' => 7,
+                'participant_id' => null,
+                'name' => null,
+                'role' => null,
+                'report_mode' => 'after',
+                'statement_text' => null,
+                'fingerprint' => null,
+                'report_text' => null,
+                'decision_text' =>
+                    'تقرر المحكمة متابعة المرافعات النهائية وتأجيل النطق بالحكم لاستكمال دراسة البينات.',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+
+            // ====== Case Session 134 | Court Case 95 ======
+            [
+                'case_session_id' => 134,
+                'court_case_id' => 95,
+                'participant_id' => 104,
+                'name' => 'رياض محمد',
+                'role' => 'مشتكي',
+                'report_mode' => 'trial',
+                'statement_text' => 'دّم بلاغ رسمي يتهم فيه المشتكى عليه بحيازة مواد مخدرة.',
+                'fingerprint' => null,
+                'report_text' => null,
+                'decision_text' => null,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'case_session_id' => 134,
+                'court_case_id' => 95,
+                'participant_id' => 105,
+                'name' => 'علاءالدين',
+                'role' => 'مشتكى عليه',
+                'report_mode' => 'trial',
+                'statement_text' => 'تم ضبطه ومعه كمية من المواد المخدرة، وأنكر التهمة أمام المحكمة.',
+                'fingerprint' => null,
+                'report_text' => null,
+                'decision_text' => null,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'case_session_id' => 134,
+                'court_case_id' => 95,
+                'participant_id' => 116,
+                'name' => 'مريم محمد',
+                'role' => 'شاهد',
+                'report_mode' => 'trial',
+                'statement_text' => 'أكد أمام القاضي أنه رأى المشتكى عليه وهو يتعامل بالمواد المخدرة.',
+                'fingerprint' => null,
+                'report_text' => null,
+                'decision_text' => null,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'case_session_id' => 134,
+                'court_case_id' => 95,
+                'participant_id' => null,
+                'name' => null,
+                'role' => null,
+                'report_mode' => 'trial',
+                'statement_text' => null,
+                'fingerprint' => null,
+                'report_text' => null,
+                'decision_text' =>
+                    'بعد سماع الأطراف، أصدر قراره بإدانة المشتكى عليه ومعاقبته وفق القانون.',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+        ]);
     }
 }

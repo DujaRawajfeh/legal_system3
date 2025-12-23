@@ -18,7 +18,7 @@ class Participant extends Model
         'job',
         'phone',
         'charge',
-        'fingerprint',
+        
     ];
 
     // العلاقة مع القضية
