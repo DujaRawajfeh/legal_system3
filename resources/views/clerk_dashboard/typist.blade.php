@@ -357,7 +357,7 @@ body {
             
             <div class="case-strip">
                 <div class="case-info">
-                    <h3>القضية رقم: {{ $case->number }}</h3>
+                    <h3>رقم القضية: {{ $case->number }}</h3>
                     <p><strong>عنوان الدعوى:</strong> {{ $case->type }}</p>
                     
                     @if($session)
