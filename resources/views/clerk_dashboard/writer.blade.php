@@ -695,10 +695,7 @@
                     <label class="form-label">رقم الهاتف</label>
                     <input type="text" class="form-control request-party-phone">
                   </div>
-                  <div class="col-md-12">
-                    <label class="form-label">العنوان</label>
-                    <input type="text" class="form-control request-party-address">
-                  </div>
+                  
                 </div>
               </div>
             </div>
@@ -1054,10 +1051,6 @@ function openCourtScheduleModal() {
     loadSessionStatuses();
 }
 
-
-// ===========================================
-// تحميل الحالات من المسار الصحيح
-// ===========================================
 function loadSessionStatuses() {
     fetch('/session-statuses-court')
         .then(res => res.json())
@@ -1075,9 +1068,6 @@ function loadSessionStatuses() {
 }
 
 
-// ===========================================
-// تحميل جدول المحكمة
-// ===========================================
 function loadCourtSchedule() {
 
     const params = {
@@ -1118,7 +1108,7 @@ function loadCourtSchedule() {
 
 </script>
 
-<!-- 🔶 مودال جدول أعمال القاضي -->
+<!--  مودال جدول أعمال القاضي -->
 <div class="modal fade" id="judgeScheduleModal" tabindex="-1">
   <div class="modal-dialog modal-xl modal-dialog-scrollable">
     <div class="modal-content">
@@ -1130,7 +1120,7 @@ function loadCourtSchedule() {
 
       <div class="modal-body">
 
-        <!-- 🔹 فلاتر -->
+        <!--  فلاتر -->
         <div class="row mb-4">
 
           <!-- اختيار القاضي -->
@@ -1191,9 +1181,7 @@ function loadCourtSchedule() {
 </div>
 <script>
 
-/* ============================
-   🔹 تحميل القضاة من السيرفر
-============================ */
+
 function loadJudges() {
     fetch('/judges')
         .then(res => res.json())
@@ -1209,20 +1197,12 @@ function loadJudges() {
 }
 
 
-/* ====================================================
-   🔹 تحميل القضاة تلقائيًا عند فتح مودال جدول القاضي
-==================================================== */
+
 document.getElementById("judgeScheduleModal")
     .addEventListener("shown.bs.modal", function () {
         loadJudges();
     });
 
-
-
-
-/* ============================
-   🔹 تحميل جدول أعمال القاضي
-============================ */
 function loadJudgeSchedule() {
 
     const params = {
@@ -1284,7 +1264,7 @@ function openRequestScheduleModal() {
 
 </script>
 
-<!-- 🔶 مودال جدول الدعوى -->
+<!--  مودال جدول الدعوى -->
 <div class="modal fade" id="caseScheduleModal" tabindex="-1">
   <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
     <div class="modal-content">
@@ -1328,8 +1308,8 @@ function openRequestScheduleModal() {
                 <th>تاريخ الجلسة</th>
                 <th>وقت الجلسة</th>
                 <th>نوع الحكم</th>
-                <th>نوع الجلسة</th>
                 <th>حالة الجلسة</th>
+                 <th>سبب الجلسة</th>
                 <th>القاضي</th>
               </tr>
             </thead>
@@ -1399,8 +1379,8 @@ document.addEventListener('DOMContentLoaded', function () {
                             <td>${s.session_date ?? '---'}</td>
                             <td>${s.session_time ?? '---'}</td>
                             <td>${s.judgment_type ?? '---'}</td>
-                            <td>${s.session_type ?? '---'}</td>
                             <td>${s.status ?? '---'}</td>
+                             <td>${s.session_goal ?? '---'}</td>
                             <td>${s.judge_name ?? '---'}</td>
                         </tr>
                     `;

@@ -30,6 +30,11 @@
 </head>
 <body>
 
+@php
+    // ✅ ضبط لغة Carbon إلى العربية
+    \Carbon\Carbon::setLocale('ar');
+@endphp
+
 <!-- رقم الدعوى -->
 <div class="case-number-box">
     رقم الدعوى: {{ $case->number }} / {{ $case->year }}
@@ -38,6 +43,12 @@
 <!-- هيدر -->
 <div class="text-center mb-4">
     <h2 class="my-3 fw-bold">محضر المحاكمة / ما بعد</h2>
+
+    <!-- ✅ تاريخ الجلسة مع اليوم بالعربي -->
+    <p class="mt-2">
+        جلسة اليوم:
+        {{ \Carbon\Carbon::parse($session->session_date)->translatedFormat('l d/m/Y') }}
+    </p>
 
     <h5 class="mt-3">الهيئة الحاكمة:</h5>
     <p>{{ $judge->full_name }}</p>
@@ -49,10 +60,7 @@
 <form method="POST" action="{{ route('after.trial.report.store', $session->id) }}">
 @csrf
 
-<!-- 🟦 نوع المحضر -->
 <input type="hidden" name="report_mode" value="after">
-
-<!-- 🟦 مصدر الصفحة (writer / typist) -->
 <input type="hidden" name="source" value="{{ $source }}">
 
 <!-- ================================ -->
@@ -135,7 +143,6 @@
 
 </form>
 
-
 <script>
 let partyIndex = 0;
 
@@ -180,17 +187,9 @@ function updateRoleLabel(i) {
 }
 </script>
 
-
-
-
-
 <script>
 function closeAndReturn(source) {
-
-    // محاولة إغلاق التاب الحالية
     window.close();
-
-    // fallback لو المتصفح رفض الإغلاق
     setTimeout(function () {
         if (source === 'writer') {
             window.location.href = "{{ route('writer.dashboard') }}";
@@ -200,5 +199,6 @@ function closeAndReturn(source) {
     }, 300);
 }
 </script>
+
 </body>
 </html>

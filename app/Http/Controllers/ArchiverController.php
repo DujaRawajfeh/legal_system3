@@ -5,63 +5,71 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\ArchivedDocument;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Log;
 
 class ArchiverController extends Controller
 {
-  public function index()
-{
-    // جلب المستخدم الحالي مع المحكمة والقلم المرتبطين به
-    $archiver = auth()->user()->load(['tribunal','department']); 
+    public function index()
+    {
+        $archiver = auth()->user()->load(['tribunal','department']); 
+        $cases = \App\Models\CourtCase::with(['tribunal', 'department'])->get();
+        $documents = ArchivedDocument::latest()->get();
+        $year = $cases->first()->year ?? date('Y');
 
-    // جلب القضايا مع المحكمة والقلم المرتبطين بها
-    $cases = \App\Models\CourtCase::with(['tribunal', 'department'])->get();
-
-    // جلب الوثائق المؤرشفة
-    $documents = ArchivedDocument::latest()->get();
-
-    // استخراج السنة (مثلاً من أول قضية أو منطق آخر حسب المطلوب)
-    $year = $cases->first()->year ?? date('Y');
-
-    // إرسال البيانات للواجهة
-    return view('clerk_dashboard.archiver', compact('cases', 'archiver', 'documents', 'year'));
-}
-
-public function store(Request $request)
-{
-    $request->validate([
-        'court_case_id' => 'required|string', // المستخدم يدخل رقم الدعوى
-        'document_type' => 'required|string|max:255',
-        'document_file' => 'required|mimes:pdf,jpg,jpeg,png,doc,docx,xls,xlsx|max:10240',
-    ]);
-
-    // ابحث عن القضية باستخدام رقم الدعوى (number)
-    $case = \App\Models\CourtCase::where('number', $request->court_case_id)->first();
-
-    if (!$case) {
-        return back()->withErrors(['court_case_id' => 'رقم الدعوى غير موجود في قاعدة البيانات'])->withInput();
+        return view('clerk_dashboard.archiver', compact('cases', 'archiver', 'documents', 'year'));
     }
 
-    // توليد رقم الوثيقة
-    $existingCount = ArchivedDocument::where('court_case_id', $case->id)->count();
-    $documentNumber = $case->number . '/' . ($existingCount + 1);
+    public function store(Request $request)
+    {
+        $request->validate([
+            'court_case_id' => 'required|string',
+            'document_type' => 'required|string|max:255',
+            'document_file' => 'required|mimes:pdf,jpg,jpeg,png,doc,docx,xls,xlsx|max:10240',
+        ]);
 
-    // تجهيز اسم الملف
-    $file = $request->file('document_file');
-    $originalName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
-    $extension = $file->getClientOriginalExtension();
-    $uniqueName = $originalName . '_' . time() . '.' . $extension;
+        $case = \App\Models\CourtCase::where('number', $request->court_case_id)->first();
 
-    // انقل الملف فعليًا إلى مجلد public/uploads/archived_documents
-    $file->move(public_path('uploads/archived_documents'), $uniqueName);
+        if (!$case) {
+            return back()->withErrors([
+                'court_case_id' => 'رقم الدعوى غير موجود في قاعدة البيانات'
+            ])->withInput();
+        }
 
-    // تخزين البيانات باستخدام الـ id الحقيقي للقضية
-    ArchivedDocument::create([
-        'court_case_id'   => $case->id, // نخزن الـ id
-        'document_type'   => $request->document_type,
-        'file_name'       => $uniqueName, // نخزن فقط الاسم
-        'document_number' => $documentNumber,
-    ]);
+        $existingCount = ArchivedDocument::where('court_case_id', $case->id)->count();
+        $documentNumber = $case->number . '/' . ($existingCount + 1);
 
-    return redirect()->route('archiver.page')->with('success', 'تمت أرشفة الوثيقة بنجاح');
-}
+        $file = $request->file('document_file');
+        $destinationPath = public_path('uploads/archived_documents');
+        if (!File::exists($destinationPath)) {
+            File::makeDirectory($destinationPath, 0755, true);
+        }
+
+        $extension = $file->getClientOriginalExtension();
+        $uniqueName = time() . '_' . uniqid() . '.' . $extension;
+        $path = $file->storeAs('archived_documents', $uniqueName, 'public');
+
+        $archivedDocument = ArchivedDocument::create([
+            'court_case_id'   => $case->id,
+            'document_type'   => $request->document_type,
+            'file_name'       => $uniqueName,
+            'document_number' => $documentNumber,
+        ]);
+
+        // إرسال البيانات للبلوك تشين
+        try {
+            $blockchainController = app(\App\Http\Controllers\BlockchainController::class);
+            $blockchainController->archive(new Request([
+                'caseNumber'     => $case->number,
+                'documentNumber' => $documentNumber,
+                'documentType'   => $request->document_type,
+            ]));
+        } catch (\Exception $e) {
+            Log::error("Blockchain error: " . $e->getMessage());
+        }
+
+        return redirect()
+            ->route('archiver.page')
+            ->with('success', 'تمت أرشفة الوثيقة بنجاح');
+    }
 }

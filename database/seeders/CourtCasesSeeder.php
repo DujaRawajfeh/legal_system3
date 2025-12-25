@@ -10,20 +10,20 @@ class CourtCasesSeeder extends Seeder
     public function run(): void
     {
         DB::table('court_cases')->insert([
+
             [
-                'id' => 1,
-                'judge_id' => 2,
+                'judge_id' => 4,
                 'type' => 'القتل العمد',
                 'number' => '0382',
                 'year' => '2025',
                 'tribunal_id' => 11,
                 'department_id' => 1,
                 'created_by' => 1,
-                'created_at' => '2025-10-22 16:36:25',
-                'updated_at' => '2025-10-22 16:36:25',
+                'created_at' => now(),
+                'updated_at' => now(),
             ],
+
             [
-                'id' => 2,
                 'judge_id' => 3,
                 'type' => 'القتل العمد مع سبق الإصرار',
                 'number' => '0380',
@@ -31,11 +31,11 @@ class CourtCasesSeeder extends Seeder
                 'tribunal_id' => 11,
                 'department_id' => 1,
                 'created_by' => 1,
-                'created_at' => '2025-10-22 16:38:03',
-                'updated_at' => '2025-10-22 16:38:03',
+                'created_at' => now(),
+                'updated_at' => now(),
             ],
+
             [
-                'id' => 4,
                 'judge_id' => 2,
                 'type' => 'الخطف',
                 'number' => '4822',
@@ -43,35 +43,11 @@ class CourtCasesSeeder extends Seeder
                 'tribunal_id' => 11,
                 'department_id' => 1,
                 'created_by' => 1,
-                'created_at' => '2025-10-22 16:50:47',
-                'updated_at' => '2025-10-22 16:50:47',
+                'created_at' => now(),
+                'updated_at' => now(),
             ],
+
             [
-                'id' => 5,
-                'judge_id' => 3,
-                'type' => 'الاعتداء الجسدي',
-                'number' => '8836',
-                'year' => '2025',
-                'tribunal_id' => 11,
-                'department_id' => 1,
-                'created_by' => 1,
-                'created_at' => '2025-10-22 16:53:32',
-                'updated_at' => '2025-10-22 16:53:32',
-            ],
-            [
-                'id' => 6,
-                'judge_id' => 2,
-                'type' => 'القتل العمد مع سبق الإصرار',
-                'number' => '4296',
-                'year' => '2025',
-                'tribunal_id' => 11,
-                'department_id' => 1,
-                'created_by' => 1,
-                'created_at' => '2025-10-22 18:15:16',
-                'updated_at' => '2025-11-21 17:12:50',
-            ],
-            [
-                'id' => 7,
                 'judge_id' => 2,
                 'type' => 'القتل العمد مع سبق الإصرار',
                 'number' => '8839',
@@ -79,58 +55,34 @@ class CourtCasesSeeder extends Seeder
                 'tribunal_id' => 11,
                 'department_id' => 1,
                 'created_by' => 1,
-                'created_at' => '2025-10-22 18:15:17',
-                'updated_at' => '2025-10-22 18:15:17',
+                'created_at' => now(),
+                'updated_at' => now(),
             ],
+
             [
-                'id' => 8,
-                'judge_id' => 3,
-                'type' => 'القتل العمد مع سبق الإصرار',
-                'number' => '7373',
+                'judge_id' => 2,
+                'type' => 'إساءة معاملة أسرى',
+                'number' => '7607',
                 'year' => '2025',
                 'tribunal_id' => 11,
                 'department_id' => 1,
                 'created_by' => 1,
-                'created_at' => '2025-10-23 14:32:40',
-                'updated_at' => '2025-10-23 14:32:40',
+                'created_at' => now(),
+                'updated_at' => now(),
             ],
+
             [
-                'id' => 15,
-                'judge_id' => 3,
-                'type' => 'جنائية',
-                'number' => '8840',
-                'year' => '2025',
-                'tribunal_id' => null,
-                'department_id' => 1,
-                'created_by' => 1,
-                'created_at' => '2025-10-25 08:27:33',
-                'updated_at' => '2025-10-25 08:27:33',
-            ],
-            [
-                'id' => 20,
-                'judge_id' => 3,
-                'type' => 'جنائية',
-                'number' => '8845',
-                'year' => '2025',
-                'tribunal_id' => null,
-                'department_id' => 1,
-                'created_by' => 1,
-                'created_at' => '2025-10-25 09:24:23',
-                'updated_at' => '2025-10-25 09:24:23',
-            ],
-            [
-                'id' => 24,
-                'judge_id' => 4,
-                'type' => 'القتل العمد مع سبق الإصرار',
-                'number' => '5723',
+                'judge_id' => 2,
+                'type' => 'المخدرات - اتجار',
+                'number' => '8237',
                 'year' => '2025',
                 'tribunal_id' => 11,
                 'department_id' => 1,
-                'created_by' => 1,
-                'created_at' => '2025-10-25 18:48:13',
-                'updated_at' => '2025-10-25 18:48:13',
+                'created_by' => 6,
+                'created_at' => now(),
+                'updated_at' => now(),
             ],
-            // 👇 بقية السجلات (35 → 94) بنفس النمط
+
         ]);
     }
 }

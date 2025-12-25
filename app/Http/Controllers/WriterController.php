@@ -1396,18 +1396,18 @@ public function loadReportsList()
 {
     try {
 
-        Log::info('📝 بدء تحميل قائمة محاضر الجلسات للكاتب', [
+        Log::info(' بدء تحميل قائمة محاضر الجلسات للكاتب', [
             'writer_id' => auth()->id(),
         ]);
 
         $writer = auth()->user();
 
-        // 🟦 1) جلب القضاة اللي الكاتب إله صلاحية عليهم
+        //  1) جلب القضاة اللي الكاتب إله صلاحية عليهم
         $allowedJudges = \App\Models\JudgeUser::where('user_id', $writer->id)
                             ->pluck('judge_id')
                             ->toArray();
 
-        Log::info('👨‍⚖️ القضاة المسموحين للكاتب', [
+        Log::info(' القضاة المسموحين للكاتب', [
             'writer_id'      => $writer->id,
             'allowedJudges'  => $allowedJudges,
         ]);
@@ -1423,7 +1423,7 @@ public function loadReportsList()
             ]);
         }
 
-        // 🟦 2) جلب جلسات فيها محاضر + تجميع حسب الجلسة ونوع المحضر
+        //  جلب جلسات فيها محاضر + تجميع حسب الجلسة ونوع المحضر
         $sessions = CourtSessionReport::select('case_session_id', 'report_mode')
             ->groupBy('case_session_id', 'report_mode')
             ->get();
@@ -1447,12 +1447,12 @@ public function loadReportsList()
 
             $case = $session->courtCase;
 
-            // ⭐ فلترة حسب القاضي المسند للكاتب
+            //  فلترة حسب القاضي المسند للكاتب
             if (!in_array($case->judge_id, $allowedJudges)) {
                 continue;
             }
 
-            // ⭐ تجهيز السطر
+            //  تجهيز السطر
             if (!isset($result[$session->id])) {
                 $result[$session->id] = [
                     'session_id' => $session->id,
@@ -1468,7 +1468,7 @@ public function loadReportsList()
             $result[$session->id]['modes'][] = $record->report_mode;
         }
 
-        Log::info('✅ تم تجهيز النتيجة لمحاضر الجلسات', [
+        Log::info(' تم تجهيز النتيجة لمحاضر الجلسات', [
             'writer_id' => $writer->id,
             'sessions_count' => count($result),
         ]);
@@ -1479,7 +1479,7 @@ public function loadReportsList()
 
     } catch (\Exception $e) {
 
-        Log::error('❌ خطأ في loadReportsList', [
+        Log::error(' خطأ في loadReportsList', [
             'writer_id' => auth()->id(),
             'message'   => $e->getMessage(),
             'trace'     => $e->getTraceAsString(),

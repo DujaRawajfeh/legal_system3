@@ -2,25 +2,48 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
 {
-    use WithoutModelEvents;
+   public function run(): void
+{
+    $this->call([
 
-    /**
-     * Seed the application's database.
-     */
-    public function run(): void
-    {
-        // User::factory(10)->create();
+        //  الأساسيات
+        TribunalsSeeder::class,
+        DepartmentsSeeder::class,
 
-        User::factory()->create([
-            'full_name' => 'Test User',
-            'national_id' => '1234567890',
-            'role' => 'judge',
-        ]);
-    }
+        //  المستخدمين
+        UsersSeeder::class,
+
+        //  الربط بين المستخدمين (قضاة / مستخدمين)
+        JudgeUserSeeder::class,
+
+        // القضايا
+        CourtCasesSeeder::class,
+
+        //  الأطراف
+        ParticipantsSeeder::class,
+
+        //  الجلسات
+        CaseSessionsSeeder::class,
+
+        //  تقارير الجلسات
+        CourtSessionReportsSeeder::class,
+
+        //  الأحكام
+        CaseJudgmentsSeeder::class,
+
+        //  المذكرات والتبليغات
+        ArrestMemosSeeder::class,
+        NotificationsSeeder::class,
+
+        //  الطلبات
+        RequestSchedulesSeeder::class,
+
+        //  السجل المدني (مستقل)
+        CivilRegistrySeeder::class,
+    ]);
 }
+    }

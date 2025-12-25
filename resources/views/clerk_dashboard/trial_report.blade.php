@@ -30,6 +30,11 @@
 </head>
 <body>
 
+@php
+    // ✅ ضبط لغة Carbon إلى العربية
+    \Carbon\Carbon::setLocale('ar');
+@endphp
+
 <div class="case-number-box">
     رقم الدعوى: {{ $case->number }} / {{ $case->year }}
 </div>
@@ -39,7 +44,12 @@
     <h6>وزارة العدل</h6>
     <h3 class="my-3">محضر المحاكمة</h3>
 
-    <p>جلسة اليوم: {{ \Carbon\Carbon::parse($session->session_date)->translatedFormat('l d/m/Y') }}</p>
+    <!-- ✅ اليوم بالعربي -->
+    <p>
+        جلسة اليوم:
+        {{ \Carbon\Carbon::parse($session->session_date)->translatedFormat('l d/m/Y') }}
+    </p>
+
     <p>اسم الهيئة الحاكمة: {{ $judge->full_name }}</p>
     <p>الطابعة: {{ $typist->full_name }}</p>
 </div>
@@ -47,10 +57,7 @@
 <form method="POST" action="{{ route('trial.report.store', $session->id) }}">
 @csrf
 
-<!-- 🟦 نوع المحضر -->
 <input type="hidden" name="report_mode" value="trial">
-
-<!-- 🟦 مصدر الصفحة (writer / typist) -->
 <input type="hidden" name="source" value="{{ $source }}">
 
 @foreach($participants as $part)
@@ -79,7 +86,6 @@
 
 <hr>
 
-<!-- 🟦 الأطراف المضافة -->
 <div id="newParties">
 @foreach($added_parties->where('report_mode', 'trial') as $ap)
 <div class="mb-3 border p-3">
@@ -177,13 +183,10 @@ function updateRoleLabel(i) {
         (role ? role : "طرف") + " : " + (name ? name : "");
 }
 </script>
+
 <script>
 function closeAndReturn(source) {
-
-    // محاولة إغلاق التاب الحالية
     window.close();
-
-    // fallback لو المتصفح رفض الإغلاق
     setTimeout(function () {
         if (source === 'writer') {
             window.location.href = "{{ route('writer.dashboard') }}";
@@ -193,5 +196,6 @@ function closeAndReturn(source) {
     }, 300);
 }
 </script>
+
 </body>
 </html>
