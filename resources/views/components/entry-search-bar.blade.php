@@ -55,27 +55,34 @@
     </div>
 </div>
 
-{{-- 🔵 سكربت فتح نافذة الطلب --}}
+{{-- 🔵 سكربت فتح نافذة الطلب والدعوى --}}
 <script>
 // =============================
-//  الضغط على Enter لفتح نافذة الطلب
+//  الضغط على Enter لفتح النافذة المناسبة
 // =============================
 document.addEventListener('DOMContentLoaded', function () {
 
+    const entryTypeCase = document.getElementById("entrySearchTypeCase");
     const entryTypeRequest = document.getElementById("entrySearchTypeRequest");
     const entryInput = document.getElementById("entrySearchNumberInput");
 
     entryInput.addEventListener("keydown", function (e) {
 
-        if (e.key === "Enter" && entryTypeRequest.checked) {
-
-            const reqNumber = entryInput.value.trim();
-            if (!reqNumber) {
-                alert("الرجاء إدخال رقم الطلب");
+        if (e.key === "Enter") {
+            e.preventDefault();
+            
+            const number = entryInput.value.trim();
+            
+            if (!number) {
+                alert("الرجاء إدخال الرقم");
                 return;
             }
 
-            openEntrySearchRequestDetails(reqNumber);
+            if (entryTypeRequest.checked) {
+                openEntrySearchRequestDetails(number);
+            } else if (entryTypeCase.checked) {
+                openEntrySearchCaseDetails(number);
+            }
         }
     });
 
@@ -163,33 +170,6 @@ async function loadEntrySearchRequestDetails(requestNumber) {
 </script>
 
 <script>
-// =============================
-// استماع لزر Enter عند اختيار "دعوى"
-// =============================
-document.addEventListener("DOMContentLoaded", function () {
-
-    const entryTypeCase = document.getElementById("entrySearchTypeCase");
-    const caseNumberInput = document.getElementById("entrySearchNumberInput");
-
-    caseNumberInput.addEventListener("keydown", function (e) {
-
-        if (e.key === "Enter" && entryTypeCase.checked) {
-
-            const caseNum = caseNumberInput.value.trim();
-
-            if (!caseNum) {
-                alert("الرجاء إدخال رقم الدعوى");
-                return;
-            }
-
-            openEntrySearchCaseDetails(caseNum);
-        }
-
-    });
-
-});
-
-
 // =============================
 //  فتح popup تفاصيل الدعوى
 // =============================
