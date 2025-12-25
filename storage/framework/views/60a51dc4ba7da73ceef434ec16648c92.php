@@ -259,7 +259,7 @@
         </div>
     </div>
 </div>
-<!-- ⭐⭐⭐ نافذة عرض تفاصيل الدعوى ⭐⭐⭐ -->
+<!--  نافذة عرض تفاصيل الدعوى  -->
 <div class="modal fade" id="caseDetailsModal" tabindex="-1">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
@@ -301,20 +301,30 @@ document.addEventListener('DOMContentLoaded', function () {
 </script>
 
 
-<script>
 
+<script>
 document.addEventListener('DOMContentLoaded', function () {
 
+    const form = document.getElementById("requestForm");
     const entryTypeRequest = document.getElementById("type_request");
     const entryInput = document.getElementById("entryNumberInput");
 
-    if (!entryInput || !entryTypeRequest) return; // Exit if elements not found
+    if (!form || !entryInput || !entryTypeRequest) return;
 
+    // ✅ منع submit نهائيًا للفورم
+    form.addEventListener("submit", function (e) {
+        e.preventDefault();
+    });
+
+    // ✅ التقاط Enter بشكل آمن
     entryInput.addEventListener("keydown", function (e) {
 
         if (e.key === "Enter" && entryTypeRequest.checked) {
 
+            e.preventDefault();
+
             const reqNumber = entryInput.value.trim();
+
             if (!reqNumber) {
                 alert("الرجاء إدخال رقم الطلب");
                 return;
@@ -323,13 +333,16 @@ document.addEventListener('DOMContentLoaded', function () {
             openRequestDetails(reqNumber);
         }
     });
-
 });
 
+// =======================
+// فتح نافذة تفاصيل الطلب
+// =======================
 function openRequestDetails(requestNumber) {
 
-    const modal = new bootstrap.Modal(document.getElementById("requestDetailsModal"));
-    const body  = document.getElementById("requestDetailsBody");
+    const modalEl = document.getElementById("requestDetailsModal");
+    const modal   = new bootstrap.Modal(modalEl);
+    const body    = document.getElementById("requestDetailsBody");
 
     body.innerHTML = `<p class="text-center text-secondary">جاري التحميل...</p>`;
     modal.show();
@@ -337,81 +350,109 @@ function openRequestDetails(requestNumber) {
     loadRequestDetails(requestNumber);
 }
 
-
-
+// =======================
+// جلب تفاصيل الطلب
+// =======================
 async function loadRequestDetails(requestNumber) {
 
     const body = document.getElementById("requestDetailsBody");
 
     try {
-        const response = await axios.post("<?php echo e(route('chief.request.details')); ?>", {
-            request_number: requestNumber
-        });
+        const response = await axios.post(
+            "<?php echo e(route('chief.request.details')); ?>",
+            { request_number: requestNumber }
+        );
 
         if (!response.data.success) {
             body.innerHTML = `<p class="text-danger text-center">⚠️ ${response.data.message}</p>`;
             return;
         }
 
-        const r = response.data.request;
+        const info     = response.data.info;
+        const sessions = response.data.sessions || [];
+        const parties  = response.data.parties || [];
 
-        body.innerHTML = `
+        let html = `
+            <h6 class="fw-bold mb-2">معلومات الطلب</h6>
             <table class="table table-bordered">
-
-                <tr><th>رقم الطلب</th><td>${r.request_number}</td></tr>
-                <tr><th>عنوان الطلب</th><td>${r.title ?? '-'}</td></tr>
-                <tr><th>التاريخ الأصلي</th><td>${r.original_date ?? '-'}</td></tr>
-
-                <tr><th>تاريخ الجلسة</th><td>${r.session_date ?? '-'}</td></tr>
-                <tr><th>وقت الجلسة</th><td>${r.session_time ?? '-'}</td></tr>
-
-                <tr><th>غرض الجلسة</th><td>${r.session_purpose ?? '-'}</td></tr>
-                <tr><th>سبب الجلسة</th><td>${r.session_reason ?? '-'}</td></tr>
-
-                <tr><th>القاضي</th><td>${r.judge_name ?? '-'}</td></tr>
-
+                <tr><th>رقم الطلب</th><td>${info.request_number}</td></tr>
+                <tr><th>عنوان الطلب</th><td>${info.title ?? '-'}</td></tr>
+                <tr><th>التاريخ الأصلي</th><td>${info.original_date ?? '-'}</td></tr>
+                <tr><th>القاضي</th><td>${info.judge_name ?? '-'}</td></tr>
             </table>
 
-            <h6 class="mt-4">الأطراف</h6>
+            <h6 class="fw-bold mt-4 mb-2">الجلسات</h6>
+            <table class="table table-bordered text-center">
+                <thead>
+                    <tr>
+                        <th>تاريخ الجلسة</th>
+                        <th>وقت الجلسة</th>
+                        <th>غرض الجلسة</th>
+                        <th>سبب الجلسة</th>
+                    </tr>
+                </thead>
+                <tbody>
+        `;
 
+        if (sessions.length === 0) {
+            html += `<tr><td colspan="4">لا توجد جلسات</td></tr>`;
+        } else {
+            sessions.forEach(s => {
+                html += `
+                    <tr>
+                        <td>${s.date ?? '-'}</td>
+                        <td>${s.time ?? '-'}</td>
+                        <td>${s.goal ?? '-'}</td>
+                        <td>${s.reason ?? '-'}</td>
+                    </tr>
+                `;
+            });
+        }
+
+        html += `
+                </tbody>
+            </table>
+
+            <h6 class="fw-bold mt-4 mb-2">الأطراف</h6>
             <table class="table table-bordered">
-                <tr><th>الصفة</th><th>الاسم</th></tr>
+                <thead>
+                    <tr>
+                        <th>نوع الطرف</th>
+                        <th>الاسم</th>
+                    </tr>
+                </thead>
+                <tbody>
+        `;
 
-                ${r.plaintiff_name ? `<tr><td>مشتكي</td><td>${r.plaintiff_name}</td></tr>` : ''}
-                ${r.defendant_name ? `<tr><td>مشتكى عليه</td><td>${r.defendant_name}</td></tr>` : ''}
-                ${r.third_party_name ? `<tr><td>طرف ثالث</td><td>${r.third_party_name}</td></tr>` : ''}
-                ${r.lawyer_name ? `<tr><td>محامي</td><td>${r.lawyer_name}</td></tr>` : ''}
+        if (parties.length === 0) {
+            html += `<tr><td colspan="2">لا توجد أطراف</td></tr>`;
+        } else {
+            parties.forEach(p => {
+                html += `
+                    <tr>
+                        <td>${p.type}</td>
+                        <td>${p.name}</td>
+                    </tr>
+                `;
+            });
+        }
+
+        html += `
+                </tbody>
             </table>
         `;
+
+        body.innerHTML = html;
 
     } catch (error) {
-
-        const msg = error.response?.data?.message ?? "خطأ غير معروف";
-
-        body.innerHTML = `
-            <p class="text-danger text-center">❌ خطأ أثناء تحميل البيانات — ${msg}</p>
-        `;
+        console.error(error);
+        body.innerHTML = `<p class="text-danger text-center">❌ خطأ أثناء تحميل تفاصيل الطلب</p>`;
     }
 }
 </script>
 
-
-
-
-
-
-
-
-
-
-
-
-
 <script>
     //رقم الدعوى الشريط الثالث
-// =============================
-// استماع لزر Enter عند اختيار "دعوى"
-// =============================
 document.addEventListener("DOMContentLoaded", function () {
 
     const entryTypeCase = document.getElementById("type_case");
@@ -438,10 +479,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 });
 
-
-// =============================
 //  فتح نافذة تفاصيل الدعوى
-// =============================
 function openCaseDetails(caseNumber) {
 
     const modal = new bootstrap.Modal(document.getElementById("caseDetailsModal"));
@@ -453,10 +491,7 @@ function openCaseDetails(caseNumber) {
     loadCaseDetails(caseNumber);
 }
 
-
-// =============================
 //  جلب بيانات الدعوى من السيرفر
-// =============================
 async function loadCaseDetails(caseNumber) {
 
     const body = document.getElementById("caseDetailsBody");

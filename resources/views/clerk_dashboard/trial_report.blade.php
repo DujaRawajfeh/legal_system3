@@ -184,15 +184,31 @@ function updateRoleLabel(i) {
 }
 </script>
 
+
 <script>
 function closeAndReturn(source) {
+
     window.close();
+
     setTimeout(function () {
-        if (source === 'writer') {
-            window.location.href = "{{ route('writer.dashboard') }}";
-        } else {
-            window.location.href = "{{ route('typist.cases') }}";
+
+        if (source.startsWith('judge')) {
+            window.location.href = "/judge";
+            return;
         }
+
+        if (source.startsWith('writer')) {
+            window.location.href = "/writer";
+            return;
+        }
+        
+        if (source.startsWith('typist')) {
+            window.location.href = "/typist/cases";
+            return;
+        }
+
+        window.location.href = "/";
+
     }, 300);
 }
 </script>

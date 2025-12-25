@@ -14,13 +14,13 @@ class JudgeController extends Controller
 {
    public function index()
 {
-    // 🧑‍⚖️ القاضي الحالي
+    //  القاضي الحالي
     $judge = auth()->user();
 
-    // 📅 تاريخ اليوم
+    //  تاريخ اليوم
     $today = \Carbon\Carbon::today();
 
-    // ✅ الجدول الأول: جلسات اليوم المرتبطة بالقاضي
+    //  الجدول الأول: جلسات اليوم المرتبطة بالقاضي
     $sessions = \App\Models\CaseSession::with([
         'courtCase.tribunal',
         'courtCase.department'
@@ -29,7 +29,7 @@ class JudgeController extends Controller
     ->whereDate('session_date', $today)
     ->get();
 
-    // ✅ الجدول الثاني: القضايا المرتبطة بالقاضي، مع المشاركين والتوقيف والتبليغ والجلسات
+    //  الجدول الثاني: القضايا المرتبطة بالقاضي، مع المشاركين والتوقيف والتبليغ والجلسات
     $cases = \App\Models\CourtCase::with([
         'participants',
         'arrestMemos',
@@ -39,7 +39,7 @@ class JudgeController extends Controller
     ->where('judge_id', $judge->id)
     ->get();
 
-    // 📤 إرسال البيانات للواجهة
+    //  إرسال البيانات للواجهة
     return view('clerk_dashboard.judge', compact('judge', 'sessions', 'cases'));
 }
 
@@ -50,39 +50,28 @@ class JudgeController extends Controller
 //هاض المحاضر صفحة القاضي
 public function showTrialReport(CaseSession $session)
 {
-    // ✅ نفس اللوجيك تبع صفحة الطابعة تقريباً
-
-    // القضية المرتبطة بالجلسة
     $case = $session->courtCase;
-
-    // القاضي (المستخدم الحالي)
     $judge = auth()->user();
-
-    // نستخدم نفس المتغير اللي متعودين عليه بالصفحة (اسمه typist)
-    // عشان الـ Blade ما يعطي خطأ
     $typist = auth()->user();
 
-    // الأطراف الأساسية في القضية
     $participants = $case->participants;
 
-    // 🟦 نحمل فقط محاضر "محضر المحاكمة" لهاي الجلسة
     $reports = CourtSessionReport::where('case_session_id', $session->id)
                 ->where('report_mode', 'trial')
                 ->get();
 
-    // الأطراف المضافة من داخل المحضر
     $added_parties = $reports->whereNull('participant_id')
                              ->whereNotNull('name');
 
-    // المحضر العام (القرار النهائي)
     $session_report = $reports->whereNull('participant_id')
                               ->whereNotNull('decision_text')
                               ->first();
 
-    // أقوال الأطراف الأساسية
     $statements = $reports->whereNotNull('participant_id');
 
-    // ✅ مهم: نمرر كل المتغيرات اللي الصفحة تستخدمها
+    // ✅ المصدر مهم
+    $source = 'judge_trial';
+
     return view('clerk_dashboard.trial_report', compact(
         'session',
         'case',
@@ -92,10 +81,10 @@ public function showTrialReport(CaseSession $session)
         'reports',
         'added_parties',
         'session_report',
-        'statements'
+        'statements',
+        'source'
     ));
 }
-
 public function showAfterTrialReport(CaseSession $session)
 {
     $case = $session->courtCase;
@@ -104,7 +93,6 @@ public function showAfterTrialReport(CaseSession $session)
 
     $participants = $case->participants;
 
-    // 🟦 فقط محاضر "ما بعد"
     $reports = CourtSessionReport::where('case_session_id', $session->id)
                 ->where('report_mode', 'after')
                 ->get();
@@ -114,6 +102,9 @@ public function showAfterTrialReport(CaseSession $session)
 
     $savedDecision = $reports->whereNotNull('decision_text')->first();
 
+    // ✅ مصدر مختلف
+    $source = 'judge_after_trial';
+
     return view('clerk_dashboard.after_trial_report', compact(
         'session',
         'case',
@@ -122,37 +113,10 @@ public function showAfterTrialReport(CaseSession $session)
         'participants',
         'reports',
         'added_parties',
-        'savedDecision'
+        'savedDecision',
+        'source'
     ));
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

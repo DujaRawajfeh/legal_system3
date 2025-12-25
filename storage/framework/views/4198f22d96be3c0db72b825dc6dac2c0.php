@@ -433,7 +433,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 </script>
-<!-- 🔶 مودال جدول أعمال المحكمة -->
+<!--  مودال جدول أعمال المحكمة -->
 <div class="modal fade" id="courtScheduleModal" tabindex="-1" aria-labelledby="courtScheduleLabel" aria-hidden="true">
   <div class="modal-dialog modal-xl modal-dialog-scrollable">
     <div class="modal-content">
@@ -445,7 +445,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
       <div class="modal-body">
 
-        <!-- 🔹 خيارات الفلترة -->
+        <!--  خيارات الفلترة -->
         <div class="row mb-3">
           
           <div class="col-md-5">
@@ -466,7 +466,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         </div>
 
-        <!-- 🔹 جدول النتائج -->
+        <!--  جدول النتائج -->
         <div class="table-responsive">
           <table class="table table-bordered text-center">
             <thead class="table-light">
@@ -571,7 +571,7 @@ function loadCourtSchedule() {
 
 </script>
 
-<!-- 🔶 مودال جدول أعمال القاضي -->
+<!--  مودال جدول أعمال القاضي -->
 <div class="modal fade" id="judgeScheduleModal" tabindex="-1">
   <div class="modal-dialog modal-xl modal-dialog-scrollable">
     <div class="modal-content">
@@ -583,7 +583,7 @@ function loadCourtSchedule() {
 
       <div class="modal-body">
 
-        <!-- 🔹 فلاتر -->
+        <!--  فلاتر -->
         <div class="row mb-4">
 
           <!-- اختيار القاضي -->
@@ -1138,7 +1138,7 @@ function saveCaseSession() {
                 <th>تاريخ الجلسة</th>
                 <th>وقت الجلسة</th>
                 <th>نوع الحكم</th>
-                <th>نوع الجلسة</th>
+                <th>سبب الجلسة</th>
                 <th>حالة الجلسة</th>
                 <th>القاضي</th>
               </tr>
@@ -1210,7 +1210,7 @@ document.addEventListener('DOMContentLoaded', function () {
                             <td>${s.session_date ?? '---'}</td>
                             <td>${s.session_time ?? '---'}</td>
                             <td>${s.judgment_type ?? '---'}</td>
-                            <td>${s.session_type ?? '---'}</td>
+                            <td>${s.session_goal ?? '---'}</td>
                             <td>${s.status ?? '---'}</td>
                             <td>${s.judge_name ?? '---'}</td>
                         </tr>
@@ -2879,13 +2879,13 @@ document.addEventListener('DOMContentLoaded', function () {
               session_date: sessionDate,
               session_time: sessionTime,
               session_reason: sessionReason,
-              session_status: sessionStatus   // ✅ إرسال الحالة الجديدة
+              session_status: sessionStatus   //  إرسال الحالة الجديدة
           })
       })
       .then(res => res.json())
       .then(data => {
           alert(data.success || "تم حفظ موعد الجلسة الجديد");
-          // ❗ إذا بدك النافذة تسكّر بعد الحفظ شغّلي هذا السطر:
+          //  إذا بدك النافذة تسكّر بعد الحفظ شغّلي هذا السطر:
           // modal.hide();
       })
       .catch(err => console.error("Error:", err));
@@ -2984,14 +2984,14 @@ document.addEventListener('DOMContentLoaded', function () {
 <script>
 document.addEventListener('DOMContentLoaded', function () {
 
-    // ⛔ أهم نقطة: نختار النافذة الصحيحة ID الجديد
+    //  أهم نقطة: نختار النافذة الصحيحة ID الجديد
     const modalElement = document.getElementById('cancelRequestSessionModal');
     const modal = new bootstrap.Modal(modalElement);
 
     const form = modalElement.querySelector('#cancel-request-session-form');
     const requestInput = modalElement.querySelector('#cancelRequestNumberInput');
 
-    // ⭐ فتح النافذة من القائمة
+    //  فتح النافذة من القائمة
     window.openCancelRequestModal = function () {
         modal.show();
         form.reset();
@@ -3000,7 +3000,7 @@ document.addEventListener('DOMContentLoaded', function () {
         modalElement.querySelectorAll('td, span').forEach(el => el.textContent = '');
     };
 
-    // ⭐ جلب التفاصيل عند كتابة رقم الطلب والضغط Enter
+    //  جلب التفاصيل عند كتابة رقم الطلب والضغط Enter
     requestInput.addEventListener('keypress', function (e) {
         if (e.key !== 'Enter') return;
 
@@ -3044,7 +3044,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
 
-    // ⭐ زر إلغاء الجلسة
+    //  زر إلغاء الجلسة
     document.getElementById('cancel-session-request-button').addEventListener('click', function () {
 
         const requestId = form.querySelector('[name="id"]').value;
@@ -3082,7 +3082,7 @@ document.addEventListener('DOMContentLoaded', function () {
 </script>
 
 
-<!-- نافذة أحكام الطلب -->
+
 <!-- نافذة أحكام الطلب -->
 <div class="modal fade" id="requestJudgmentModal" tabindex="-1">
     <div class="modal-dialog modal-lg modal-dialog-scrollable">
@@ -3146,7 +3146,7 @@ document.addEventListener('DOMContentLoaded', function () {
             </div>
 
             <div class="modal-footer">
-                <button class="btn btn-success" id="save_judgment">💾 حفظ الحكم</button>
+                <button class="btn btn-success" id="save_judgment"> حفظ الحكم</button>
                 <button class="btn btn-danger" data-bs-dismiss="modal">إغلاق</button>
             </div>
 
@@ -3169,11 +3169,7 @@ document.addEventListener('DOMContentLoaded', function () {
         document.getElementById("dynamic_area").innerHTML = "";
     };
 
-
-
-    // -------------------------------------------
     //   جلب بيانات الطلب والأطراف
-    // -------------------------------------------
     function fetchRequestData(requestNumber) {
         fetch("<?php echo e(route('typist.judgment.open')); ?>?request_number=" + requestNumber)
         .then(response => response.json())
@@ -3208,12 +3204,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-
-
-
-    // -------------------------------------------
-    //  🔵 الحكم ضد الأطراف
-    // -------------------------------------------
+    //   الحكم ضد الأطراف
     document.getElementById('btn_against_parties').addEventListener('click', function () {
 
         if (!window.currentParties) {
@@ -3258,13 +3249,8 @@ document.addEventListener('DOMContentLoaded', function () {
         }, 100);
 
     });
-
-
-
-
-    // -------------------------------------------
-    // 🔵 الحكم الفاصل
-    // -------------------------------------------
+   
+    //  الحكم الفاصل
     document.getElementById('btn_final_judgment').addEventListener('click', function () {
 
         document.getElementById('dynamic_area').innerHTML = `
@@ -3279,13 +3265,8 @@ document.addEventListener('DOMContentLoaded', function () {
         }, 100);
 
     });
-
-
-
-
-    // -------------------------------------------
-    // 🔵 إسقاط الحق الشخصي
-    // -------------------------------------------
+    
+    //  إسقاط الحق الشخصي
     document.getElementById('btn_waiver').addEventListener('click', function () {
 
         document.getElementById('dynamic_area').innerHTML = `
@@ -3301,12 +3282,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     });
 
-
-
-
-    // -------------------------------------------
-    // 🔵 زر الحفظ النهائي
-    // -------------------------------------------
+    //  زر الحفظ النهائي
     document.getElementById('save_judgment').addEventListener('click', function () {
 
         fetch("<?php echo e(route('typist.judgment.store')); ?>", {
