@@ -3439,6 +3439,7 @@ function closeCaseSchedule() {
         <table id="release-participants-table">
           <thead>
             <tr>
+              <th>اختيار</th>
               <th>الاسم</th>
               <th>نوع الطرف</th>
               <th>التهمة</th>
@@ -3557,27 +3558,14 @@ document.addEventListener('DOMContentLoaded', () => {
       if (participantsTableBody) {
         participantsTableBody.innerHTML = "";
         if (data.participants && data.participants.length > 0) {
-          data.participants.forEach(p => {
+          data.participants.forEach((p, index) => {
             const tr = document.createElement("tr");
             tr.innerHTML = `
+              <td><input type="checkbox" name="release-participant" value="${p.name || ""}" data-index="${index}"></td>
               <td>${p.name || ""}</td>
               <td>${p.type || ""}</td>
               <td>${p.charge || ""}</td>
             `;
-
-            tr.addEventListener("click", () => {
-              if (selectedRow) {
-                selectedRow.classList.remove("selected");
-              }
-              selectedRow = tr;
-              selectedRow.classList.add("selected");
-
-              selectedParticipant = {
-                name: p.name || "",
-                type: p.type || "",
-                charge: p.charge || ""
-              };
-            });
 
             participantsTableBody.appendChild(tr);
           });
@@ -3603,10 +3591,15 @@ document.addEventListener('DOMContentLoaded', () => {
   // Save/Release button
   if (saveBtn) {
     saveBtn.addEventListener("click", async () => {
-      if (!selectedParticipant) {
-        showAlert("يرجى اختيار طرف من الجدول", "warning");
+      // Collect all checked participants
+      const checkedBoxes = document.querySelectorAll('input[name="release-participant"]:checked');
+      
+      if (checkedBoxes.length === 0) {
+        showAlert("يرجى اختيار طرف واحد على الأقل من الجدول", "warning");
         return;
       }
+      
+      const selectedParticipants = Array.from(checkedBoxes).map(cb => cb.value);
       
       const serial = caseSerial ? caseSerial.value.trim() : "";
       const court = courtNumber ? courtNumber.value.trim() : "";
@@ -3629,7 +3622,7 @@ document.addEventListener('DOMContentLoaded', () => {
           },
           body: JSON.stringify({
             case_number: caseNumber,
-            released_participants: [selectedParticipant.name]
+            released_participants: selectedParticipants
           })
         });
 
