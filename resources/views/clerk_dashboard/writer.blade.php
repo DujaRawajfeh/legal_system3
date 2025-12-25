@@ -695,7 +695,10 @@
                     <label class="form-label">رقم الهاتف</label>
                     <input type="text" class="form-control request-party-phone">
                   </div>
-                  
+                  <div class="col-md-12">
+                    <label class="form-label">العنوان</label>
+                    <input type="text" class="form-control request-party-address">
+                  </div>
                 </div>
               </div>
             </div>
@@ -1051,6 +1054,10 @@ function openCourtScheduleModal() {
     loadSessionStatuses();
 }
 
+
+// ===========================================
+// تحميل الحالات من المسار الصحيح
+// ===========================================
 function loadSessionStatuses() {
     fetch('/session-statuses-court')
         .then(res => res.json())
@@ -1068,6 +1075,9 @@ function loadSessionStatuses() {
 }
 
 
+// ===========================================
+// تحميل جدول المحكمة
+// ===========================================
 function loadCourtSchedule() {
 
     const params = {
@@ -1108,7 +1118,7 @@ function loadCourtSchedule() {
 
 </script>
 
-<!--  مودال جدول أعمال القاضي -->
+<!-- 🔶 مودال جدول أعمال القاضي -->
 <div class="modal fade" id="judgeScheduleModal" tabindex="-1">
   <div class="modal-dialog modal-xl modal-dialog-scrollable">
     <div class="modal-content">
@@ -1120,7 +1130,7 @@ function loadCourtSchedule() {
 
       <div class="modal-body">
 
-        <!--  فلاتر -->
+        <!-- 🔹 فلاتر -->
         <div class="row mb-4">
 
           <!-- اختيار القاضي -->
@@ -1181,7 +1191,9 @@ function loadCourtSchedule() {
 </div>
 <script>
 
-
+/* ============================
+   🔹 تحميل القضاة من السيرفر
+============================ */
 function loadJudges() {
     fetch('/judges')
         .then(res => res.json())
@@ -1197,12 +1209,20 @@ function loadJudges() {
 }
 
 
-
+/* ====================================================
+   🔹 تحميل القضاة تلقائيًا عند فتح مودال جدول القاضي
+==================================================== */
 document.getElementById("judgeScheduleModal")
     .addEventListener("shown.bs.modal", function () {
         loadJudges();
     });
 
+
+
+
+/* ============================
+   🔹 تحميل جدول أعمال القاضي
+============================ */
 function loadJudgeSchedule() {
 
     const params = {
@@ -1264,7 +1284,7 @@ function openRequestScheduleModal() {
 
 </script>
 
-<!--  مودال جدول الدعوى -->
+<!-- 🔶 مودال جدول الدعوى -->
 <div class="modal fade" id="caseScheduleModal" tabindex="-1">
   <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
     <div class="modal-content">
@@ -1308,8 +1328,8 @@ function openRequestScheduleModal() {
                 <th>تاريخ الجلسة</th>
                 <th>وقت الجلسة</th>
                 <th>نوع الحكم</th>
+                <th>نوع الجلسة</th>
                 <th>حالة الجلسة</th>
-                 <th>سبب الجلسة</th>
                 <th>القاضي</th>
               </tr>
             </thead>
@@ -1379,8 +1399,8 @@ document.addEventListener('DOMContentLoaded', function () {
                             <td>${s.session_date ?? '---'}</td>
                             <td>${s.session_time ?? '---'}</td>
                             <td>${s.judgment_type ?? '---'}</td>
+                            <td>${s.session_type ?? '---'}</td>
                             <td>${s.status ?? '---'}</td>
-                             <td>${s.session_goal ?? '---'}</td>
                             <td>${s.judge_name ?? '---'}</td>
                         </tr>
                     `;
@@ -2872,7 +2892,6 @@ function closeCaseSchedule() {
         <table id="arrest-participants-table">
           <thead>
             <tr>
-              <th>اختيار</th>
               <th>الاسم</th>
               <th>نوع الطرف</th>
               <th>الوظيفة</th>
@@ -4287,11 +4306,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
       participantsTableBody.innerHTML = "";
 
-      parts.forEach((p, index) => {
+      parts.forEach(p => {
         const tr = document.createElement("tr");
 
         tr.innerHTML = `
-          <td><input type="radio" name="arrest-participant" value="${p.name}" data-index="${index}"></td>
           <td>${p.name}</td>
           <td>${p.type}</td>
           <td>${p.job ?? ""}</td>
@@ -4300,14 +4318,17 @@ document.addEventListener("DOMContentLoaded", function () {
           <td>الأمن العام</td>
         `;
 
-        participantsTableBody.appendChild(tr);
-      });
-
-      // Add event listener to radio buttons
-      document.querySelectorAll('input[name="arrest-participant"]').forEach(radio => {
-        radio.addEventListener('change', (e) => {
-          selectedParticipant = e.target.value;
+        // Click to select row
+        tr.addEventListener("click", () => {
+          if (selectedRow) {
+            selectedRow.classList.remove("selected");
+          }
+          tr.classList.add("selected");
+          selectedRow = tr;
+          selectedParticipant = p.name;
         });
+
+        participantsTableBody.appendChild(tr);
       });
 
       showAlert("✅ تم تحميل بيانات الدعوى", "success");
