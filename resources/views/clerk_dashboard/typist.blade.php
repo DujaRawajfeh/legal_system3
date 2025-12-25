@@ -241,6 +241,26 @@ body {
   color: #fff;
 }
 
+.modal-body {
+  direction: rtl;
+  text-align: right;
+}
+
+.modal-body label {
+  text-align: right;
+}
+
+.modal-body input,
+.modal-body select,
+.modal-body textarea {
+  text-align: right;
+  direction: rtl;
+}
+
+.modal-body table {
+  direction: rtl;
+}
+
 .btn-close-white {
   filter: invert(1);
 }
