@@ -121,6 +121,7 @@ async function loadEntrySearchRequestDetails(requestNumber) {
         const response = await axios.post("{{ route('chief.request.details') }}", {
             request_number: requestNumber
         });
+        console.log(response);
 
         if (!response.data.success) {
             body.innerHTML = `<p class="text-danger text-center">⚠️ ${response.data.message}</p>`;
