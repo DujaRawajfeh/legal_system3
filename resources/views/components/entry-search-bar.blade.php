@@ -122,34 +122,27 @@ async function loadEntrySearchRequestDetails(requestNumber) {
             request_number: requestNumber
         });
 
-        console.log('Response:', response);
-        console.log('Response data:', response.data);
-
         if (!response.data.success) {
             body.innerHTML = `<p class="text-danger text-center">⚠️ ${response.data.message}</p>`;
             return;
         }
 
-        // البيانات من السيرفر
-        const info = response.data.info;
-        const sessions = response.data.sessions || [];
-        const parties = response.data.parties || [];
+        const r = response.data.request;
 
         body.innerHTML = `
             <table class="table table-bordered">
 
-                <tr><th>رقم الطلب</th><td>${info.request_number || '-'}</td></tr>
-                <tr><th>عنوان الطلب</th><td>${info.title || '-'}</td></tr>
-                <tr><th>التاريخ الأصلي</th><td>${info.original_date || '-'}</td></tr>
+                <tr><th>رقم الطلب</th><td>${r.request_number}</td></tr>
+                <tr><th>عنوان الطلب</th><td>${r.title ?? '-'}</td></tr>
+                <tr><th>التاريخ الأصلي</th><td>${r.original_date ?? '-'}</td></tr>
 
-                ${sessions.length > 0 ? `
-                    <tr><th>تاريخ الجلسة</th><td>${sessions[0].date || '-'}</td></tr>
-                    <tr><th>وقت الجلسة</th><td>${sessions[0].time || '-'}</td></tr>
-                    <tr><th>غرض الجلسة</th><td>${sessions[0].goal || '-'}</td></tr>
-                    <tr><th>سبب الجلسة</th><td>${sessions[0].reason || '-'}</td></tr>
-                ` : ''}
+                <tr><th>تاريخ الجلسة</th><td>${r.session_date ?? '-'}</td></tr>
+                <tr><th>وقت الجلسة</th><td>${r.session_time ?? '-'}</td></tr>
 
-                <tr><th>القاضي</th><td>${info.judge_name || '-'}</td></tr>
+                <tr><th>غرض الجلسة</th><td>${r.session_purpose ?? '-'}</td></tr>
+                <tr><th>سبب الجلسة</th><td>${r.session_reason ?? '-'}</td></tr>
+
+                <tr><th>القاضي</th><td>${r.judge_name ?? '-'}</td></tr>
 
             </table>
 
@@ -158,18 +151,16 @@ async function loadEntrySearchRequestDetails(requestNumber) {
             <table class="table table-bordered">
                 <tr><th>الصفة</th><th>الاسم</th></tr>
 
-                ${parties.map(p => `<tr><td>${p.type}</td><td>${p.name}</td></tr>`).join('')}
-                ${parties.length === 0 ? '<tr><td colspan="2" class="text-center text-secondary">لا توجد أطراف</td></tr>' : ''}
+                ${r.plaintiff_name ? `<tr><td>مشتكي</td><td>${r.plaintiff_name}</td></tr>` : ''}
+                ${r.defendant_name ? `<tr><td>مشتكى عليه</td><td>${r.defendant_name}</td></tr>` : ''}
+                ${r.third_party_name ? `<tr><td>طرف ثالث</td><td>${r.third_party_name}</td></tr>` : ''}
+                ${r.lawyer_name ? `<tr><td>محامي</td><td>${r.lawyer_name}</td></tr>` : ''}
             </table>
         `;
 
     } catch (error) {
 
-        console.error('Full error:', error);
-        console.error('Error response:', error.response);
-        console.error('Error message:', error.message);
-
-        const msg = error.response?.data?.message ?? error.message ?? "خطأ غير معروف";
+        const msg = error.response?.data?.message ?? "خطأ غير معروف";
 
         body.innerHTML = `
             <p class="text-danger text-center">❌ خطأ أثناء تحميل البيانات — ${msg}</p>
@@ -212,16 +203,12 @@ async function loadEntrySearchCaseDetails(caseNumber) {
             case_number: caseNumber
         });
 
-        console.log('Case Response:', response);
-        console.log('Case Response data:', response.data);
-
         if (!response.data.success) {
             body.innerHTML = `<p class="text-danger text-center">${response.data.message}</p>`;
             return;
         }
 
         const c = response.data.case;
-        console.log('Case data:', c);
 
         let participantsHTML = "";
         c.participants.forEach(p => {
@@ -282,14 +269,10 @@ async function loadEntrySearchCaseDetails(caseNumber) {
 
     } catch (error) {
 
-        console.error('Full case error:', error);
-        console.error('Error response:', error.response);
-        console.error('Error message:', error.message);
-
-        const msg = error.response?.data?.message ?? error.message ?? "خطأ غير معروف";
+        console.error(error);
 
         body.innerHTML = `
-            <p class="text-danger text-center">❌ خطأ أثناء تحميل البيانات — ${msg}</p>
+            <p class="text-danger text-center">❌ خطأ أثناء تحميل البيانات</p>
         `;
     }
 }
