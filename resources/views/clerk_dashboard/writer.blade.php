@@ -3195,6 +3195,7 @@ function closeCaseSchedule() {
         <table id="extend-arrest-participants-table">
           <thead>
             <tr>
+              <th>اختيار</th>
               <th>الاسم</th>
               <th>نوع الطرف</th>
               <th>الوظيفة</th>
@@ -3775,10 +3776,11 @@ document.addEventListener('DOMContentLoaded', () => {
       if (participantsTableBody) {
         participantsTableBody.innerHTML = "";
 
-        parts.forEach(p => {
+        parts.forEach((p, index) => {
           const tr = document.createElement("tr");
 
           tr.innerHTML = `
+            <td><input type="radio" name="extend-arrest-participant" value="${p.name}" data-index="${index}"></td>
             <td>${p.name}</td>
             <td>${p.type}</td>
             <td>${p.job ?? ""}</td>
@@ -3787,17 +3789,14 @@ document.addEventListener('DOMContentLoaded', () => {
             <td>الأمن العام</td>
           `;
 
-          // Click to select row
-          tr.addEventListener("click", () => {
-            if (selectedRow) {
-              selectedRow.classList.remove("selected");
-            }
-            tr.classList.add("selected");
-            selectedRow = tr;
-            selectedParticipant = p.name;
-          });
-
           participantsTableBody.appendChild(tr);
+        });
+
+        // Add event listener to radio buttons
+        document.querySelectorAll('input[name="extend-arrest-participant"]').forEach(radio => {
+          radio.addEventListener('change', (e) => {
+            selectedParticipant = e.target.value;
+          });
         });
       }
 
