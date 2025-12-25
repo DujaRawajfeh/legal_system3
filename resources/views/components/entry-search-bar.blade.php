@@ -128,34 +128,63 @@ async function loadEntrySearchRequestDetails(requestNumber) {
             return;
         }
 
-        const r = response.data.request;
+        const info = response.data.info;
+        const sessions = response.data.sessions || [];
+        const parties = response.data.parties || [];
+
+        // Build sessions table HTML
+        let sessionsHTML = "";
+        sessions.forEach(s => {
+            sessionsHTML += `
+                <tr>
+                    <td>${s.date ?? '-'}</td>
+                    <td>${s.time ?? '-'}</td>
+                    <td>${s.goal ?? '-'}</td>
+                    <td>${s.reason ?? '-'}</td>
+                </tr>`;
+        });
+
+        // Build parties table HTML
+        let partiesHTML = "";
+        parties.forEach(p => {
+            partiesHTML += `
+                <tr>
+                    <td>${p.type ?? '-'}</td>
+                    <td>${p.name ?? '-'}</td>
+                </tr>`;
+        });
 
         body.innerHTML = `
+            <h6>معلومات الطلب</h6>
             <table class="table table-bordered">
+                <tr><th>رقم الطلب</th><td>${info.request_number ?? '-'}</td></tr>
+                <tr><th>عنوان الطلب</th><td>${info.title ?? '-'}</td></tr>
+                <tr><th>التاريخ الأصلي</th><td>${info.original_date ?? '-'}</td></tr>
+                <tr><th>القاضي</th><td>${info.judge_name ?? '-'}</td></tr>
+            </table>
 
-                <tr><th>رقم الطلب</th><td>${r.request_number}</td></tr>
-                <tr><th>عنوان الطلب</th><td>${r.title ?? '-'}</td></tr>
-                <tr><th>التاريخ الأصلي</th><td>${r.original_date ?? '-'}</td></tr>
-
-                <tr><th>تاريخ الجلسة</th><td>${r.session_date ?? '-'}</td></tr>
-                <tr><th>وقت الجلسة</th><td>${r.session_time ?? '-'}</td></tr>
-
-                <tr><th>غرض الجلسة</th><td>${r.session_purpose ?? '-'}</td></tr>
-                <tr><th>سبب الجلسة</th><td>${r.session_reason ?? '-'}</td></tr>
-
-                <tr><th>القاضي</th><td>${r.judge_name ?? '-'}</td></tr>
-
+            <h6 class="mt-4">الجلسات</h6>
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>تاريخ الجلسة</th>
+                        <th>وقت الجلسة</th>
+                        <th>غرض الجلسة</th>
+                        <th>سبب الجلسة</th>
+                    </tr>
+                </thead>
+                <tbody>${sessionsHTML || '<tr><td colspan="4" class="text-center">لا توجد جلسات</td></tr>'}</tbody>
             </table>
 
             <h6 class="mt-4">الأطراف</h6>
-
             <table class="table table-bordered">
-                <tr><th>الصفة</th><th>الاسم</th></tr>
-
-                ${r.plaintiff_name ? `<tr><td>مشتكي</td><td>${r.plaintiff_name}</td></tr>` : ''}
-                ${r.defendant_name ? `<tr><td>مشتكى عليه</td><td>${r.defendant_name}</td></tr>` : ''}
-                ${r.third_party_name ? `<tr><td>طرف ثالث</td><td>${r.third_party_name}</td></tr>` : ''}
-                ${r.lawyer_name ? `<tr><td>محامي</td><td>${r.lawyer_name}</td></tr>` : ''}
+                <thead>
+                    <tr>
+                        <th>الصفة</th>
+                        <th>الاسم</th>
+                    </tr>
+                </thead>
+                <tbody>${partiesHTML || '<tr><td colspan="2" class="text-center">لا توجد أطراف</td></tr>'}</tbody>
             </table>
         `;
 
