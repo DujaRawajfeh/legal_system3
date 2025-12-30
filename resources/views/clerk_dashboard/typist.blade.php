@@ -1234,49 +1234,6 @@ function closeCaseSchedule() {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 <style>
   /* 🔹 تحسين الترتيب */
   #caseScheduleModal .modal-body {
@@ -1700,22 +1657,6 @@ document.getElementById('caseNumberInputJudgment').addEventListener("keydown", f
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 <!-- نافذه إعادة تحديد الجلسات-->
 <!-- نافذة إعادة التحديد -->
 <div class="modal fade" id="rescheduleSessionModal" tabindex="-1" aria-labelledby="rescheduleSessionModalLabel" aria-hidden="true">
@@ -1989,27 +1930,6 @@ function rescheduleSession() {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 <!-- نافذة إلغاء الجلسة -->
 <div class="modal fade" id="cancelSessionModal" tabindex="-1" aria-labelledby="cancelSessionModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-xl modal-dialog-scrollable">
@@ -2172,92 +2092,6 @@ function cancelSession() {
     .catch(() => alert('❌ فشل إلغاء الجلسة'));
 }
 </script>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -2644,13 +2478,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
 });
 </script>
-
-
-
-
-
-
-
 
 
 

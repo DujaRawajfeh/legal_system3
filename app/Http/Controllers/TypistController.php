@@ -667,53 +667,6 @@ public function deleteCancelSession($sessionId)
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 //جدول الطلبات
 public function showRequestSchedule(Request $request)
 {
@@ -932,14 +885,6 @@ public function rescheduleSession(Request $request)
 
 
 
-
-
-
-
-
-
-
-
 //نافذه إلغاء جلسات الطلبات
 // نافذه إلغاء جلسات الطلبات
 public function cancelDetails($requestNumber)
@@ -994,21 +939,6 @@ public function cancelSession(Request $request)
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 public function showTypistCases()
 {
     $typist = auth()->user(); // المستخدم (الطابعة)
@@ -1045,35 +975,34 @@ public function showTypistCases()
 
 
 
-
-
-
-
 //محضر المحاكمة
 public function showTrialReport(Request $request, CaseSession $session)
 {
-    //  نحدد مصدر الصفحة
+    // تحديد مصدر الصفحة
     $source = $request->query('source', 'typist');
 
     $case   = $session->courtCase;
-    $judge  = $case->judge;
+    $judge  = $case?->judge; // حماية من null
     $typist = auth()->user();
 
-    //  كل المحاضر المخزنة سابقاً
+    // حماية من null
+    $participants = $case?->participants ?? collect();
+
+    // كل المحاضر المخزنة سابقاً
     $reports = CourtSessionReport::where('case_session_id', $session->id)->get();
 
-    //  أقوال الأطراف الأساسية
-    $participants = $case->participants;
-
-    //  الأطراف المضافة
+    // الأطراف المضافة
     $added_parties = $reports
         ->where('participant_id', null)
         ->where('name', '!=', null);
 
-    //  القرار القديم
+    // القرار القديم
     $savedDecision = $reports
         ->where('decision_text', '!=', null)
         ->first();
+
+    // تحديد أول مشارك لتجنب Undefined variable
+    $part = $participants->first();
 
     return view('clerk_dashboard.trial_report', compact(
         'session',
@@ -1084,23 +1013,26 @@ public function showTrialReport(Request $request, CaseSession $session)
         'reports',
         'added_parties',
         'savedDecision',
-        'source'  
+        'source',
+        'part'
     ));
 }
 public function storeTrialReport(Request $request, CaseSession $session)
 {
     $case = $session->courtCase;
+    if (!$case) {
+        return redirect()->back()->with('error', 'القضية المرتبطة بهذه الجلسة غير موجودة.');
+    }
 
     // نوع المحضر (trial / after)
     $mode = $request->report_mode ?? 'trial';
 
-   
     // 1) حفظ أقوال الأطراف الأساسيين
-    
     if ($request->participants) {
         foreach ($request->participants as $pid => $data) {
 
             $p = Participant::find($pid);
+            if (!$p) continue; // حماية من null
 
             CourtSessionReport::create([
                 'case_session_id' => $session->id,
@@ -1110,40 +1042,37 @@ public function storeTrialReport(Request $request, CaseSession $session)
                 'role'            => $p->type,
                 'statement_text'  => $data['statement'] ?? null,
                 'fingerprint'     => $data['fingerprint'] ?? null,
-                'report_mode'     => $mode,   // 🔵 أهم سطر
+                'report_mode'     => $mode,   
             ]);
         }
     }
 
-
-    // حفظ الأطراف المضاف
+    // 2) حفظ الأطراف المضافين
     if ($request->new_parties) {
         foreach ($request->new_parties as $part) {
-
             CourtSessionReport::create([
                 'case_session_id' => $session->id,
                 'court_case_id'   => $case->id,
                 'participant_id'  => null,
-                'name'            => $part['name'],
-                'role'            => $part['role'],
+                'name'            => $part['name'] ?? null,
+                'role'            => $part['role'] ?? null,
                 'statement_text'  => $part['statement'] ?? null,
                 'fingerprint'     => $part['fingerprint'] ?? null,
-                'report_mode'     => $mode,   // 🔵 مهم جداً
+                'report_mode'     => $mode,
             ]);
         }
     }
 
-   
-    //  حفظ القرار النهائي
+    // 3) حفظ القرار النهائي
     CourtSessionReport::create([
         'case_session_id' => $session->id,
         'court_case_id'   => $case->id,
         'participant_id'  => null,
         'name'            => null,
         'statement_text'  => null,
-        'fingerprint'     => $request->judge_fingerprint,
-        'decision_text'   => $request->decision_text,
-        'report_mode'     => $mode,   
+        'fingerprint'     => $request->judge_fingerprint ?? null,
+        'decision_text'   => $request->decision_text ?? null,
+        'report_mode'     => $mode,
     ]);
 
     return redirect()->back()->with('success', 'تم حفظ المحضر بنجاح');
@@ -1152,49 +1081,29 @@ public function storeTrialReport(Request $request, CaseSession $session)
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 public function showAfterTrialReport(Request $request, CaseSession $session)
 {
-    //  تحديد مصدر الصفحة (writer / typist)
+    // تحديد مصدر الصفحة (writer / typist)
     $source = $request->query('source', 'typist');
 
-    $case = $session->courtCase;
-    $judge = $case->judge;
+    $case   = $session->courtCase;
+    $judge  = $case?->judge;
     $typist = auth()->user();
 
-    //  الأطراف الأساسيين
-    $participants = $case->participants;
+    // حماية من null
+    $participants = $case?->participants ?? collect();
 
-    //  تحميل كل محاضر ما بعد
+    // تحميل كل محاضر ما بعد
     $reports = CourtSessionReport::where('case_session_id', $session->id)
                                  ->where('report_mode', 'after')
                                  ->get();
 
-    //  الأطراف المضافة سابقاً
+    // الأطراف المضافة سابقاً
     $added_parties = $reports
         ->where('participant_id', null)
         ->where('name', '!=', null);
 
-    //  القرار المحفوظ
+    // القرار المحفوظ
     $savedDecision = $reports
         ->where('decision_text', '!=', null)
         ->first();
@@ -1208,9 +1117,10 @@ public function showAfterTrialReport(Request $request, CaseSession $session)
         'reports',
         'added_parties',
         'savedDecision',
-        'source'  
+        'source'
     ));
 }
+
 public function storeAfterTrialReport(Request $request, CaseSession $session)
 {
     $case = $session->courtCase;
@@ -1272,7 +1182,6 @@ public function storeAfterTrialReport(Request $request, CaseSession $session)
 
     return redirect()->back()->with('success', 'تم حفظ محضر ما بعد بنجاح');
 }
-
 
 
 
@@ -1399,4 +1308,7 @@ public function storeJudgment(Request $request)
         ], 500);
     }
 }
+
+
+
 }

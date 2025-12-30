@@ -7,6 +7,9 @@ use App\Http\Controllers\TypistController;
 use App\Http\Controllers\JudgeController;
 use App\Http\Controllers\ArchiverController;
 use App\Http\Controllers\ChiefController;
+use App\Http\Controllers\FingerprintController;
+use Illuminate\Http\Request;
+use App\Models\CourtSessionReport;
 
 
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
@@ -266,8 +269,6 @@ Route::post('/2fa/verify', [AuthController::class, 'verify2FA'])->name('2fa.veri
 
 
 
-
-
-
-
-
+// حفظ البصمة
+Route::post('/save-fingerprint', [FingerprintController::class, 'save'])
+    ->name('fingerprint.save');

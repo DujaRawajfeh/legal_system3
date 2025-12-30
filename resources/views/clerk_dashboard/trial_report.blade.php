@@ -2,37 +2,56 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>محضر المحاكمة</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css" rel="stylesheet">
 
     <style>
         body { padding: 30px; font-family: 'Cairo', sans-serif; }
-        .case-number-box { position: absolute; top: 30px; right: 30px; font-weight: bold; }
 
-        .finger-box {
-            width: 70px;
-            height: 70px;
-            border: 2px dashed #666;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin-top: 10px;
-            border-radius: 8px;
-            opacity: .8;
+        .case-number-box {
+            position: absolute;
+            top: 30px;
+            right: 30px;
+            font-weight: bold;
         }
 
-        .finger-box svg {
-            width: 30px;
-            height: 30px;
-            fill: #666;
+        .finger-box {
+            width: 110px;
+            height: 70px;
+            border: 2px dashed #666;
+            border-radius: 8px;
+            background: #fff;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            font-size: 14px;
+            transition: .3s;
+        }
+
+        .finger-box[data-state="waiting"] {
+            border-color: #ff9800;
+            background: #fff8e1;
+        }
+
+        .finger-box[data-state="done"] {
+            border-color: green;
+            background: #e8f5e9;
+        }
+
+        .decision-box {
+            border: 1px solid #ddd;
+            padding: 15px;
+            border-radius: 8px;
         }
     </style>
 </head>
 <body>
 
 @php
-    // ✅ ضبط لغة Carbon إلى العربية
-    \Carbon\Carbon::setLocale('ar');
+\Carbon\Carbon::setLocale('ar');
 @endphp
 
 <div class="case-number-box">
@@ -44,7 +63,6 @@
     <h6>وزارة العدل</h6>
     <h3 class="my-3">محضر المحاكمة</h3>
 
-    <!-- ✅ اليوم بالعربي -->
     <p>
         جلسة اليوم:
         {{ \Carbon\Carbon::parse($session->session_date)->translatedFormat('l d/m/Y') }}
@@ -60,8 +78,8 @@
 <input type="hidden" name="report_mode" value="trial">
 <input type="hidden" name="source" value="{{ $source }}">
 
+{{-- المشاركين --}}
 @foreach($participants as $part)
-
 @php
     $savedStatement = $reports
         ->where('participant_id', $part->id)
@@ -70,35 +88,35 @@
 @endphp
 
 <div class="mb-4">
-    <h6>{{ $part->type ?? 'طرف' }}: {{ $part->name }}</h6>
+    <h6>{{ $part->type ?? 'طرف' }} : {{ $part->name }}</h6>
 
     <label>أقوال الطرف:</label>
     <textarea class="form-control" rows="3"
-              name="participants[{{ $part->id }}][statement]">{{ $savedStatement->statement_text ?? '' }}</textarea>
+        name="participants[{{ $part->id }}][statement]">{{ $savedStatement->statement_text ?? '' }}</textarea>
 
-    <div class="finger-box">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
-            <path d="M8 13a.5.5 0 0 1..."></path>
-        </svg>
+    <div class="finger-box mt-2"
+         id="finger-participant-{{ $part->id }}"
+         onclick="readFingerprint({{ $part->id }}, 'participant')">
+        أخذ البصمة
     </div>
 </div>
 @endforeach
 
 <hr>
 
+{{-- أطراف مضافة --}}
 <div id="newParties">
-@foreach($added_parties->where('report_mode', 'trial') as $ap)
+@foreach($added_parties->where('report_mode','trial') as $ap)
 <div class="mb-3 border p-3">
     <h6>{{ $ap->role }} : {{ $ap->name }}</h6>
 
-    <label>أقوال الطرف:</label>
     <textarea class="form-control" rows="3"
-              name="new_parties_existing[{{ $ap->id }}][statement]">{{ $ap->statement_text }}</textarea>
+        name="new_parties_existing[{{ $ap->id }}][statement]">{{ $ap->statement_text }}</textarea>
 
-    <div class="finger-box mt-2">
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
-            <path d="M8 13a.5.5 0 0 1..."></path>
-        </svg>
+    <div class="finger-box mt-2"
+         id="finger-added-{{ $ap->id }}"
+         onclick="readFingerprint({{ $ap->id }}, 'added')">
+        أخذ البصمة
     </div>
 </div>
 @endforeach
@@ -108,34 +126,31 @@
 
 <hr>
 
+{{-- القرار --}}
 @php
-    $savedDecision = $reports
-        ->where('decision_text', '!=', null)
-        ->where('report_mode', 'trial')
-        ->first();
+$savedDecision = $reports->whereNotNull('decision_text')
+    ->where('report_mode','trial')->first();
 @endphp
 
-<h5>الــقـــرار</h5>
+<div class="decision-box">
+    <h5>القرار</h5>
 
-<label>القرار النهائي:</label>
-<textarea class="form-control" rows="3" name="decision_text">{{ $savedDecision->decision_text ?? '' }}</textarea>
+    <textarea class="form-control" rows="3"
+        id="decision-text"
+        name="decision_text">{{ $savedDecision->decision_text ?? '' }}</textarea>
 
-<div class="finger-box mt-2">
-    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
-        <path d="M8 13a.5.5 0 0 1..."></path>
-    </svg>
+    <div class="finger-box mt-2"
+         id="finger-decision"
+         onclick="readFingerprint(0, 'decision')">
+        أخذ البصمة
+    </div>
 </div>
 
 <hr>
 
 <div class="d-flex gap-3">
-    <button type="submit" class="btn btn-primary mt-4">حفظ المحضر</button>
-
-    <button type="button"
-            class="btn btn-danger mt-4"
-            onclick="closeAndReturn('{{ $source }}')">
-        خروج
-    </button>
+    <button type="submit" class="btn btn-primary">حفظ المحضر</button>
+    <button type="button" class="btn btn-danger" onclick="closeAndReturn('{{ $source }}')">خروج</button>
 </div>
 
 </form>
@@ -145,55 +160,73 @@ let partyIndex = 0;
 
 function addNewParty() {
     partyIndex++;
-
-    let html = `
-    <div class="mb-3 border p-3">
-        <h6 id="role_name_${partyIndex}">طرف جديد</h6>
-
-        <label>اسم الطرف:</label>
-        <input type="text" class="form-control"
-               name="new_parties[${partyIndex}][name]"
-               oninput="updateRoleLabel(${partyIndex})">
-
-        <label class="mt-2">نوع الطرف:</label>
-        <input type="text" class="form-control"
-               name="new_parties[${partyIndex}][role]"
-               oninput="updateRoleLabel(${partyIndex})">
-
-        <label class="mt-2">أقوال الطرف:</label>
-        <textarea class="form-control" rows="3"
-                  name="new_parties[${partyIndex}][statement]"></textarea>
-
-        <div class="finger-box mt-2">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
-                <path d="M8 13a.5.5 0 0 1..."></path>
-            </svg>
+    document.getElementById("newParties").insertAdjacentHTML("beforeend", `
+        <div class="mb-3 border p-3">
+            <h6 id="role_${partyIndex}">طرف جديد</h6>
+            <input class="form-control mb-2" name="new_parties[${partyIndex}][name]" placeholder="الاسم"
+                   oninput="updateRole(${partyIndex})">
+            <input class="form-control mb-2" name="new_parties[${partyIndex}][role]" placeholder="الصفة"
+                   oninput="updateRole(${partyIndex})">
+            <textarea class="form-control mb-2"
+                name="new_parties[${partyIndex}][statement]"></textarea>
+            <div class="finger-box"
+                 id="finger-added-new-${partyIndex}"
+                 onclick="readFingerprint('new-${partyIndex}', 'added')">
+                أخذ البصمة
         </div>
-    </div>
-    `;
-
-    document.getElementById("newParties").insertAdjacentHTML("beforeend", html);
+    `);
 }
 
-function updateRoleLabel(i) {
-    let role = document.querySelector(`input[name='new_parties[${i}][role]']`).value;
-    let name = document.querySelector(`input[name='new_parties[${i}][name]']`).value;
-
-    document.getElementById(`role_name_${i}`).textContent =
-        (role ? role : "طرف") + " : " + (name ? name : "");
+function updateRole(i) {
+    const name = document.querySelector(`[name='new_parties[${i}][name]']`).value;
+    const role = document.querySelector(`[name='new_parties[${i}][role]']`).value;
+    document.getElementById(`role_${i}`).innerText = `${role || 'طرف'} : ${name || ''}`;
 }
 </script>
 
 <script>
+const ws = new WebSocket("ws://localhost:8080");
+const courtCaseId = {{ $case->id }};
+const caseSessionId = {{ $session->id }};
+
+ws.onmessage = function (event) {
+    if (!window.activeFingerprint) return;
+
+    const { box, participantId, type } = window.activeFingerprint;
+    const fingerId = event.data.replace('ID:', '').trim();
+
+    fetch('/save-fingerprint', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+        },
+        body: JSON.stringify({
+            participant_id: participantId,
+            court_case_id: courtCaseId,
+            case_session_id: caseSessionId,
+            fingerprint: fingerId,
+            report_mode: 'trial',
+            target: type
+        })
+    }).then(() => {
+        box.dataset.state = "done";
+        box.innerText = "تم أخذ البصمة ✅";
+    });
+};
+
+function readFingerprint(id, type) {
+    const box = document.getElementById(`finger-${type}-${id}`) || document.getElementById(`finger-${type}`);
+    box.dataset.state = "waiting";
+    box.innerText = "جاري أخذ البصمة...";
+    window.activeFingerprint = { box, participantId: id, type };
+    ws.send("start");
+}
+
 function closeAndReturn(source) {
-    window.close();
-    setTimeout(function () {
-        if (source === 'writer') {
-            window.location.href = "{{ route('writer.dashboard') }}";
-        } else {
-            window.location.href = "{{ route('typist.cases') }}";
-        }
-    }, 300);
+    window.location.href = source === 'writer'
+        ? "{{ route('writer.dashboard') }}"
+        : "{{ route('typist.cases') }}";
 }
 </script>
 
