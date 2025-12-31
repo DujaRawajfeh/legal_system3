@@ -184,6 +184,7 @@ function updateRole(i) {
 }
 </script>
 
+
 <script>
 const ws = new WebSocket("ws://localhost:8080");
 const courtCaseId = {{ $case->id }};
@@ -224,9 +225,35 @@ function readFingerprint(id, type) {
 }
 
 function closeAndReturn(source) {
+<<<<<<< HEAD
     window.location.href = source === 'writer'
         ? "{{ route('writer.dashboard') }}"
         : "{{ route('typist.cases') }}";
+=======
+
+    window.close();
+
+    setTimeout(function () {
+
+        if (source.startsWith('judge')) {
+            window.location.href = "/judge";
+            return;
+        }
+
+        if (source.startsWith('writer')) {
+            window.location.href = "/writer";
+            return;
+        }
+        
+        if (source.startsWith('typist')) {
+            window.location.href = "/typist/cases";
+            return;
+        }
+
+        window.location.href = "/";
+
+    }, 300);
+>>>>>>> ba83e0ab90dca680701a595748ad3c61220b9ed1
 }
 </script>
 

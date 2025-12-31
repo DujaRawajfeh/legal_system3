@@ -63,7 +63,7 @@ public function showCaseSchedule($caseNumber)
 {
     try {
 
-        // 1️⃣ نجلب الدعوى عن طريق رقم الدعوى الحقيقي (number)
+        // نجلب الدعوى عن طريق رقم الدعوى الحقيقي (number)
         $case = CourtCase::with([
             'tribunal:id,number',
             'department:id,number',
@@ -72,7 +72,7 @@ public function showCaseSchedule($caseNumber)
         ->where('number', $caseNumber)
         ->first();
 
-        // 2️⃣ إذا رقم الدعوى غير موجود → نسجل بالـ Log التفاصيل
+        //  إذا رقم الدعوى غير موجود → نسجل بالـ Log التفاصيل
         if (!$case) {
 
             Log::warning('❌ رقم الدعوى غير موجود في DB', [
@@ -83,19 +83,18 @@ public function showCaseSchedule($caseNumber)
             return response()->json(['error' => 'رقم الدعوى غير موجود'], 404);
         }
 
-        // 3️⃣ استخراج الجلسات المرتبطة
+        //  استخراج الجلسات المرتبطة
         $sessions = $case->sessions->map(function ($s) {
-            return [
-                'session_date'  => $s->session_date?->format('Y-m-d'),
-                'session_time'  => $s->session_date?->format('H:i'),
-                'judgment_type' => $s->judgment_type,
-                'session_type'  => $s->session_type,
-                'status'        => $s->status,
-                'judge_name'    => $s->judge->full_name ?? '---',
-            ];
-        });
-
-        // 4️⃣ نرجّع البيانات للواجهة
+         return [
+        'session_date'  => $s->session_date?->format('Y-m-d'),
+        'session_time'  => $s->session_date?->format('H:i'),
+        'judgment_type' => $s->judgment_type,
+        'session_goal'  => $s->session_goal, 
+        'status'        => $s->status,
+        'judge_name'    => $s->judge->full_name ?? '---',
+    ];
+});
+        //  نرجّع البيانات للواجهة
         return response()->json([
             'tribunal_number'   => $case->tribunal->number ?? '---',
             'department_number' => $case->department->number ?? '---',

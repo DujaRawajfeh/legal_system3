@@ -268,10 +268,9 @@ public function loadRequestDetails(Request $request)
             ], 400);
         }
 
-        // 🔹 جلب الطلب مع القاضي
         $req = RequestSchedule::with('judge')
-                ->where('request_number', $requestNumber)
-                ->first();
+            ->where('request_number', $requestNumber)
+            ->first();
 
         if (!$req) {
             return response()->json([
@@ -282,28 +281,55 @@ public function loadRequestDetails(Request $request)
 
         return response()->json([
             'success' => true,
-            'request' => [
-                'request_number'   => $req->request_number,
-                'title'            => $req->title,
-                'session_date'     => $req->session_date,
-                'session_time'     => $req->session_time,
-                'session_purpose'  => $req->session_purpose,
-                'session_reason'   => $req->session_reason,
-                'original_date'    => optional($req->created_at)->format('Y-m-d H:i'),
-                'judge_name'       => optional($req->judge)->full_name,
 
-                'plaintiff_name'   => $req->plaintiff_name,
-                'defendant_name'   => $req->defendant_name,
-                'third_party_name' => $req->third_party_name,
-                'lawyer_name'      => $req->lawyer_name,
+            //  معلومات الطلب
+            'info' => [
+                'request_number' => $req->request_number,
+                'title'          => $req->title,
+                'original_date'  => optional($req->created_at)->format('Y-m-d'),
+                'judge_name'     => optional($req->judge)->full_name,
             ],
+
+            //  الجلسات (حتى لو جلسة وحدة)
+            'sessions' => [
+                [
+                    'date'   => $req->session_date,
+                    'time'   => $req->session_time,
+                    'goal'   => $req->session_purpose,
+                    'reason' => $req->session_reason,
+                ]
+            ],
+
+            //  الأطراف
+            'parties' => array_filter([
+                $req->plaintiff_name ? [
+                    'type' => 'مشتكي',
+                    'name' => $req->plaintiff_name
+                ] : null,
+
+                $req->defendant_name ? [
+                    'type' => 'مشتكى عليه',
+                    'name' => $req->defendant_name
+                ] : null,
+
+                $req->third_party_name ? [
+                    'type' => 'طرف ثالث',
+                    'name' => $req->third_party_name
+                ] : null,
+
+                $req->lawyer_name ? [
+                    'type' => 'محامي',
+                    'name' => $req->lawyer_name
+                ] : null,
+            ])
         ]);
 
     } catch (\Throwable $e) {
-        Log::error('❌ loadRequestDetails error', [
-            'message' => $e->getMessage(),
-            'file'    => $e->getFile(),
-            'line'    => $e->getLine(),
+
+        \Log::error('❌ loadRequestDetails error', [
+            'msg'  => $e->getMessage(),
+            'line' => $e->getLine(),
+            'file' => $e->getFile(),
         ]);
 
         return response()->json([
@@ -355,7 +381,7 @@ public function loadCaseDetails(Request $request)
                         ? Carbon::parse($s->session_date)->format('Y-m-d') 
                         : '-',
 
-        'reason' => $s->postponed_reason ?? '-',
+        'reason' => $s->session_goal ?? '-',
         'status' => $s->status ?? '-',
     ];
 }),

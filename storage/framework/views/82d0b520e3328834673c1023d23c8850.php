@@ -2892,7 +2892,6 @@ function closeCaseSchedule() {
         <table id="arrest-participants-table">
           <thead>
             <tr>
-              <th>اختيار</th>
               <th>الاسم</th>
               <th>نوع الطرف</th>
               <th>الوظيفة</th>
@@ -3195,7 +3194,6 @@ function closeCaseSchedule() {
         <table id="extend-arrest-participants-table">
           <thead>
             <tr>
-              <th>اختيار</th>
               <th>الاسم</th>
               <th>نوع الطرف</th>
               <th>الوظيفة</th>
@@ -3439,7 +3437,6 @@ function closeCaseSchedule() {
         <table id="release-participants-table">
           <thead>
             <tr>
-              <th>اختيار</th>
               <th>الاسم</th>
               <th>نوع الطرف</th>
               <th>التهمة</th>
@@ -3558,14 +3555,27 @@ document.addEventListener('DOMContentLoaded', () => {
       if (participantsTableBody) {
         participantsTableBody.innerHTML = "";
         if (data.participants && data.participants.length > 0) {
-          data.participants.forEach((p, index) => {
+          data.participants.forEach(p => {
             const tr = document.createElement("tr");
             tr.innerHTML = `
-              <td><input type="checkbox" name="release-participant" value="${p.name || ""}" data-index="${index}"></td>
               <td>${p.name || ""}</td>
               <td>${p.type || ""}</td>
               <td>${p.charge || ""}</td>
             `;
+
+            tr.addEventListener("click", () => {
+              if (selectedRow) {
+                selectedRow.classList.remove("selected");
+              }
+              selectedRow = tr;
+              selectedRow.classList.add("selected");
+
+              selectedParticipant = {
+                name: p.name || "",
+                type: p.type || "",
+                charge: p.charge || ""
+              };
+            });
 
             participantsTableBody.appendChild(tr);
           });
@@ -3591,15 +3601,10 @@ document.addEventListener('DOMContentLoaded', () => {
   // Save/Release button
   if (saveBtn) {
     saveBtn.addEventListener("click", async () => {
-      // Collect all checked participants
-      const checkedBoxes = document.querySelectorAll('input[name="release-participant"]:checked');
-      
-      if (checkedBoxes.length === 0) {
-        showAlert("يرجى اختيار طرف واحد على الأقل من الجدول", "warning");
+      if (!selectedParticipant) {
+        showAlert("يرجى اختيار طرف من الجدول", "warning");
         return;
       }
-      
-      const selectedParticipants = Array.from(checkedBoxes).map(cb => cb.value);
       
       const serial = caseSerial ? caseSerial.value.trim() : "";
       const court = courtNumber ? courtNumber.value.trim() : "";
@@ -3622,7 +3627,7 @@ document.addEventListener('DOMContentLoaded', () => {
           },
           body: JSON.stringify({
             case_number: caseNumber,
-            released_participants: selectedParticipants
+            released_participants: [selectedParticipant.name]
           })
         });
 
@@ -3769,11 +3774,10 @@ document.addEventListener('DOMContentLoaded', () => {
       if (participantsTableBody) {
         participantsTableBody.innerHTML = "";
 
-        parts.forEach((p, index) => {
+        parts.forEach(p => {
           const tr = document.createElement("tr");
 
           tr.innerHTML = `
-            <td><input type="radio" name="extend-arrest-participant" value="${p.name}" data-index="${index}"></td>
             <td>${p.name}</td>
             <td>${p.type}</td>
             <td>${p.job ?? ""}</td>
@@ -3782,14 +3786,17 @@ document.addEventListener('DOMContentLoaded', () => {
             <td>الأمن العام</td>
           `;
 
-          participantsTableBody.appendChild(tr);
-        });
-
-        // Add event listener to radio buttons
-        document.querySelectorAll('input[name="extend-arrest-participant"]').forEach(radio => {
-          radio.addEventListener('change', (e) => {
-            selectedParticipant = e.target.value;
+          // Click to select row
+          tr.addEventListener("click", () => {
+            if (selectedRow) {
+              selectedRow.classList.remove("selected");
+            }
+            tr.classList.add("selected");
+            selectedRow = tr;
+            selectedParticipant = p.name;
           });
+
+          participantsTableBody.appendChild(tr);
         });
       }
 
@@ -4299,11 +4306,10 @@ document.addEventListener("DOMContentLoaded", function () {
 
       participantsTableBody.innerHTML = "";
 
-      parts.forEach((p, index) => {
+      parts.forEach(p => {
         const tr = document.createElement("tr");
 
         tr.innerHTML = `
-          <td><input type="radio" name="arrest-participant" value="${p.name}" data-index="${index}"></td>
           <td>${p.name}</td>
           <td>${p.type}</td>
           <td>${p.job ?? ""}</td>
@@ -4312,14 +4318,17 @@ document.addEventListener("DOMContentLoaded", function () {
           <td>الأمن العام</td>
         `;
 
-        participantsTableBody.appendChild(tr);
-      });
-
-      // Add event listener to radio buttons
-      document.querySelectorAll('input[name="arrest-participant"]').forEach(radio => {
-        radio.addEventListener('change', (e) => {
-          selectedParticipant = e.target.value;
+        // Click to select row
+        tr.addEventListener("click", () => {
+          if (selectedRow) {
+            selectedRow.classList.remove("selected");
+          }
+          tr.classList.add("selected");
+          selectedRow = tr;
+          selectedParticipant = p.name;
         });
+
+        participantsTableBody.appendChild(tr);
       });
 
       showAlert("✅ تم تحميل بيانات الدعوى", "success");
@@ -6828,4 +6837,4 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 <?php $__env->stopPush(); ?>
-<?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\Users\LENOVO\legal_system\resources\views/clerk_dashboard/writer.blade.php ENDPATH**/ ?>
+<?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\Users\DELL\Desktop\legal_system3\resources\views/clerk_dashboard/writer.blade.php ENDPATH**/ ?>

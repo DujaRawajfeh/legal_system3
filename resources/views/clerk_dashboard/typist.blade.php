@@ -241,6 +241,26 @@ body {
   color: #fff;
 }
 
+.modal-body {
+  direction: rtl;
+  text-align: right;
+}
+
+.modal-body label {
+  text-align: right;
+}
+
+.modal-body input,
+.modal-body select,
+.modal-body textarea {
+  text-align: right;
+  direction: rtl;
+}
+
+.modal-body table {
+  direction: rtl;
+}
+
 .btn-close-white {
   filter: invert(1);
 }
@@ -337,7 +357,7 @@ body {
             
             <div class="case-strip">
                 <div class="case-info">
-                    <h3>القضية رقم: {{ $case->number }}</h3>
+                    <h3>رقم القضية: {{ $case->number }}</h3>
                     <p><strong>عنوان الدعوى:</strong> {{ $case->type }}</p>
                     
                     @if($session)
@@ -432,7 +452,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 </script>
-<!-- 🔶 مودال جدول أعمال المحكمة -->
+<!--  مودال جدول أعمال المحكمة -->
 <div class="modal fade" id="courtScheduleModal" tabindex="-1" aria-labelledby="courtScheduleLabel" aria-hidden="true">
   <div class="modal-dialog modal-xl modal-dialog-scrollable">
     <div class="modal-content">
@@ -444,7 +464,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
       <div class="modal-body">
 
-        <!-- 🔹 خيارات الفلترة -->
+        <!--  خيارات الفلترة -->
         <div class="row mb-3">
           
           <div class="col-md-5">
@@ -465,7 +485,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         </div>
 
-        <!-- 🔹 جدول النتائج -->
+        <!--  جدول النتائج -->
         <div class="table-responsive">
           <table class="table table-bordered text-center">
             <thead class="table-light">
@@ -570,7 +590,7 @@ function loadCourtSchedule() {
 
 </script>
 
-<!-- 🔶 مودال جدول أعمال القاضي -->
+<!--  مودال جدول أعمال القاضي -->
 <div class="modal fade" id="judgeScheduleModal" tabindex="-1">
   <div class="modal-dialog modal-xl modal-dialog-scrollable">
     <div class="modal-content">
@@ -582,7 +602,7 @@ function loadCourtSchedule() {
 
       <div class="modal-body">
 
-        <!-- 🔹 فلاتر -->
+        <!--  فلاتر -->
         <div class="row mb-4">
 
           <!-- اختيار القاضي -->
@@ -857,68 +877,67 @@ function loadJudgeSchedule() {
       </div>
 
       <div class="modal-body">
-        <div class="session-container">
 
-          <!-- رقم الدعوى -->
-          <label>رقم الدعوى</label>
-          <div class="case-number-row">
-            <input type="text" id="caseNumberInput" placeholder="أدخل رقم الدعوى" required>
-            <input type="text" id="tribunalNumber" placeholder="رقم المحكمة" readonly>
-            <input type="text" id="departmentNumber" placeholder="رقم القلم" readonly>
-            <input type="text" id="caseYear" placeholder="السنة" readonly>
+        <!-- معلومات رأس الصفحة -->
+        <div class="row g-3 mb-4">
+          <div class="col-md-3">
+            <label>رقم المحكمة:</label>
+            <input type="text" id="tribunalNumber" class="form-control" disabled>
           </div>
+          <div class="col-md-3">
+            <label>رقم القلم:</label>
+            <input type="text" id="departmentNumber" class="form-control" disabled>
+          </div>
+          <div class="col-md-3">
+            <label>السنة:</label>
+            <input type="text" id="caseYear" class="form-control" disabled>
+          </div>
+          <div class="col-md-3">
+            <label>رقم الدعوى:</label>
+            <input type="text" id="caseNumberInput" class="form-control" placeholder="أدخل رقم الدعوى واضغط Enter">
+          </div>
+        </div>
 
-          <button class="search-btn" onclick="loadCaseDetails()">عرض الدعوى</button>
-
-          <!-- جدول تفاصيل الدعوى -->
-          <h3 style="margin-top:25px;">تفاصيل الدعوى</h3>
-          <table>
-            <thead>
+        <!-- جدول تفاصيل الدعوى -->
+        <div id="caseDetailsTableContainer" class="mb-4">
+          <table class="table table-bordered table-sm text-center">
+            <thead class="table-light">
               <tr>
                 <th>رقم الدعوى</th>
                 <th>نوع الدعوى</th>
-                <th>اسم القاضي</th>
+                <th>القاضي</th>
                 <th>الأطراف</th>
                 <th>التاريخ الأصلي</th>
               </tr>
             </thead>
             <tbody id="caseDetailsTable">
-              <tr><td colspan="5">لا يوجد دعوى بعد.</td></tr>
+              <tr><td colspan="5">لا توجد بيانات</td></tr>
             </tbody>
           </table>
+        </div>
 
-          <!-- تحديد جلسة جديدة -->
-          <h3 style="margin-top:25px;">تحديد جلسة جديدة</h3>
-          <div class="session-block">
-
-            <div class="form-group">
-              <label for="sessionDate">تاريخ الجلسة</label>
-              <input type="date" id="sessionDate" disabled>
+        <!-- نموذج تحديد الجلسة -->
+        <div id="newSessionForm">
+          <h6 class="fw-bold">تحديد جلسة جديدة</h6>
+          <div class="row g-3">
+            <div class="col-md-4">
+              <label>تاريخ الجلسة:</label>
+              <input type="date" id="sessionDate" class="form-control" disabled>
             </div>
-
-            <div class="form-group">
-              <label for="sessionTime">وقت الجلسة</label>
-              <input type="time" id="sessionTime" disabled>
+            <div class="col-md-4">
+              <label>وقت الجلسة:</label>
+              <input type="time" id="sessionTime" class="form-control" disabled>
             </div>
-
-            <div class="form-group">
-              <label for="sessionGoal">سبب الجلسة</label>
-              <textarea id="sessionGoal" placeholder="اكتب سبب الجلسة..." disabled></textarea>
+            <div class="col-md-4">
+              <label>سبب الجلسة:</label>
+              <input type="text" id="sessionGoal" class="form-control" placeholder="سبب الجلسة" disabled>
             </div>
+          </div>
 
-            <div class="form-group">
-              <label for="sessionStatus">حالة الجلسة</label>
-              <select id="sessionStatus" required disabled>
-                <option value="مفصولة">مفصولة</option>
-                <option value="مستمرة">مستمرة</option>
-                <option value="مكتملة">مكتملة</option>
-                <option value="مؤجلة">مؤجلة</option>
-              </select>
-            </div>
-
-            <div class="form-group">
-              <label for="judgmentType">نوع الحكم</label>
-              <select id="judgmentType" required disabled>
+          <div class="row g-3 mt-2">
+            <div class="col-md-4">
+              <label>نوع الحكم:</label>
+              <select id="judgmentType" class="form-control" disabled>
                 <option value="تدقيقيا">تدقيقيا</option>
                 <option value="ابتدائي">ابتدائي</option>
                 <option value="غيابي">غيابي</option>
@@ -926,13 +945,23 @@ function loadJudgeSchedule() {
               </select>
             </div>
 
-            <div class="button-group">
-              <button id="saveCaseSessionBtn" onclick="saveCaseSession()" disabled>حفظ الجلسة</button>
-              <button type="button" data-bs-dismiss="modal">إغلاق</button>
+            <div class="col-md-4">
+              <label>حالة الجلسة:</label>
+              <select id="sessionStatus" class="form-control" disabled>
+                <option value="محددة">محددة</option>
+                <option value="مفصولة">مفصولة</option>
+                <option value="مستمرة">مستمرة</option>
+                <option value="مكتملة">مكتملة</option>
+                <option value="مؤجلة">مؤجلة</option>
+              </select>
             </div>
+          </div>
 
+          <div class="mt-3 text-center">
+            <button class="btn btn-primary" id="saveCaseSessionBtn" onclick="saveCaseSession()" disabled>حفظ الجلسة</button>
           </div>
         </div>
+
       </div>
 
     </div>
@@ -942,80 +971,87 @@ function loadJudgeSchedule() {
 <script>
 
 /* ============================================================
-   🔹 تحميل تفاصيل الدعوى
+   🔹 تحميل تفاصيل الدعوى عند الضغط على Enter
 ============================================================ */
-function loadCaseDetails() {
+document.getElementById('caseNumberInput').addEventListener('keypress', function (e) {
+  if (e.key === 'Enter') {
+    e.preventDefault();
+    const caseNumber = this.value.trim();
+    if (caseNumber) {
+      loadCaseDetails(caseNumber);
+    }
+  }
+});
 
+function loadCaseDetails(caseNumber) {
     console.log("🔥 loadCaseDetails() called!");
 
-    const caseNumber = document.getElementById("caseNumberInput").value;
+    if (!caseNumber) {
+        alert("يرجى إدخال رقم الدعوى");
+        return;
+    }
 
-        if (!caseNumber) {
-            alert("يرجى إدخال رقم الدعوى");
-            return;
-        }
+    console.log("📌 Fetching:", `/typist/case-details/${caseNumber}`);
 
-        console.log("📌 Fetching:", `/typist/case-details/${caseNumber}`);
+    fetch(`/typist/case-details/${caseNumber}`)
+        .then(res => {
+            console.log("📌 Raw Response:", res);
+            return res.json();
+        })
+        .then(data => {
 
-        fetch(`/typist/case-details/${caseNumber}`)
-            .then(res => {
-                console.log("📌 Raw Response:", res);
-                return res.json();
-            })
-            .then(data => {
+            console.log("📌 Parsed JSON:", data);
 
-                console.log("📌 Parsed JSON:", data);
+            if (data.error) {
+                alert(data.error);
+                return;
+            }
 
-                if (data.error) {
-                    alert(data.error);
-                    return;
-                }
+            if (!data.id) {
+                alert("⚠️ السيرفر لم يرجع ID — مشكلة في الكنترولر");
+                return;
+            }
 
-                if (!data.id) {
-                    alert("⚠️ السيرفر لم يرجع ID — مشكلة في الكنترولر");
-                    return;
-                }
+            // 🔥 تخزين المعرّفات
+            window.selectedCaseId  = Number(data.id);
+            window.selectedJudgeId = Number(data.judge_id);
 
-                // 🔥 تخزين المعرّفات
-                window.selectedCaseId  = Number(data.id);
-                window.selectedJudgeId = Number(data.judge_id);
+            console.log("🔥 Stored selectedCaseId =", window.selectedCaseId);
+            console.log("🔥 Stored selectedJudgeId =", window.selectedJudgeId);
 
-                console.log("🔥 Stored selectedCaseId =", window.selectedCaseId);
-                console.log("🔥 Stored selectedJudgeId =", window.selectedJudgeId);
+            let participants = data.participants?.length
+                ? data.participants.map(p => `${p.type}: ${p.name}`).join("<br>")
+                : "-";
 
-                let participants = data.participants?.length
-                    ? data.participants.map(p => `${p.type}: ${p.name}`).join("<br>")
-                    : "-";
+            // ✅ تعبئة الجدول
+            document.getElementById("caseDetailsTable").innerHTML = `
+                <tr>
+                    <td>${data.case_number}</td>
+                    <td>${data.case_type ?? '-'}</td>
+                    <td>${data.judge_name ?? '-'}</td>
+                    <td>${participants}</td>
+                    <td>${data.created_at}</td>
+                </tr>
+            `;
 
-                // ✅ تعبئة الجدول
-                document.getElementById("caseDetailsTable").innerHTML = `
-                    <tr>
-                        <td>${data.case_number}</td>
-                        <td>${data.case_type ?? '-'}</td>
-                        <td>${data.judge_name ?? '-'}</td>
-                        <td>${participants}</td>
-                        <td>${data.created_at}</td>
-                    </tr>
-                `;
+            // ✅ تعبئة الحقول المقروءة فقط
+            document.getElementById("tribunalNumber").value = data.tribunal_number ?? '-';
+            document.getElementById("departmentNumber").value = data.department_number ?? '-';
+            document.getElementById("caseYear").value = data.year ?? '-';
 
-                // ✅ تعبئة الحقول المقروءة فقط
-                document.getElementById("tribunalNumber").value = data.tribunal_number ?? '-';
-                document.getElementById("departmentNumber").value = data.department_number ?? '-';
-                document.getElementById("caseYear").value = data.year ?? '-';
+            // ✅ تفعيل حقول الجلسة
+            document.getElementById("sessionDate").disabled = false;
+            document.getElementById("sessionTime").disabled = false;
+            document.getElementById("sessionGoal").disabled = false;
+            document.getElementById("sessionStatus").disabled = false;
+            document.getElementById("judgmentType").disabled = false;
+            document.getElementById("saveCaseSessionBtn").disabled = false;
 
-                // ✅ تفعيل حقول الجلسة
-                document.getElementById("sessionDate").disabled = false;
-                document.getElementById("sessionTime").disabled = false;
-                document.getElementById("sessionGoal").disabled = false;
-                document.getElementById("sessionStatus").disabled = false;
-                document.getElementById("judgmentType").disabled = false;
-                document.getElementById("saveCaseSessionBtn").disabled = false;
-
-            })
-        .catch(err => {
-            console.error("❌ Fetch Error:", err);
-            alert("حدث خطأ أثناء تحميل تفاصيل الدعوى");
-        });
+        })
+    .catch(err => {
+        console.error("❌ Fetch Error:", err);
+        alert("حدث خطأ أثناء تحميل تفاصيل الدعوى");
+    });
 }
 
 
@@ -1093,7 +1129,7 @@ function saveCaseSession() {
 </script>
 
 
-{{-- ✅ نافذة جدول الدعوى --}}
+{{--  نافذة جدول الدعوى --}}
 <div class="modal fade" id="caseScheduleModal" tabindex="-1">
   <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
     <div class="modal-content">
@@ -1137,7 +1173,7 @@ function saveCaseSession() {
                 <th>تاريخ الجلسة</th>
                 <th>وقت الجلسة</th>
                 <th>نوع الحكم</th>
-                <th>نوع الجلسة</th>
+                <th>سبب الجلسة</th>
                 <th>حالة الجلسة</th>
                 <th>القاضي</th>
               </tr>
@@ -1209,7 +1245,7 @@ document.addEventListener('DOMContentLoaded', function () {
                             <td>${s.session_date ?? '---'}</td>
                             <td>${s.session_time ?? '---'}</td>
                             <td>${s.judgment_type ?? '---'}</td>
-                            <td>${s.session_type ?? '---'}</td>
+                            <td>${s.session_goal ?? '---'}</td>
                             <td>${s.status ?? '---'}</td>
                             <td>${s.judge_name ?? '---'}</td>
                         </tr>
@@ -2705,13 +2741,13 @@ document.addEventListener('DOMContentLoaded', function () {
               session_date: sessionDate,
               session_time: sessionTime,
               session_reason: sessionReason,
-              session_status: sessionStatus   // ✅ إرسال الحالة الجديدة
+              session_status: sessionStatus   //  إرسال الحالة الجديدة
           })
       })
       .then(res => res.json())
       .then(data => {
           alert(data.success || "تم حفظ موعد الجلسة الجديد");
-          // ❗ إذا بدك النافذة تسكّر بعد الحفظ شغّلي هذا السطر:
+          //  إذا بدك النافذة تسكّر بعد الحفظ شغّلي هذا السطر:
           // modal.hide();
       })
       .catch(err => console.error("Error:", err));
@@ -2810,14 +2846,14 @@ document.addEventListener('DOMContentLoaded', function () {
 <script>
 document.addEventListener('DOMContentLoaded', function () {
 
-    // ⛔ أهم نقطة: نختار النافذة الصحيحة ID الجديد
+    //  أهم نقطة: نختار النافذة الصحيحة ID الجديد
     const modalElement = document.getElementById('cancelRequestSessionModal');
     const modal = new bootstrap.Modal(modalElement);
 
     const form = modalElement.querySelector('#cancel-request-session-form');
     const requestInput = modalElement.querySelector('#cancelRequestNumberInput');
 
-    // ⭐ فتح النافذة من القائمة
+    //  فتح النافذة من القائمة
     window.openCancelRequestModal = function () {
         modal.show();
         form.reset();
@@ -2826,7 +2862,7 @@ document.addEventListener('DOMContentLoaded', function () {
         modalElement.querySelectorAll('td, span').forEach(el => el.textContent = '');
     };
 
-    // ⭐ جلب التفاصيل عند كتابة رقم الطلب والضغط Enter
+    //  جلب التفاصيل عند كتابة رقم الطلب والضغط Enter
     requestInput.addEventListener('keypress', function (e) {
         if (e.key !== 'Enter') return;
 
@@ -2870,7 +2906,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
 
-    // ⭐ زر إلغاء الجلسة
+    //  زر إلغاء الجلسة
     document.getElementById('cancel-session-request-button').addEventListener('click', function () {
 
         const requestId = form.querySelector('[name="id"]').value;
@@ -2908,7 +2944,7 @@ document.addEventListener('DOMContentLoaded', function () {
 </script>
 
 
-<!-- نافذة أحكام الطلب -->
+
 <!-- نافذة أحكام الطلب -->
 <div class="modal fade" id="requestJudgmentModal" tabindex="-1">
     <div class="modal-dialog modal-lg modal-dialog-scrollable">
@@ -2972,7 +3008,7 @@ document.addEventListener('DOMContentLoaded', function () {
             </div>
 
             <div class="modal-footer">
-                <button class="btn btn-success" id="save_judgment">💾 حفظ الحكم</button>
+                <button class="btn btn-success" id="save_judgment"> حفظ الحكم</button>
                 <button class="btn btn-danger" data-bs-dismiss="modal">إغلاق</button>
             </div>
 
@@ -2995,11 +3031,7 @@ document.addEventListener('DOMContentLoaded', function () {
         document.getElementById("dynamic_area").innerHTML = "";
     };
 
-
-
-    // -------------------------------------------
     //   جلب بيانات الطلب والأطراف
-    // -------------------------------------------
     function fetchRequestData(requestNumber) {
         fetch("{{ route('typist.judgment.open') }}?request_number=" + requestNumber)
         .then(response => response.json())
@@ -3034,12 +3066,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-
-
-
-    // -------------------------------------------
-    //  🔵 الحكم ضد الأطراف
-    // -------------------------------------------
+    //   الحكم ضد الأطراف
     document.getElementById('btn_against_parties').addEventListener('click', function () {
 
         if (!window.currentParties) {
@@ -3084,13 +3111,8 @@ document.addEventListener('DOMContentLoaded', function () {
         }, 100);
 
     });
-
-
-
-
-    // -------------------------------------------
-    // 🔵 الحكم الفاصل
-    // -------------------------------------------
+   
+    //  الحكم الفاصل
     document.getElementById('btn_final_judgment').addEventListener('click', function () {
 
         document.getElementById('dynamic_area').innerHTML = `
@@ -3105,13 +3127,8 @@ document.addEventListener('DOMContentLoaded', function () {
         }, 100);
 
     });
-
-
-
-
-    // -------------------------------------------
-    // 🔵 إسقاط الحق الشخصي
-    // -------------------------------------------
+    
+    //  إسقاط الحق الشخصي
     document.getElementById('btn_waiver').addEventListener('click', function () {
 
         document.getElementById('dynamic_area').innerHTML = `
@@ -3127,12 +3144,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     });
 
-
-
-
-    // -------------------------------------------
-    // 🔵 زر الحفظ النهائي
-    // -------------------------------------------
+    //  زر الحفظ النهائي
     document.getElementById('save_judgment').addEventListener('click', function () {
 
         fetch("{{ route('typist.judgment.store') }}", {

@@ -1,4 +1,4 @@
-{{-- 🔵 الشريط الثالث - بار البحث عن الدعوى/الطلب --}}
+
 <div class="third-bar">
 
     <div class="d-flex align-items-center">
@@ -17,19 +17,19 @@
 
     <div class="d-flex align-items-center gap-2">
         <input type="text" class="form-control form-control-sm" placeholder="المحكمة"
-               readonly value="{{ optional(auth()->user()->tribunal)->number ?? '---' }}">
+               readonly value="<?php echo e(optional(auth()->user()->tribunal)->number ?? '---'); ?>">
 
         <input type="text" class="form-control form-control-sm" placeholder="القلم"
-               readonly value="{{ optional(auth()->user()->department)->number ?? '---' }}">
+               readonly value="<?php echo e(optional(auth()->user()->department)->number ?? '---'); ?>">
 
-        {{-- ⭐ هذا هو الحقل الذي سنقرأ منه رقم الطلب --}}
+        
         <input id="entrySearchNumberInput" type="text" class="form-control form-control-sm" placeholder="الرقم">
 
-        <input type="text" class="form-control form-control-sm" placeholder="السنة" readonly value="{{ date('Y') }}">
+        <input type="text" class="form-control form-control-sm" placeholder="السنة" readonly value="<?php echo e(date('Y')); ?>">
     </div>
 </div>
 
-{{-- ⭐⭐⭐ نافذة تفاصيل الطلب (Popup) ⭐⭐⭐ --}}
+
 <div id="entrySearchRequestPopup" class="details-popup" style="display: none;">
     <div class="popup-content">
         <div class="popup-header">
@@ -42,7 +42,7 @@
     </div>
 </div>
 
-{{-- ⭐⭐⭐ نافذة تفاصيل الدعوى (Popup) ⭐⭐⭐ --}}
+
 <div id="entrySearchCasePopup" class="details-popup" style="display: none;">
     <div class="popup-content">
         <div class="popup-header">
@@ -55,34 +55,27 @@
     </div>
 </div>
 
-{{-- 🔵 سكربت فتح نافذة الطلب والدعوى --}}
+
 <script>
 // =============================
-//  الضغط على Enter لفتح النافذة المناسبة
+//  الضغط على Enter لفتح نافذة الطلب
 // =============================
 document.addEventListener('DOMContentLoaded', function () {
 
-    const entryTypeCase = document.getElementById("entrySearchTypeCase");
     const entryTypeRequest = document.getElementById("entrySearchTypeRequest");
     const entryInput = document.getElementById("entrySearchNumberInput");
 
     entryInput.addEventListener("keydown", function (e) {
 
-        if (e.key === "Enter") {
-            e.preventDefault();
-            
-            const number = entryInput.value.trim();
-            
-            if (!number) {
-                alert("الرجاء إدخال الرقم");
+        if (e.key === "Enter" && entryTypeRequest.checked) {
+
+            const reqNumber = entryInput.value.trim();
+            if (!reqNumber) {
+                alert("الرجاء إدخال رقم الطلب");
                 return;
             }
 
-            if (entryTypeRequest.checked) {
-                openEntrySearchRequestDetails(number);
-            } else if (entryTypeCase.checked) {
-                openEntrySearchCaseDetails(number);
-            }
+            openEntrySearchRequestDetails(reqNumber);
         }
     });
 
@@ -118,73 +111,43 @@ async function loadEntrySearchRequestDetails(requestNumber) {
     const body = document.getElementById("entrySearchRequestBody");
 
     try {
-        const response = await axios.post("{{ route('chief.request.details') }}", {
+        const response = await axios.post("<?php echo e(route('chief.request.details')); ?>", {
             request_number: requestNumber
         });
-        console.log(response);
 
         if (!response.data.success) {
             body.innerHTML = `<p class="text-danger text-center">⚠️ ${response.data.message}</p>`;
             return;
         }
 
-        const info = response.data.info;
-        const sessions = response.data.sessions || [];
-        const parties = response.data.parties || [];
-
-        // Build sessions table HTML
-        let sessionsHTML = "";
-        sessions.forEach(s => {
-            sessionsHTML += `
-                <tr>
-                    <td>${s.date ?? '-'}</td>
-                    <td>${s.time ?? '-'}</td>
-                    <td>${s.goal ?? '-'}</td>
-                    <td>${s.reason ?? '-'}</td>
-                </tr>`;
-        });
-
-        // Build parties table HTML
-        let partiesHTML = "";
-        parties.forEach(p => {
-            partiesHTML += `
-                <tr>
-                    <td>${p.type ?? '-'}</td>
-                    <td>${p.name ?? '-'}</td>
-                </tr>`;
-        });
+        const r = response.data.request;
 
         body.innerHTML = `
-            <h6>معلومات الطلب</h6>
             <table class="table table-bordered">
-                <tr><th>رقم الطلب</th><td>${info.request_number ?? '-'}</td></tr>
-                <tr><th>عنوان الطلب</th><td>${info.title ?? '-'}</td></tr>
-                <tr><th>التاريخ الأصلي</th><td>${info.original_date ?? '-'}</td></tr>
-                <tr><th>القاضي</th><td>${info.judge_name ?? '-'}</td></tr>
-            </table>
 
-            <h6 class="mt-4">الجلسات</h6>
-            <table class="table table-bordered">
-                <thead>
-                    <tr>
-                        <th>تاريخ الجلسة</th>
-                        <th>وقت الجلسة</th>
-                        <th>غرض الجلسة</th>
-                        <th>سبب الجلسة</th>
-                    </tr>
-                </thead>
-                <tbody>${sessionsHTML || '<tr><td colspan="4" class="text-center">لا توجد جلسات</td></tr>'}</tbody>
+                <tr><th>رقم الطلب</th><td>${r.request_number}</td></tr>
+                <tr><th>عنوان الطلب</th><td>${r.title ?? '-'}</td></tr>
+                <tr><th>التاريخ الأصلي</th><td>${r.original_date ?? '-'}</td></tr>
+
+                <tr><th>تاريخ الجلسة</th><td>${r.session_date ?? '-'}</td></tr>
+                <tr><th>وقت الجلسة</th><td>${r.session_time ?? '-'}</td></tr>
+
+                <tr><th>غرض الجلسة</th><td>${r.session_purpose ?? '-'}</td></tr>
+                <tr><th>سبب الجلسة</th><td>${r.session_reason ?? '-'}</td></tr>
+
+                <tr><th>القاضي</th><td>${r.judge_name ?? '-'}</td></tr>
+
             </table>
 
             <h6 class="mt-4">الأطراف</h6>
+
             <table class="table table-bordered">
-                <thead>
-                    <tr>
-                        <th>الصفة</th>
-                        <th>الاسم</th>
-                    </tr>
-                </thead>
-                <tbody>${partiesHTML || '<tr><td colspan="2" class="text-center">لا توجد أطراف</td></tr>'}</tbody>
+                <tr><th>الصفة</th><th>الاسم</th></tr>
+
+                ${r.plaintiff_name ? `<tr><td>مشتكي</td><td>${r.plaintiff_name}</td></tr>` : ''}
+                ${r.defendant_name ? `<tr><td>مشتكى عليه</td><td>${r.defendant_name}</td></tr>` : ''}
+                ${r.third_party_name ? `<tr><td>طرف ثالث</td><td>${r.third_party_name}</td></tr>` : ''}
+                ${r.lawyer_name ? `<tr><td>محامي</td><td>${r.lawyer_name}</td></tr>` : ''}
             </table>
         `;
 
@@ -200,6 +163,33 @@ async function loadEntrySearchRequestDetails(requestNumber) {
 </script>
 
 <script>
+// =============================
+// استماع لزر Enter عند اختيار "دعوى"
+// =============================
+document.addEventListener("DOMContentLoaded", function () {
+
+    const entryTypeCase = document.getElementById("entrySearchTypeCase");
+    const caseNumberInput = document.getElementById("entrySearchNumberInput");
+
+    caseNumberInput.addEventListener("keydown", function (e) {
+
+        if (e.key === "Enter" && entryTypeCase.checked) {
+
+            const caseNum = caseNumberInput.value.trim();
+
+            if (!caseNum) {
+                alert("الرجاء إدخال رقم الدعوى");
+                return;
+            }
+
+            openEntrySearchCaseDetails(caseNum);
+        }
+
+    });
+
+});
+
+
 // =============================
 //  فتح popup تفاصيل الدعوى
 // =============================
@@ -229,7 +219,7 @@ async function loadEntrySearchCaseDetails(caseNumber) {
     const body = document.getElementById("entrySearchCaseBody");
 
     try {
-        const response = await axios.post("{{ route('chief.case.details') }}", {
+        const response = await axios.post("<?php echo e(route('chief.case.details')); ?>", {
             case_number: caseNumber
         });
 
@@ -434,3 +424,4 @@ async function loadEntrySearchCaseDetails(caseNumber) {
     color: #004080;
 }
 </style>
+<?php /**PATH C:\Users\DELL\Desktop\legal_system3\resources\views/components/entry-search-bar.blade.php ENDPATH**/ ?>
