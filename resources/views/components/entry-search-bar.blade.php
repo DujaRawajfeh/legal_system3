@@ -132,6 +132,7 @@ async function loadEntrySearchRequestDetails(requestNumber) {
         const sessions = response.data.sessions || [];
         const parties = response.data.parties || [];
 
+
         // Build sessions table HTML
         let sessionsHTML = "";
         sessions.forEach(s => {
@@ -261,8 +262,8 @@ async function loadEntrySearchCaseDetails(caseNumber) {
                     <td>${s.id}</td>
                     <td>${s.time ?? '-'}</td>
                     <td>${s.date ?? '-'}</td>
-                    <td>${s.session_status ?? '-'}</td>
                     <td>${s.reason ?? '-'}</td>
+                    <td>${s.session_status ?? '-'}</td>
                 </tr>`;
         });
 
