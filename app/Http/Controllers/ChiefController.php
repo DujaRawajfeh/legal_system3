@@ -209,16 +209,11 @@ public function getDetainedList()
 {
     try {
 
-        // Debug: Get all arrest memos statistics
-        $totalMemos = ArrestMemo::count();
-        $releasedCount = ArrestMemo::where('released', 1)->count();
-        $notReleasedCount = ArrestMemo::where('released', 0)->count();
-        
-        // Throw an error to see the debug info
-        throw new \Exception("DEBUG INFO: Total={$totalMemos}, Released={$releasedCount}, NotReleased={$notReleasedCount}");
-
         $allMemos = ArrestMemo::with(['case'])
-            ->where('released', 0)
+            ->where(function($query) {
+                $query->where('released', 0)
+                      ->orWhereNull('released');
+            })
             ->get();
 
         $data = $allMemos->map(function ($item) {
@@ -242,15 +237,7 @@ public function getDetainedList()
                 ];
             });
 
-        return response()->json([
-            'data' => $data,
-            'debug' => [
-                'total_memos' => $totalMemos,
-                'released' => $releasedCount,
-                'not_released' => $notReleasedCount,
-                'returned_count' => $data->count()
-            ]
-        ]);
+        return response()->json(['data' => $data]);
 
     } catch (\Exception $e) {
 
@@ -260,7 +247,7 @@ public function getDetainedList()
             'file'    => $e->getFile()
         ]);
 
-        return response()->json(['error' => $e->getMessage()], 500);
+        return response()->json(['error' => 'خطأ أثناء تحميل البيانات'], 500);
     }
 }
 
