@@ -1076,7 +1076,7 @@ public function storeTrialReport(Request $request, CaseSession $session)
 
     $source = $request->input('source', 'typist');
     
-    return redirect()->route('trial.report.show', ['session' => $session->id, 'source' => $source])
+    return redirect()->route('trial.report', ['session' => $session->id, 'source' => $source])
         ->with('success', 'تم حفظ المحضر بنجاح');
 }
 
@@ -1184,7 +1184,7 @@ public function storeAfterTrialReport(Request $request, CaseSession $session)
 
     $source = $request->input('source', 'typist');
     
-    return redirect()->route('after.trial.report.show', ['session' => $session->id, 'source' => $source])
+    return redirect()->route('after.trial.report', ['session' => $session->id, 'source' => $source])
         ->with('success', 'تم حفظ محضر ما بعد بنجاح');
 }
 
