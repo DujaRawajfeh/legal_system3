@@ -296,6 +296,7 @@ public function loadRequestDetails(Request $request)
                     'time'   => $req->session_time,
                     'goal'   => $req->session_purpose,
                     'reason' => $req->session_reason,
+                    'session_status' => $req->session_status ?? '-',
                 ]
             ],
 
