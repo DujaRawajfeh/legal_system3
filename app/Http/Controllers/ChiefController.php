@@ -382,6 +382,7 @@ public function loadCaseDetails(Request $request)
 
         'reason' => $s->session_goal ?? '-',
         'status' => $s->status ?? '-',
+        'session_status' => $s->session_status ?? '-',
     ];
 }),
 
