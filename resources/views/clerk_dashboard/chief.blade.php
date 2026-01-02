@@ -568,11 +568,23 @@ document.addEventListener("DOMContentLoaded", function () {
     function loadDetainedTable() {
         axios.get("/chief/detained-list")
             .then(res => {
+                console.log("🔍 Full Response:", res);
+                console.log("🔍 Response Data:", res.data);
+                
                 let data = res.data.data;
+                console.log("🔍 Detained Array:", data);
+                console.log("🔍 Array Length:", data.length);
+                
                 let tbody = document.querySelector("#detainedBody");
                 tbody.innerHTML = "";
 
-                data.forEach(row => {
+                if (!data || data.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;">لا يوجد موقوفين</td></tr>';
+                    return;
+                }
+
+                data.forEach((row, index) => {
+                    console.log(`🔍 Row ${index}:`, row);
 
                     // 🔵 تحديد اللون حسب حالة المدة
                     let color = "black";
@@ -595,14 +607,17 @@ document.addEventListener("DOMContentLoaded", function () {
                                 }
                             </td>
 
-                            <td>${row.case_number}</td>
-                            <td>${row.case_type}</td>
+                            <td>${row.case_number || '-'}</td>
+                            <td>${row.case_type || '-'}</td>
                         </tr>
                     `;
                 });
+                
+                console.log("✅ Finished rendering", data.length, "rows");
             })
             .catch(err => {
-                console.error(err);
+                console.error("❌ Error:", err);
+                console.error("❌ Response:", err.response);
                 alert("❌ خطأ أثناء تحميل بيانات الموقوفين");
             });
     }
