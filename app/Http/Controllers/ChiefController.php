@@ -209,6 +209,17 @@ public function getDetainedList()
 {
     try {
 
+        // Debug: Log all arrest memos
+        $totalMemos = ArrestMemo::count();
+        $releasedCount = ArrestMemo::where('released', 1)->count();
+        $notReleasedCount = ArrestMemo::where('released', 0)->count();
+        
+        Log::info("📊 ArrestMemo Statistics", [
+            'total' => $totalMemos,
+            'released' => $releasedCount,
+            'not_released' => $notReleasedCount,
+        ]);
+
         $allMemos = ArrestMemo::with(['case'])
             ->where('released', 0)
             ->get();
@@ -216,7 +227,8 @@ public function getDetainedList()
         Log::info("🔍 Detained List Debug", [
             'total_count' => $allMemos->count(),
             'ids' => $allMemos->pluck('id')->toArray(),
-            'participants' => $allMemos->pluck('participant_name')->toArray()
+            'participants' => $allMemos->pluck('participant_name')->toArray(),
+            'released_status' => $allMemos->pluck('released')->toArray()
         ]);
 
         $data = $allMemos->map(function ($item) {
