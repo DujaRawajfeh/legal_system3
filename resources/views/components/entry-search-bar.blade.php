@@ -169,6 +169,7 @@ async function loadEntrySearchRequestDetails(requestNumber) {
                     <tr>
                         <th>تاريخ الجلسة</th>
                         <th>وقت الجلسة</th>
+                        <th>حالة الجلسة</th>
                         <th>سبب الجلسة</th>
                     </tr>
                 </thead>
@@ -260,7 +261,7 @@ async function loadEntrySearchCaseDetails(caseNumber) {
                     <td>${s.id}</td>
                     <td>${s.time ?? '-'}</td>
                     <td>${s.date ?? '-'}</td>
-                    // <td>${s.reason ?? '-'}</td>
+                    <td>${s.session_status ?? '-'}</td>
                     <td>${s.status ?? '-'}</td>
                 </tr>`;
         });
