@@ -195,7 +195,9 @@ button:hover, .btn:hover {
       <li><a href="{{ route('2fa.setup') }}" class="security-link" target="_self">اعدادات الحماية</a></li>
     </ul>
     <ul class="nav-tabs">
-      <li><a href="#" class="active" onclick="showTab('casesTab', this)">الدعاوى</a></li>
+      <li>
+        <a href="#" class="active" onclick="showTab('casesTab', this)">الدعاوى</a>
+      </li>
       <li><a href="#" onclick="showTab('requestsTab', this)">الطلبات</a></li>
     </ul>
   </div>
@@ -257,10 +259,7 @@ button:hover, .btn:hover {
           @endforelse
         </tbody>
       </table>
-   </section>
-  </div>
-</div>
-    
+    </section>
 
     <h3>القضايا المرتبطة بالقاضي</h3>
     <div style="margin: 10px auto; width: 98%;">
