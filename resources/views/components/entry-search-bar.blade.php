@@ -229,9 +229,17 @@ async function loadEntrySearchCaseDetails(caseNumber) {
     const body = document.getElementById("entrySearchCaseBody");
 
     try {
+        // Format: year/number (e.g., "2025/0012")
+        const year = document.querySelector('.third-bar input[placeholder="السنة"]').value || new Date().getFullYear();
+        const fullCaseNumber = `${year}/${caseNumber.padStart(4, '0')}`;
+        
+        console.log("Searching for case:", fullCaseNumber);
+        
         const response = await axios.post("{{ route('chief.case.details') }}", {
-            case_number: caseNumber
+            case_number: fullCaseNumber
         });
+
+        console.log("Case response:", response);
 
         if (!response.data.success) {
             body.innerHTML = `<p class="text-danger text-center">${response.data.message}</p>`;
