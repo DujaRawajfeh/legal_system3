@@ -214,11 +214,18 @@ public function getDetainedList()
         $releasedCount = ArrestMemo::where('released', 1)->count();
         $notReleasedCount = ArrestMemo::where('released', 0)->count();
         
-        Log::info("📊 ArrestMemo Statistics", [
+        \Log::info("📊 ArrestMemo Statistics", [
             'total' => $totalMemos,
             'released' => $releasedCount,
             'not_released' => $notReleasedCount,
         ]);
+        
+    \Log::info('✅ تم جلب تفاصيل القضية بنجاح من fetchCaseDetails', [
+        'case_number'       => $number,
+        'case_id'           => $case->id,
+        'notification_type' => $notificationType,
+        'participants_count'=> $case->participants->count(),
+    ]);
 
         $allMemos = ArrestMemo::with(['case'])
             ->where('released', 0)
