@@ -213,6 +213,7 @@ button:hover, .btn:hover {
 
 <!-- تبويبات المحتوى -->
 <div class="container">
+  <!-- تبويبة الدعاوى -->
   <div id="casesTab">
     <section class="sessions">
       <h3>جلسات اليوم (<span id="todayDate">{{ date('Y-m-d') }}</span>)</h3>
@@ -349,9 +350,10 @@ button:hover, .btn:hover {
     </table>
   </div>
 
+  <!-- تبويبة الطلبات -->
   <div id="requestsTab" style="display:none;">
     <section class="sessions">
-      <h3>جلسات الطلبات</h3>
+      <h3>جلسات الطلبات اليوم (<span>{{ date('Y-m-d') }}</span>)</h3>
       <table border="1" cellspacing="0" cellpadding="5">
         <thead>
           <tr>
