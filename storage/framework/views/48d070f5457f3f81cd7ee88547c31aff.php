@@ -151,7 +151,9 @@ $savedDecision = $reports->whereNotNull('decision_text')
 <hr>
 
 <div class="d-flex gap-3">
-    <button type="submit" class="btn btn-primary">حفظ المحضر</button>
+    <?php if($source && str_starts_with($source, 'typist') && $reports->where('report_mode', 'trial')->isEmpty()): ?>
+        <button type="submit" class="btn btn-primary">حفظ المحضر</button>
+    <?php endif; ?>
     <button type="button" class="btn btn-danger" onclick="closeAndReturn('<?php echo e($source); ?>')">خروج</button>
 </div>
 

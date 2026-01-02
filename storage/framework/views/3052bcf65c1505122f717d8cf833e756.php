@@ -58,24 +58,31 @@
 
 <script>
 // =============================
-//  الضغط على Enter لفتح نافذة الطلب
+//  الضغط على Enter لفتح النافذة المناسبة
 // =============================
 document.addEventListener('DOMContentLoaded', function () {
 
+    const entryTypeCase = document.getElementById("entrySearchTypeCase");
     const entryTypeRequest = document.getElementById("entrySearchTypeRequest");
     const entryInput = document.getElementById("entrySearchNumberInput");
 
     entryInput.addEventListener("keydown", function (e) {
 
-        if (e.key === "Enter" && entryTypeRequest.checked) {
-
-            const reqNumber = entryInput.value.trim();
-            if (!reqNumber) {
-                alert("الرجاء إدخال رقم الطلب");
+        if (e.key === "Enter") {
+            e.preventDefault();
+            
+            const number = entryInput.value.trim();
+            
+            if (!number) {
+                alert("الرجاء إدخال الرقم");
                 return;
             }
 
-            openEntrySearchRequestDetails(reqNumber);
+            if (entryTypeRequest.checked) {
+                openEntrySearchRequestDetails(number);
+            } else if (entryTypeCase.checked) {
+                openEntrySearchCaseDetails(number);
+            }
         }
     });
 
@@ -114,40 +121,71 @@ async function loadEntrySearchRequestDetails(requestNumber) {
         const response = await axios.post("<?php echo e(route('chief.request.details')); ?>", {
             request_number: requestNumber
         });
+        console.log(response);
 
         if (!response.data.success) {
             body.innerHTML = `<p class="text-danger text-center">⚠️ ${response.data.message}</p>`;
             return;
         }
 
-        const r = response.data.request;
+        const info = response.data.info;
+        const sessions = response.data.sessions || [];
+        const parties = response.data.parties || [];
+
+
+        // Build sessions table HTML
+        let sessionsHTML = "";
+        sessions.forEach(s => {
+            sessionsHTML += `
+                <tr>
+                    <td>${s.date ?? '-'}</td>
+                    <td>${s.time ?? '-'}</td>
+                    <td>${s.session_status ?? '-'}</td>
+                    <td>${s.reason ?? '-'}</td>
+                </tr>`;
+        });
+
+        // Build parties table HTML
+        let partiesHTML = "";
+        parties.forEach(p => {
+            partiesHTML += `
+                <tr>
+                    <td>${p.type ?? '-'}</td>
+                    <td>${p.name ?? '-'}</td>
+                </tr>`;
+        });
 
         body.innerHTML = `
+            <h6>معلومات الطلب</h6>
             <table class="table table-bordered">
+                <tr><th>رقم الطلب</th><td>${info.request_number ?? '-'}</td></tr>
+                <tr><th>عنوان الطلب</th><td>${info.title ?? '-'}</td></tr>
+                <tr><th>التاريخ الأصلي</th><td>${info.original_date ?? '-'}</td></tr>
+                <tr><th>القاضي</th><td>${info.judge_name ?? '-'}</td></tr>
+            </table>
 
-                <tr><th>رقم الطلب</th><td>${r.request_number}</td></tr>
-                <tr><th>عنوان الطلب</th><td>${r.title ?? '-'}</td></tr>
-                <tr><th>التاريخ الأصلي</th><td>${r.original_date ?? '-'}</td></tr>
-
-                <tr><th>تاريخ الجلسة</th><td>${r.session_date ?? '-'}</td></tr>
-                <tr><th>وقت الجلسة</th><td>${r.session_time ?? '-'}</td></tr>
-
-                <tr><th>غرض الجلسة</th><td>${r.session_purpose ?? '-'}</td></tr>
-                <tr><th>سبب الجلسة</th><td>${r.session_reason ?? '-'}</td></tr>
-
-                <tr><th>القاضي</th><td>${r.judge_name ?? '-'}</td></tr>
-
+            <h6 class="mt-4">الجلسات</h6>
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>تاريخ الجلسة</th>
+                        <th>وقت الجلسة</th>
+                        <th>حالة الجلسة</th>
+                        <th>سبب الجلسة</th>
+                    </tr>
+                </thead>
+                <tbody>${sessionsHTML || '<tr><td colspan="4" class="text-center">لا توجد جلسات</td></tr>'}</tbody>
             </table>
 
             <h6 class="mt-4">الأطراف</h6>
-
             <table class="table table-bordered">
-                <tr><th>الصفة</th><th>الاسم</th></tr>
-
-                ${r.plaintiff_name ? `<tr><td>مشتكي</td><td>${r.plaintiff_name}</td></tr>` : ''}
-                ${r.defendant_name ? `<tr><td>مشتكى عليه</td><td>${r.defendant_name}</td></tr>` : ''}
-                ${r.third_party_name ? `<tr><td>طرف ثالث</td><td>${r.third_party_name}</td></tr>` : ''}
-                ${r.lawyer_name ? `<tr><td>محامي</td><td>${r.lawyer_name}</td></tr>` : ''}
+                <thead>
+                    <tr>
+                        <th>الصفة</th>
+                        <th>الاسم</th>
+                    </tr>
+                </thead>
+                <tbody>${partiesHTML || '<tr><td colspan="2" class="text-center">لا توجد أطراف</td></tr>'}</tbody>
             </table>
         `;
 
@@ -163,33 +201,6 @@ async function loadEntrySearchRequestDetails(requestNumber) {
 </script>
 
 <script>
-// =============================
-// استماع لزر Enter عند اختيار "دعوى"
-// =============================
-document.addEventListener("DOMContentLoaded", function () {
-
-    const entryTypeCase = document.getElementById("entrySearchTypeCase");
-    const caseNumberInput = document.getElementById("entrySearchNumberInput");
-
-    caseNumberInput.addEventListener("keydown", function (e) {
-
-        if (e.key === "Enter" && entryTypeCase.checked) {
-
-            const caseNum = caseNumberInput.value.trim();
-
-            if (!caseNum) {
-                alert("الرجاء إدخال رقم الدعوى");
-                return;
-            }
-
-            openEntrySearchCaseDetails(caseNum);
-        }
-
-    });
-
-});
-
-
 // =============================
 //  فتح popup تفاصيل الدعوى
 // =============================
@@ -219,9 +230,13 @@ async function loadEntrySearchCaseDetails(caseNumber) {
     const body = document.getElementById("entrySearchCaseBody");
 
     try {
+        console.log("Searching for case:", caseNumber);
+        
         const response = await axios.post("<?php echo e(route('chief.case.details')); ?>", {
             case_number: caseNumber
         });
+
+        console.log("Case response:", response);
 
         if (!response.data.success) {
             body.innerHTML = `<p class="text-danger text-center">${response.data.message}</p>`;
@@ -248,7 +263,7 @@ async function loadEntrySearchCaseDetails(caseNumber) {
                     <td>${s.time ?? '-'}</td>
                     <td>${s.date ?? '-'}</td>
                     <td>${s.reason ?? '-'}</td>
-                    <td>${s.status ?? '-'}</td>
+                    <td>${s.session_status ?? '-'}</td>
                 </tr>`;
         });
 

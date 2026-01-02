@@ -195,7 +195,9 @@ button:hover, .btn:hover {
       <li><a href="<?php echo e(route('2fa.setup')); ?>" class="security-link" target="_self">اعدادات الحماية</a></li>
     </ul>
     <ul class="nav-tabs">
-      <li><a href="#" class="active" onclick="showTab('casesTab', this)">الدعاوى</a></li>
+      <li>
+        <a href="#" class="active" onclick="showTab('casesTab', this)">الدعاوى</a>
+      </li>
       <li><a href="#" onclick="showTab('requestsTab', this)">الطلبات</a></li>
     </ul>
   </div>
@@ -213,6 +215,7 @@ button:hover, .btn:hover {
 
 <!-- تبويبات المحتوى -->
 <div class="container">
+  <!-- تبويبة الدعاوى -->
   <div id="casesTab">
     <section class="sessions">
       <h3>جلسات اليوم (<span id="todayDate"><?php echo e(date('Y-m-d')); ?></span>)</h3>
@@ -256,10 +259,7 @@ button:hover, .btn:hover {
           <?php endif; ?>
         </tbody>
       </table>
-   </section>
-  </div>
-</div>
-    
+    </section>
 
     <h3>القضايا المرتبطة بالقاضي</h3>
     <div style="margin: 10px auto; width: 98%;">
@@ -349,9 +349,10 @@ button:hover, .btn:hover {
     </table>
   </div>
 
+  <!-- تبويبة الطلبات -->
   <div id="requestsTab" style="display:none;">
     <section class="sessions">
-      <h3>جلسات الطلبات</h3>
+      <h3>جلسات الطلبات اليوم (<span><?php echo e(date('Y-m-d')); ?></span>)</h3>
       <table border="1" cellspacing="0" cellpadding="5">
         <thead>
           <tr>
