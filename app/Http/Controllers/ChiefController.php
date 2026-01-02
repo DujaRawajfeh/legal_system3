@@ -209,10 +209,17 @@ public function getDetainedList()
 {
     try {
 
-        $data = ArrestMemo::with(['case'])
+        $allMemos = ArrestMemo::with(['case'])
             ->where('released', 0)
-            ->get()
-            ->map(function ($item) {
+            ->get();
+
+        Log::info("🔍 Detained List Debug", [
+            'total_count' => $allMemos->count(),
+            'ids' => $allMemos->pluck('id')->toArray(),
+            'participants' => $allMemos->pluck('participant_name')->toArray()
+        ]);
+
+        $data = $allMemos->map(function ($item) {
 
                 $start = $item->created_at->format('Y-m-d');
 
@@ -228,12 +235,12 @@ public function getDetainedList()
                     'duration'         => $duration,
                     'end_date'         => $end,
                     'remaining_days'   => $remaining,
-
-                    // 🔥 الصح هون
                     'case_number'      => optional($item->case)->number,
                     'case_type'        => optional($item->case)->type,
                 ];
             });
+
+        Log::info("🔍 Final Data Count", ['count' => $data->count()]);
 
         return response()->json(['data' => $data]);
 
@@ -247,9 +254,6 @@ public function getDetainedList()
 
         return response()->json(['error' => 'خطأ أثناء تحميل البيانات'], 500);
     }
-
-
-    dd(ArrestMemo::with('case')->first());
 }
 
 
