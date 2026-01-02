@@ -164,7 +164,6 @@ async function loadEntrySearchRequestDetails(requestNumber) {
             </table>
 
             <h6 class="mt-4">الجلسات</h6>
-            <h6 class="mt-4">الجلسات</h6>
             <table class="table table-bordered">
                 <thead>
                     <tr>
@@ -176,6 +175,7 @@ async function loadEntrySearchRequestDetails(requestNumber) {
                 </thead>
                 <tbody>${sessionsHTML || '<tr><td colspan="4" class="text-center">لا توجد جلسات</td></tr>'}</tbody>
             </table>
+
             <h6 class="mt-4">الأطراف</h6>
             <table class="table table-bordered">
                 <thead>
