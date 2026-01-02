@@ -262,7 +262,7 @@ async function loadEntrySearchCaseDetails(caseNumber) {
                     <td>${s.time ?? '-'}</td>
                     <td>${s.date ?? '-'}</td>
                     <td>${s.session_status ?? '-'}</td>
-                    <td>${s.status ?? '-'}</td>
+                    <td>${s.reason ?? '-'}</td>
                 </tr>`;
         });
 
