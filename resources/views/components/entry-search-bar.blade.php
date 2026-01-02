@@ -139,6 +139,7 @@ async function loadEntrySearchRequestDetails(requestNumber) {
                 <tr>
                     <td>${s.date ?? '-'}</td>
                     <td>${s.time ?? '-'}</td>
+                    <td>${s.session_status ?? '-'}</td>
                     <td>${s.goal ?? '-'}</td>
                     <td>${s.reason ?? '-'}</td>
                 </tr>`;
@@ -170,10 +171,11 @@ async function loadEntrySearchRequestDetails(requestNumber) {
                         <th>تاريخ الجلسة</th>
                         <th>وقت الجلسة</th>
                         <th>حالة الجلسة</th>
+                        <th>غاية الجلسة</th>
                         <th>سبب الجلسة</th>
                     </tr>
                 </thead>
-                <tbody>${sessionsHTML || '<tr><td colspan="4" class="text-center">لا توجد جلسات</td></tr>'}</tbody>
+                <tbody>${sessionsHTML || '<tr><td colspan="5" class="text-center">لا توجد جلسات</td></tr>'}</tbody>
             </table>
 
             <h6 class="mt-4">الأطراف</h6>
