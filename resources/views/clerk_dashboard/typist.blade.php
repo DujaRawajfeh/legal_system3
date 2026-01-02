@@ -493,7 +493,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 <th>رقم الدعوى</th>
                 <th>التاريخ</th>
                 <th>الوقت</th>
-                <th>نوع الجلسة</th>
+                <th>نوع الحكم</th>
                 <th>حالة الجلسة</th>
                 <th>اسم المحكمة</th>
                 <th>اسم القاضي</th>
@@ -526,10 +526,8 @@ function openCourtScheduleModal() {
     loadSessionStatuses();
 }
 
-
-// ===========================================
 // تحميل الحالات من المسار الصحيح
-// ===========================================
+
 function loadSessionStatuses() {
     fetch('/session-statuses-court')
         .then(res => res.json())
@@ -547,9 +545,7 @@ function loadSessionStatuses() {
 }
 
 
-// ===========================================
 // تحميل جدول المحكمة
-// ===========================================
 function loadCourtSchedule() {
 
     const params = {
@@ -574,7 +570,7 @@ function loadCourtSchedule() {
                         <td>${item.case_number ?? '-'}</td>
                         <td>${item.date}</td>
                         <td>${item.time}</td>
-                        <td>${item.session_type ?? '-'}</td>
+                        <td>${item.judgment_type ?? '-'}</td>
                         <td>${item.status ?? '-'}</td>
                         <td>${item.tribunal_name ?? '-'}</td>
                         <td>${item.judge_name ?? '-'}</td>
@@ -631,7 +627,7 @@ function loadCourtSchedule() {
 
         </div>
 
-        <!-- 🔹 جدول النتائج -->
+        <!--  جدول النتائج -->
         <div class="table-responsive">
           <table class="table table-bordered text-center">
             <thead class="table-light">
@@ -640,7 +636,7 @@ function loadCourtSchedule() {
                 <th>تاريخ الجلسة</th>
                 <th>وقت الجلسة</th>
                 <th>المحكمة</th>
-                <th>نوع الجلسة</th>
+                <th>نوع الحكم</th>
                 <th>حالة الجلسة</th>
                 <th>السبب</th>
                 <th>التاريخ الأصلي</th>
@@ -662,10 +658,9 @@ function loadCourtSchedule() {
   </div>
 </div>
 <script>
+//جدول أعمال القاضي
+   // تحميل القضاة من السيرفر
 
-/* ============================
-   🔹 تحميل القضاة من السيرفر
-============================ */
 function loadJudges() {
     fetch('/judges')
         .then(res => res.json())
@@ -681,9 +676,9 @@ function loadJudges() {
 }
 
 
-/* ====================================================
-   🔹 تحميل القضاة تلقائيًا عند فتح مودال جدول القاضي
-==================================================== */
+
+ //   تحميل القضاة تلقائيًا عند فتح مودال جدول القاضي
+
 document.getElementById("judgeScheduleModal")
     .addEventListener("shown.bs.modal", function () {
         loadJudges();
@@ -692,9 +687,9 @@ document.getElementById("judgeScheduleModal")
 
 
 
-/* ============================
-   🔹 تحميل جدول أعمال القاضي
-============================ */
+
+  // تحميل جدول أعمال القاضي
+
 function loadJudgeSchedule() {
 
     const params = {
@@ -721,7 +716,7 @@ function loadJudgeSchedule() {
                         <td>${item.date}</td>
                         <td>${item.time}</td>
                         <td>${item.tribunal_name ?? '-'}</td>
-                        <td>${item.session_type ?? '-'}</td>
+                        <td>${item.judgment_type ?? '-'}</td>
                         <td>${item.status ?? '-'}</td>
                         <td>${item.reason ?? '-'}</td>
                         <td>${item.original_date ?? '-'}</td>
@@ -970,9 +965,7 @@ function loadJudgeSchedule() {
 
 <script>
 
-/* ============================================================
-   🔹 تحميل تفاصيل الدعوى عند الضغط على Enter
-============================================================ */
+ //  تحميل تفاصيل الدعوى عند الضغط على Enter
 document.getElementById('caseNumberInput').addEventListener('keypress', function (e) {
   if (e.key === 'Enter') {
     e.preventDefault();
@@ -984,23 +977,23 @@ document.getElementById('caseNumberInput').addEventListener('keypress', function
 });
 
 function loadCaseDetails(caseNumber) {
-    console.log("🔥 loadCaseDetails() called!");
+    console.log(" loadCaseDetails() called!");
 
     if (!caseNumber) {
         alert("يرجى إدخال رقم الدعوى");
         return;
     }
 
-    console.log("📌 Fetching:", `/typist/case-details/${caseNumber}`);
+    console.log(" Fetching:", `/typist/case-details/${caseNumber}`);
 
     fetch(`/typist/case-details/${caseNumber}`)
         .then(res => {
-            console.log("📌 Raw Response:", res);
+            console.log(" Raw Response:", res);
             return res.json();
         })
         .then(data => {
 
-            console.log("📌 Parsed JSON:", data);
+            console.log(" Parsed JSON:", data);
 
             if (data.error) {
                 alert(data.error);
@@ -1012,18 +1005,18 @@ function loadCaseDetails(caseNumber) {
                 return;
             }
 
-            // 🔥 تخزين المعرّفات
+            // تخزين المعرّفات
             window.selectedCaseId  = Number(data.id);
             window.selectedJudgeId = Number(data.judge_id);
 
-            console.log("🔥 Stored selectedCaseId =", window.selectedCaseId);
-            console.log("🔥 Stored selectedJudgeId =", window.selectedJudgeId);
+            console.log(" Stored selectedCaseId =", window.selectedCaseId);
+            console.log(" Stored selectedJudgeId =", window.selectedJudgeId);
 
             let participants = data.participants?.length
                 ? data.participants.map(p => `${p.type}: ${p.name}`).join("<br>")
                 : "-";
 
-            // ✅ تعبئة الجدول
+            //  تعبئة الجدول
             document.getElementById("caseDetailsTable").innerHTML = `
                 <tr>
                     <td>${data.case_number}</td>
@@ -1034,12 +1027,12 @@ function loadCaseDetails(caseNumber) {
                 </tr>
             `;
 
-            // ✅ تعبئة الحقول المقروءة فقط
+            //  تعبئة الحقول المقروءة فقط
             document.getElementById("tribunalNumber").value = data.tribunal_number ?? '-';
             document.getElementById("departmentNumber").value = data.department_number ?? '-';
             document.getElementById("caseYear").value = data.year ?? '-';
 
-            // ✅ تفعيل حقول الجلسة
+            //  تفعيل حقول الجلسة
             document.getElementById("sessionDate").disabled = false;
             document.getElementById("sessionTime").disabled = false;
             document.getElementById("sessionGoal").disabled = false;
@@ -1054,22 +1047,19 @@ function loadCaseDetails(caseNumber) {
     });
 }
 
-
-/* ============================================================
-   🔹 حفظ الجلسة
-============================================================ */
+   // حفظ الجلسة
 function saveCaseSession() {
 
-    console.log("🔥 saveCaseSession() called!");
+    console.log(" saveCaseSession() called!");
 
-    // 🔥 فحص وصول المعرّفات
+    //  فحص وصول المعرّفات
     if (!window.selectedCaseId) {
-        alert("❌ لم يتم تحميل بيانات الدعوى بعد");
+        alert(" لم يتم تحميل بيانات الدعوى بعد");
         return;
     }
 
     if (!window.selectedJudgeId) {
-        alert("❌ لا يوجد قاضي مربوط بهذه الدعوى");
+        alert(" لا يوجد قاضي مربوط بهذه الدعوى");
         return;
     }
 
@@ -1121,7 +1111,7 @@ function saveCaseSession() {
         alert(data.message);
     })
     .catch(err => {
-        console.error("❌ Save Error:", err);
+        console.error(" Save Error:", err);
         alert("حدث خطأ أثناء حفظ الجلسة");
     });
 }
@@ -2192,7 +2182,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 </script>
-<!-- ✅ نافذة جدول الطلبات -->
+<!-- نافذة جدول الطلبات -->
 <div class="modal fade" id="requestScheduleModal" tabindex="-1" aria-labelledby="requestScheduleLabel" aria-hidden="true">
   <div class="modal-dialog modal-xl modal-dialog-scrollable">
     <div class="modal-content">
@@ -2325,8 +2315,8 @@ function updateScheduleTable(sessions) {
 
 
 
-<!-- ✅ نافذة تحديد جلسة الطلب -->
-<!-- ✅ نافذة تحديد جلسة الطلب -->
+
+<!--  نافذة تحديد جلسة الطلب -->
 <div class="modal fade" id="requestSetSessionModal" tabindex="-1" aria-labelledby="requestSetSessionLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg" style="margin-top: 80px;">
     <div class="modal-content">

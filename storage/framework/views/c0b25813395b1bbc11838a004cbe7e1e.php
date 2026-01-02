@@ -695,10 +695,7 @@
                     <label class="form-label">رقم الهاتف</label>
                     <input type="text" class="form-control request-party-phone">
                   </div>
-                  <div class="col-md-12">
-                    <label class="form-label">العنوان</label>
-                    <input type="text" class="form-control request-party-address">
-                  </div>
+                 
                 </div>
               </div>
             </div>
@@ -992,7 +989,7 @@
 
       <div class="modal-body">
 
-        <!-- 🔹 خيارات الفلترة -->
+        <!--  خيارات الفلترة -->
         <div class="row mb-3">
           
           <div class="col-md-5">
@@ -1021,7 +1018,7 @@
                 <th>رقم الدعوى</th>
                 <th>التاريخ</th>
                 <th>الوقت</th>
-                <th>نوع الجلسة</th>
+                <th>نوع الحكم</th>
                 <th>حالة الجلسة</th>
                 <th>اسم المحكمة</th>
                 <th>اسم القاضي</th>
@@ -1054,10 +1051,7 @@ function openCourtScheduleModal() {
     loadSessionStatuses();
 }
 
-
-// ===========================================
 // تحميل الحالات من المسار الصحيح
-// ===========================================
 function loadSessionStatuses() {
     fetch('/session-statuses-court')
         .then(res => res.json())
@@ -1075,9 +1069,7 @@ function loadSessionStatuses() {
 }
 
 
-// ===========================================
 // تحميل جدول المحكمة
-// ===========================================
 function loadCourtSchedule() {
 
     const params = {
@@ -1102,7 +1094,7 @@ function loadCourtSchedule() {
                         <td>${item.case_number ?? '-'}</td>
                         <td>${item.date}</td>
                         <td>${item.time}</td>
-                        <td>${item.session_type ?? '-'}</td>
+                        <td>${item.judgment_type ?? '-'}</td>
                         <td>${item.status ?? '-'}</td>
                         <td>${item.tribunal_name ?? '-'}</td>
                         <td>${item.judge_name ?? '-'}</td>
@@ -1168,7 +1160,7 @@ function loadCourtSchedule() {
                 <th>تاريخ الجلسة</th>
                 <th>وقت الجلسة</th>
                 <th>المحكمة</th>
-                <th>نوع الجلسة</th>
+                <th>نوع الحكم</th>
                 <th>حالة الجلسة</th>
                 <th>السبب</th>
                 <th>التاريخ الأصلي</th>
@@ -1191,9 +1183,9 @@ function loadCourtSchedule() {
 </div>
 <script>
 
-/* ============================
-   🔹 تحميل القضاة من السيرفر
-============================ */
+//جدول أعمال القاضي
+  //  تحميل القضاة من السيرفر
+
 function loadJudges() {
     fetch('/judges')
         .then(res => res.json())
@@ -1209,20 +1201,16 @@ function loadJudges() {
 }
 
 
-/* ====================================================
-   🔹 تحميل القضاة تلقائيًا عند فتح مودال جدول القاضي
-==================================================== */
+
+ // تحميل القضاة تلقائيًا عند فتح مودال جدول القاضي
+
 document.getElementById("judgeScheduleModal")
     .addEventListener("shown.bs.modal", function () {
         loadJudges();
     });
 
+ //   تحميل جدول أعمال القاضي
 
-
-
-/* ============================
-   🔹 تحميل جدول أعمال القاضي
-============================ */
 function loadJudgeSchedule() {
 
     const params = {
@@ -1249,7 +1237,7 @@ function loadJudgeSchedule() {
                         <td>${item.date}</td>
                         <td>${item.time}</td>
                         <td>${item.tribunal_name ?? '-'}</td>
-                        <td>${item.session_type ?? '-'}</td>
+                        <td>${item.judgment_type ?? '-'}</td>
                         <td>${item.status ?? '-'}</td>
                         <td>${item.reason ?? '-'}</td>
                         <td>${item.original_date ?? '-'}</td>
@@ -1284,7 +1272,7 @@ function openRequestScheduleModal() {
 
 </script>
 
-<!-- 🔶 مودال جدول الدعوى -->
+<!--  مودال جدول الدعوى -->
 <div class="modal fade" id="caseScheduleModal" tabindex="-1">
   <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
     <div class="modal-content">
@@ -1328,7 +1316,7 @@ function openRequestScheduleModal() {
                 <th>تاريخ الجلسة</th>
                 <th>وقت الجلسة</th>
                 <th>نوع الحكم</th>
-                <th>نوع الجلسة</th>
+                <th>سبب الجلسة</th>
                 <th>حالة الجلسة</th>
                 <th>القاضي</th>
               </tr>
@@ -1399,7 +1387,7 @@ document.addEventListener('DOMContentLoaded', function () {
                             <td>${s.session_date ?? '---'}</td>
                             <td>${s.session_time ?? '---'}</td>
                             <td>${s.judgment_type ?? '---'}</td>
-                            <td>${s.session_type ?? '---'}</td>
+                            <td>${s.session_goal ?? '---'}</td>
                             <td>${s.status ?? '---'}</td>
                             <td>${s.judge_name ?? '---'}</td>
                         </tr>
@@ -6192,7 +6180,7 @@ async function loadReportsList() {
     container.innerHTML = `<p class="text-center text-secondary">جاري التحميل...</p>`;
 
     try {
-        // ✅ نستخدم الراوت بالاسم
+        // نستخدم الراوت بالاسم
         const response = await axios.get("<?php echo e(route('writer.reports.list')); ?>");
         const data = response.data.reports || [];
 
@@ -6201,7 +6189,7 @@ async function loadReportsList() {
             return;
         }
 
-        // ✅ قوالب الروابط (مع source=writer)
+        // روابط المحاضر (بدون target=_blank)
         const trialUrlTemplate =
             `<?php echo e(route('writer.trial.report.show', ['session' => 'SESSION_ID'])); ?>?source=writer`;
 
@@ -6216,7 +6204,7 @@ async function loadReportsList() {
             const modes = row.modes || [];
             const sessionId = row.session_id;
 
-            // ✅ نبدل SESSION_ID بالـ sessionId الحقيقي
+            // استبدال SESSION_ID بالـ sessionId الحقيقي
             const trialUrl = trialUrlTemplate.replace('SESSION_ID', sessionId);
             const afterUrl = afterUrlTemplate.replace('SESSION_ID', sessionId);
 
@@ -6226,13 +6214,13 @@ async function loadReportsList() {
 
                     <div class="mt-2 d-flex gap-2">
                         ${modes.includes('trial')
-                            ? `<a class="btn btn-primary btn-sm" href="${trialUrl}" target="_blank">
+                            ? `<a class="btn btn-primary btn-sm" href="${trialUrl}">
                                    محضر المحاكمة
                                </a>`
                             : ''}
 
                         ${modes.includes('after')
-                            ? `<a class="btn btn-secondary btn-sm" href="${afterUrl}" target="_blank">
+                            ? `<a class="btn btn-secondary btn-sm" href="${afterUrl}">
                                    محضر ما بعد
                                </a>`
                             : ''}
@@ -6249,7 +6237,6 @@ async function loadReportsList() {
     }
 }
 </script>
-
 
 
 

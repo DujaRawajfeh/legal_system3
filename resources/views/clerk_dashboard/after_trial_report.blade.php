@@ -225,10 +225,25 @@ function readFingerprint(id, type) {
 }
 
 function closeAndReturn(source) {
-    window.location.href =
-        source === 'writer'
-            ? "{{ route('writer.dashboard') }}"
-            : "{{ route('typist.cases') }}";
+
+
+    if (source && source.startsWith('judge')) {
+        window.location.href = "/judge";
+        return;
+    }
+
+    if (source && source.startsWith('writer')) {
+        window.location.href = "/writer/dashboard";
+        return;
+    }
+
+    if (source && source.startsWith('typist')) {
+        window.location.href = "/typist/cases";
+        return;
+    }
+
+   
+    window.location.href = "/";
 }
 </script>
 

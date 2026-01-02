@@ -235,7 +235,7 @@ public function saveJudgmentData(Request $request)
 
  // نافذه جدول أعمال القاضي
 /**
- * ✅ جلب القضاة من جدول users حسب الدور
+ *  جلب القضاة من جدول users حسب الدور
  */
 public function getJudges()
 {
@@ -252,7 +252,7 @@ public function getJudges()
 }
 
 /**
- * ✅ جلب حالات الجلسات الفعلية من جدول case_sessions
+ *  جلب حالات الجلسات الفعلية من جدول case_sessions
  */
 public function getSessionStatuses()
 {
@@ -277,43 +277,43 @@ public function getJudgeSchedule(Request $request)
 
         $query = CaseSession::query();
 
-        // 🔹 فلترة حسب القاضي
+        //  فلترة حسب القاضي
         if ($request->filled('judge_id')) {
             $query->where('judge_id', $request->judge_id);
         }
 
-        // 🔹 فلترة حسب حالة الجلسة
+        //  فلترة حسب حالة الجلسة
         if ($request->filled('status')) {
             $query->where('status', $request->status);
         }
 
-        // 🔹 تحميل العلاقات (الدعوى + المحكمة)
+        //  تحميل العلاقات (الدعوى + المحكمة)
         $query->with(['courtCase.tribunal']);
 
         $sessions = $query->get()->map(function ($session) {
 
             return [
 
-                // 🔸 رقم الدعوى (من جدول court_cases)
+                //  رقم الدعوى (من جدول court_cases)
                 'case_number'   => optional($session->courtCase)->number,
 
-                // 🔸 تاريخ الجلسة + الوقت (من session_date)
+                //  تاريخ الجلسة + الوقت (من session_date)
                 'date'          => $session->session_date->format('Y-m-d'),
                 'time'          => $session->session_date->format('H:i'),
 
-                // 🔸 المحكمة
+                //  المحكمة
                 'tribunal_name' => optional(optional($session->courtCase)->tribunal)->name,
 
-                // 🔸 نوع الجلسة
-                'session_type'  => $session->session_type,
+                //  نوع الحكم
+                'judgment_type' => $session->judgment_type,
 
-                // 🔸 حالة الجلسة
+                //  حالة الجلسة
                 'status'        => $session->status,
 
-                // 🔸 السبب
-                'reason'        => $session->postponed_reason,
+                //  السبب
+                'reason'        => $session->session_goal,
 
-                // 🔸 التاريخ الأصلي (من created_at في case_sessions)
+                //  التاريخ الأصلي (من created_at في case_sessions)
                 'original_date' => $session->created_at?->format('Y-m-d'),
             ];
         });
@@ -342,28 +342,28 @@ public function getCourtSchedule(Request $request)
 
         $query = CaseSession::query();
 
-        // 🔹 فلترة حسب التاريخ
+        //  فلترة حسب التاريخ
         if ($request->filled('date')) {
             $query->whereDate('session_date', $request->date);
         }
 
-        // 🔹 فلترة حسب الحالة
+        //  فلترة حسب الحالة
         if ($request->filled('status')) {
             $query->where('status', $request->status);
         }
 
-        // 🔹 تحميل (المحكمة + الدعوى + القاضي)
+        //  تحميل (المحكمة + الدعوى + القاضي)
         $query->with(['courtCase', 'courtCase.tribunal', 'judge']);
 
         $sessions = $query->get()->map(function ($session) {
 
             return [
-                // 🔸 رقم الدعوى — من جدول court_cases
+                //  رقم الدعوى — من جدول court_cases
                 'case_number'   => optional($session->courtCase)->number,
 
                 'date'          => $session->session_date->format('Y-m-d'),
                 'time'          => $session->session_date->format('H:i'),
-                'session_type'  => $session->session_type,
+                'judgment_type' => $session->judgment_type,
                 'status'        => $session->status,
 
                 // المحكمة
@@ -683,10 +683,10 @@ public function showRequestSchedule(Request $request)
             'session_time'       => $schedule->session_time,
             'session_status'     => $schedule->session_status,
             'session_reason'     => $schedule->session_reason,
-            'original_date'      => $schedule->original_date,
+            'original_date'      => optional($schedule->created_at)?->format('Y-m-d'),
             'judge_name'         => optional($schedule->judge)->full_name,
 
-            // ✅ الحقول الإضافية المطلوبة للعرض في أعلى النافذة
+            //  الحقول الإضافية المطلوبة للعرض في أعلى النافذة
             'tribunal_number'    => optional($schedule->tribunal)->number,
             'department_number'  => optional($schedule->department)->number,
             'court_year'         => $schedule->court_year,

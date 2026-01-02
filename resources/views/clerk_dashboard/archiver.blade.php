@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>دائرة المحاكم</title>
+<title>صفحة المؤرشف</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap');
   body {
@@ -221,16 +221,16 @@
 </nav>
 
 <div class="container content">
-  <h4 class="text-center mb-4">📄 نظام أرشفة الوثائق</h4>
+  <h4 class="text-center mb-4">📄  أرشفة الوثائق</h4>
 
   <div class="split-container">
     <div class="left-side">
-      <!-- ✅ الفورم مربوط بالـ store -->
+      <!--  الفورم مربوط بالـ store -->
       <form method="POST" action="{{ route('archived-documents.store') }}" enctype="multipart/form-data">
         @csrf
 
         <!-- رقم الدعوى = 4 بوكسات -->
-        <label>🔢 رقم الدعوى</label>
+        <label> رقم الدعوى</label>
         <div style="display:flex; gap:10px; margin-bottom:15px;">
           <!-- رقم الدعوى الأساسي -->
           <input type="text" name="court_case_id" id="casePart1" placeholder="رقم الدعوى" required>
@@ -336,13 +336,13 @@
         <td>{{ $doc->created_at->format('Y-m-d H:i') }}</td>
 
         <!-- رابط عرض الملف -->
-        <td>
-          <a href="{{ asset('uploads/archived_documents/'.$doc->file_name) }}" 
-             target="_blank" 
-             class="btn btn-outline-primary">
-             عرض
-          </a>
-        </td>
+       <td>
+  <a href="{{ asset('storage/archived_documents/'.$doc->file_name) }}"
+     target="_blank"
+     class="btn btn-outline-primary">
+     عرض
+  </a>
+</td>
       </tr>
     @empty
       <tr class="text-muted">
@@ -353,7 +353,7 @@
 </table>
 </div>
 <script>
-// ✅ تعبئة رقم الدعوى (اختياري، إذا بدك تربطيه بـ Route في Laravel)
+//  تعبئة رقم الدعوى (اختياري، إذا بدك تربطيه بـ Route في Laravel)
 async function fetchCaseNumber() {
     let part1 = document.getElementById("casePart1").value.trim();
     if (part1.length < 4) return;
@@ -377,7 +377,7 @@ async function fetchCaseNumber() {
     }
 }
 
-// ✅ معاينة الملف قبل الأرشفة
+// معاينة الملف قبل الأرشفة
 document.getElementById("documentFile").addEventListener("change", function () {
   const file = this.files[0];
   const previewBox = document.getElementById("previewBox");

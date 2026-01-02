@@ -2,7 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <title>دائرة محاكم</title>
+    <title> صفحة القاضي </title>
 
     <style>
 @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;700&display=swap');
@@ -216,6 +216,7 @@ button:hover, .btn:hover {
   <div id="casesTab">
     <section class="sessions">
       <h3>جلسات اليوم (<span id="todayDate">{{ date('Y-m-d') }}</span>)</h3>
+
       <table border="1" cellspacing="0" cellpadding="5">
         <thead>
           <tr>
@@ -223,11 +224,12 @@ button:hover, .btn:hover {
             <th>عنوان الدعوى</th>
             <th>التاريخ الأصلي</th>
             <th>وقت الجلسة</th>
-            <th>نوع الجلسة</th>
+            <th>نوع الحكم</th>
             <th>الحالة</th>
-            <th>سبب التأجيل</th>
+            <th>سبب الجلسة</th>
           </tr>
         </thead>
+
         <tbody id="todaySessionsTable">
           @forelse ($sessions as $session)
             <tr>
@@ -235,22 +237,29 @@ button:hover, .btn:hover {
               <td>{{ $session->courtCase->type ?? '-' }}</td>
               <td>{{ $session->courtCase->created_at->format('Y-m-d') }}</td>
               <td>{{ \Carbon\Carbon::parse($session->session_date)->format('H:i') }}</td>
-              <td>{{ $session->session_type }}</td>
+
+              {{-- نوع الحكم --}}
+              <td>{{ $session->judgment_type ?: 'لم يصدر حكم' }}</td>
+
+              {{-- الحالة --}}
               <td>{{ $session->status }}</td>
-              <td>
-                @if($session->status === 'مؤجلة')
-                  {{ $session->postponed_reason }}
-                @else
-                  -
-                @endif
-              </td>
+
+              {{-- سبب الجلسة --}}
+              <td>{{ $session->session_goal ?: 'لم يتم تحديد سبب الجلسة' }}</td>
             </tr>
           @empty
-            <tr><td colspan="7" style="text-align: center;">لا توجد جلسات اليوم</td></tr>
+            <tr>
+              <td colspan="7" style="text-align: center;">
+                لا توجد جلسات اليوم
+              </td>
+            </tr>
           @endforelse
         </tbody>
       </table>
-    </section>
+   </section>
+  </div>
+</div>
+    
 
     <h3>القضايا المرتبطة بالقاضي</h3>
     <div style="margin: 10px auto; width: 98%;">

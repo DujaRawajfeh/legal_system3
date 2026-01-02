@@ -242,12 +242,12 @@
         document.getElementById('totpModal').style.display = 'none';
     }
 
-    // ⭐ إذا الخطأ كان بسبب انتهاء صلاحية كلمة السر، افتح النافذة مباشرة
+    // ⭐\ إذا الخطأ كان بسبب انتهاء صلاحية كلمة السر، افتح النافذة مباشرة
     @if($errors->has('password') || $errors->has('current_password'))
         openModal();
     @endif
 
-    // ⭐ إذا رجعنا من الـ Controller مع فلاغ show_totp_modal، افتح نافذة TOTP مباشرة
+    //  إذا رجعنا من الـ Controller مع فلاغ show_totp_modal، افتح نافذة TOTP مباشرة
     @if(session('show_totp_modal'))
         openTotpModal();
     @endif

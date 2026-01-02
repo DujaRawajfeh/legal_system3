@@ -139,18 +139,6 @@ public function updatePassword(Request $request)
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
 public function show2FASetup()
 {
     $user = auth()->user();

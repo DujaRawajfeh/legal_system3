@@ -34,7 +34,7 @@ class JudgeController extends Controller
         'participants',
         'arrestMemos',
         'notifications',
-        'sessions' // ✅ تم إضافة تحميل الجلسات المرتبطة بالقضية
+        'sessions' //  تم إضافة تحميل الجلسات المرتبطة بالقضية
     ])
     ->where('judge_id', $judge->id)
     ->get();
@@ -143,7 +143,7 @@ public function getTodayRequests()
 
     } catch (\Exception $e) {
 
-        // 🔥 تسجيل الخطأ في الـ log
+        //  تسجيل الخطأ في الـ log
         \Log::error("❌ Error in getTodayRequests: " . $e->getMessage(), [
             'line' => $e->getLine(),
             'file' => $e->getFile(),
