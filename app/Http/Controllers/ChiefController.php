@@ -255,7 +255,15 @@ public function getDetainedList()
 
         Log::info("🔍 Final Data Count", ['count' => $data->count()]);
 
-        return response()->json(['data' => $data]);
+        return response()->json([
+            'data' => $data,
+            'debug' => [
+                'total_memos' => $totalMemos,
+                'released' => $releasedCount,
+                'not_released' => $notReleasedCount,
+                'returned_count' => $data->count()
+            ]
+        ]);
 
     } catch (\Exception $e) {
 
