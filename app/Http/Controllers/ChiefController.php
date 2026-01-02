@@ -209,28 +209,17 @@ public function getDetainedList()
 {
     try {
 
-        // Debug: Log all arrest memos
+        // Debug: Get all arrest memos statistics
         $totalMemos = ArrestMemo::count();
         $releasedCount = ArrestMemo::where('released', 1)->count();
         $notReleasedCount = ArrestMemo::where('released', 0)->count();
         
-        \Log::info("📊 ArrestMemo Statistics", [
-            'total' => $totalMemos,
-            'released' => $releasedCount,
-            'not_released' => $notReleasedCount,
-        ]);
-
+        // Throw an error to see the debug info
+        throw new \Exception("DEBUG INFO: Total={$totalMemos}, Released={$releasedCount}, NotReleased={$notReleasedCount}");
 
         $allMemos = ArrestMemo::with(['case'])
             ->where('released', 0)
             ->get();
-
-        Log::info("🔍 Detained List Debug", [
-            'total_count' => $allMemos->count(),
-            'ids' => $allMemos->pluck('id')->toArray(),
-            'participants' => $allMemos->pluck('participant_name')->toArray(),
-            'released_status' => $allMemos->pluck('released')->toArray()
-        ]);
 
         $data = $allMemos->map(function ($item) {
 
@@ -253,8 +242,6 @@ public function getDetainedList()
                 ];
             });
 
-        Log::info("🔍 Final Data Count", ['count' => $data->count()]);
-
         return response()->json([
             'data' => $data,
             'debug' => [
@@ -273,7 +260,7 @@ public function getDetainedList()
             'file'    => $e->getFile()
         ]);
 
-        return response()->json(['error' => 'خطأ أثناء تحميل البيانات'], 500);
+        return response()->json(['error' => $e->getMessage()], 500);
     }
 }
 
