@@ -133,7 +133,7 @@ $savedDecision = $reports->whereNotNull('decision_text')->first();
 <hr>
 
 <div class="d-flex gap-3">
-    @if($source && str_starts_with($source, 'typist'))
+    @if($source && str_starts_with($source, 'typist') && $reports->where('report_mode', 'after')->isEmpty())
         <button type="submit" class="btn btn-primary">حفظ المحضر</button>
     @endif
     <button type="button" class="btn btn-danger" onclick="closeAndReturn('{{ $source }}')">خروج</button>
