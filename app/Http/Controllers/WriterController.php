@@ -30,12 +30,12 @@ class WriterController extends Controller
 {
    public function dashboard()
 {
-    $user = Auth::user();
+    $user = Auth::user();//بجيب معلومات المستخدم اللي سجل دخول
 
     // تجهيز متغير النتائج لتفادي الخطأ في الواجهة
     $results = [];
 
-    // ⚡ جلب السجلّات من قاعدة البيانات لعرضها في نافذة "سحب دعوى"
+    //  جلب السجلّات من قاعدة البيانات لعرضها في نافذة "سحب دعوى"
     $records = IncomingProsecutorCase::select('records')
                 ->distinct()
                 ->whereNotNull('records')
@@ -51,10 +51,6 @@ class WriterController extends Controller
         'records' => $records, // ← مهم لعرض السجل العام داخل المودال
     ]);
 }
-
-
-
-
 
 
 
@@ -107,7 +103,7 @@ public function storeCourtCase(Request $request)
              ->exists();
         } while ($existingSession);
 
-        // تخزين الجلسة
+    
         // تخزين الجلسة
 \App\Models\CaseSession::create([
     'court_case_id' => $case->id,
@@ -115,7 +111,7 @@ public function storeCourtCase(Request $request)
     'session_date' => $sessionDate,
     'created_by' => $user->id,
 
-    // 🟦 القيمة الافتراضية المطلوبة
+    //  القيمة الافتراضية المطلوبة
     'status' => 'محددة',
 ]);
         // إرجاع البيانات لـ JavaScript
@@ -128,7 +124,7 @@ public function storeCourtCase(Request $request)
             'session_date' => $sessionDate->format('Y-m-d H:i'),
         ]);
     } catch (\Exception $e) {
-        Log::error('❌ خطأ أثناء حفظ القضية:', ['message' => $e->getMessage()]);
+        Log::error(' خطأ أثناء حفظ القضية:', ['message' => $e->getMessage()]);
         return response()->json([
             'error' => $e->getMessage()
         ], 500);
@@ -155,7 +151,7 @@ public function storeParticipant(Request $request)
             'residence'     => 'nullable|string',
             'job'           => 'nullable|string',
             'phone'         => 'nullable|string',
-            'charge'        => 'nullable|string',  // ⭐ التهمة الجديدة
+            'charge'        => 'nullable|string',  
         ]);
 
         // إنشاء الطرف
@@ -167,7 +163,7 @@ public function storeParticipant(Request $request)
             'residence'     => $validated['residence'],
             'job'           => $validated['job'],
             'phone'         => $validated['phone'],
-            'charge'        => $validated['charge'],  // ⭐ الحفظ هنا
+            'charge'        => $validated['charge'],  
         ]);
 
         return response()->json([
@@ -202,9 +198,8 @@ public function getNextAvailableJudge()
 
 
 
-/**
- * جلب تفاصيل قضية حسب رقمها، تشمل نوع الدعوى، رقم المحكمة، والأطراف المرتبطين.
- */
+
+ //مذكرة تبليغ مشتكي موعد جلسة
 public function fetchCaseDetails($number, Request $request)
 {
     \Log::info(' بدء جلب تفاصيل القضية من نافذة المذكرات', [
@@ -288,7 +283,7 @@ public function saveNotification(Request $request)
             'method' => 'required|string|in:sms,email,قسم التباليغ',
         ]);
 
-        \Log::info('✅ التحقق من البيانات تم بنجاح');
+        \Log::info(' التحقق من البيانات تم بنجاح');
 
         // تحويل رقم القضية إلى ID
         $case = CourtCase::find($request->case_id);
@@ -305,7 +300,7 @@ public function saveNotification(Request $request)
             'notified_at' => now()
         ]);
 
-        \Log::info("✅ تم حفظ التبليغ للطرف: {$request->participant_name} بطريقة: {$request->method}");
+        \Log::info(" تم حفظ التبليغ للطرف: {$request->participant_name} بطريقة: {$request->method}");
 
         return response()->json(['status' => 'success']);
     } 
@@ -375,15 +370,15 @@ public function pullFromModal(Request $request)
     try {
         $caseNumber = $request->input('case_number');
         $courtLocation = $request->input('court_location');
-        $prosecutorOffice = $request->input('prosecutor_office'); // ← تأتي من الواجهة بنفس نص DB
+        $prosecutorOffice = $request->input('prosecutor_office'); //  تأتي من الواجهة بنفس نص DB
 
-        // 🔍 تتبع قبل البحث
+        //  تتبع قبل البحث
         Log::info('محاولة سحب دعوى', [
             'case_number' => $caseNumber,
             'records' => $prosecutorOffice,
         ]);
 
-        // 🔍 البحث حسب رقم الدعوى وقيمة records كما هي في قاعدة البيانات
+        //  البحث حسب رقم الدعوى وقيمة records كما هي في قاعدة البيانات
         $incoming = IncomingProsecutorCase::where('case_number', $caseNumber)
                     ->where('records', $prosecutorOffice)
                     ->first();
@@ -487,15 +482,14 @@ public function pullFromModal(Request $request)
 
 
 //الشرطه
-  //  تعيين القاضي حسب القلم
-//  تعيين القاضي حسب القلم
+//  سحب دعوى من الشرطة
 public function assignJudge($departmentId)
 {
     $judge = User::where('department_id', $departmentId)
         ->where('role', 'judge')
         ->first();
 
-    Log::info('🎯 تعيين القاضي', [
+    Log::info(' تعيين القاضي', [
         'department_id' => $departmentId,
         'judge_id'      => $judge?->id,
         'judgename'     => $judge?->full_name,
@@ -503,44 +497,44 @@ public function assignJudge($departmentId)
 
     return $judge ? $judge->id : null;
 }
-// ✅ توليد رقم قضية من 4 أرقام عشوائية فقط
+//  توليد رقم قضية من 4 أرقام عشوائية فقط
 public function pullFromPoliceCase($id)
 {
-    Log::info('✅ تم استدعاء الدالة pullFromPoliceCase', ['incoming_id' => $id]);
+    Log::info(' تم استدعاء الدالة pullFromPoliceCase', ['incoming_id' => $id]);
 
     try {
         $user = auth()->user();
-        Log::debug('👤 المستخدم الحالي', ['user' => $user]);
+        Log::debug(' المستخدم الحالي', ['user' => $user]);
 
         if ($user->role !== 'writer') {
-            Log::warning('⛔ المستخدم ليس كاتب');
-            return response()->json(['message' => '⚠️ فقط المستخدمين من نوع كاتب يمكنهم سحب القضايا'], 403);
+            Log::warning(' المستخدم ليس كاتب');
+            return response()->json(['message' => 'فقط المستخدمين من نوع كاتب يمكنهم سحب القضايا'], 403);
         }
 
         if (!$user->department_id || !$user->tribunal_id) {
-            Log::warning('⚠️ القلم أو المحكمة غير معرفين للمستخدم');
-            return response()->json(['message' => '⚠️ لا يمكن تحديد القلم أو المحكمة للمستخدم الحالي'], 422);
+            Log::warning(' القلم أو المحكمة غير معرفين للمستخدم');
+            return response()->json(['message' => ' لا يمكن تحديد القلم أو المحكمة للمستخدم الحالي'], 422);
         }
 
         $incoming = IncomingPoliceCase::findOrFail($id);
-        Log::debug('📄 القضية الشرطية المسحوبة', ['incoming' => $incoming]);
+        Log::debug(' القضية الشرطية المسحوبة', ['incoming' => $incoming]);
 
         $departmentId = $user->department_id;
         $tribunalId   = $user->tribunal_id;
 
         $judgeId = $this->assignJudge($departmentId);
-        Log::debug('⚖️ القاضي المعين', ['judge_id' => $judgeId]);
+        Log::debug(' القاضي المعين', ['judge_id' => $judgeId]);
 
         if (!$judgeId) {
-            Log::warning('⚠️ لا يوجد قاضي مرتبط بهذا القلم');
-            return response()->json(['message' => '⚠️ لا يوجد قاضي مرتبط بهذا القلم'], 422);
+            Log::warning(' لا يوجد قاضي مرتبط بهذا القلم');
+            return response()->json(['message' => 'لا يوجد قاضي مرتبط بهذا القلم'], 422);
         }
 
-        // ✅ توليد رقم قضية
+        //  توليد رقم قضية
         $caseNumber = rand(1000, 9999);
-        Log::debug('🔢 رقم القضية القضائية', ['case_number' => $caseNumber]);
+        Log::debug(' رقم القضية القضائية', ['case_number' => $caseNumber]);
 
-        // ✅ إنشاء القضية القضائية
+        //  إنشاء القضية القضائية
         $courtCase = CourtCase::create([
             'type'          => $incoming->case_type,
             'number'        => $caseNumber,
@@ -553,9 +547,9 @@ public function pullFromPoliceCase($id)
             'created_by'    => $user->id,
         ]);
 
-        Log::info('✅ تم إنشاء القضية القضائية', ['court_case_id' => $courtCase->id]);
+        Log::info(' تم إنشاء القضية القضائية', ['court_case_id' => $courtCase->id]);
 
-        // ✅ تسجيل الأطراف
+        //  تسجيل الأطراف
         foreach (['plaintiff', 'defendant', 'third_party'] as $role) {
             $nameField = $role . '_name';
             if ($incoming->$nameField) {
@@ -568,7 +562,7 @@ public function pullFromPoliceCase($id)
                     'job'           => $incoming->{$role . '_job'},
                     'phone'         => $incoming->{$role . '_phone'},
                 ]);
-                Log::debug("👥 تم تسجيل طرف: $role");
+                Log::debug(" تم تسجيل طرف: $role");
             }
         }
 
@@ -589,35 +583,36 @@ public function pullFromPoliceCase($id)
         return response()->json(['message' => ' تم سحب القضية وتحويلها بنجاح']);
 
     } catch (\Exception $e) {
-        Log::error('❌ خطأ أثناء تنفيذ سحب القضية', [
+        Log::error(' خطأ أثناء تنفيذ سحب القضية', [
             'incoming_id' => $id,
             'error'       => $e->getMessage(),
             'trace'       => $e->getTraceAsString(),
         ]);
 
-        return response()->json(['message' => '❌ حدث خطأ أثناء سحب القضية'], 500);
+        return response()->json(['message' => ' حدث خطأ أثناء سحب القضية'], 500);
     }
 }
 //  عرض القضايا من جدول الشرطة حسب المركز
 public function getPoliceCasesByCenter($center)
 {
-    // 🔍 تنظيف الاسم وإزالة المسافات الزائدة
+    // تنظيف الاسم وإزالة المسافات الزائدة
     $center = trim($center);
 
-    Log::info('📥 تم استدعاء getPoliceCasesByCenter', [
+    Log::info(' تم استدعاء getPoliceCasesByCenter', [
         'center_input'   => $center,
         'center_trimmed' => $center,
+
     ]);
 
-    // 🔎 مطابقة جزئية لتجاوز الفروقات البسيطة
+    //  مطابقة جزئية لتجاوز الفروقات البسيطة
     $cases = IncomingPoliceCase::where('center_name', 'like', '%' . $center . '%')->get();
 
     if ($cases->isEmpty()) {
-        Log::warning('⚠️ لا يوجد قضايا لهذا المركز', ['center_name' => $center]);
-        return response()->json(['message' => '⚠️ لا يوجد قضايا لهذا المركز'], 404);
+        Log::warning(' لا يوجد قضايا لهذا المركز', ['center_name' => $center]);
+        return response()->json(['message' => ' لا يوجد قضايا لهذا المركز'], 404);
     }
 
-    Log::info('✅ تم العثور على قضايا لهذا المركز', [
+    Log::info(' تم العثور على قضايا لهذا المركز', [
         'center_name' => $center,
         'count'       => $cases->count(),
     ]);
@@ -634,27 +629,20 @@ public function getPoliceCasesByCenter($center)
 
 
 
-
-
-
-
-
-
-
 // مذكرة توقيف
 public function handleArrestMemo(Request $request) 
 {
-    // ✅ التحقق من إدخال رقم القضية فقط
+    //  التحقق من إدخال رقم القضية فقط
     $request->validate([
         'case_number' => 'required',
         'detention_duration' => 'nullable|integer|min:1',
         'detention_reason' => 'nullable|string',
         'detention_center' => 'nullable|string',
-        'participant_name' => 'nullable|string', // ✅ إضافة اسم الطرف
+        'participant_name' => 'nullable|string', 
         'save' => 'nullable|boolean',
     ]);
 
-    // ✅ جلب القضية مع العلاقات
+    //  جلب القضية مع العلاقات
     $case = CourtCase::with(['tribunal', 'department', 'judge'])
                      ->where('number', $request->case_number)
                      ->first();
@@ -663,28 +651,28 @@ public function handleArrestMemo(Request $request)
         return response()->json(['error' => 'القضية غير موجودة'], 404);
     }
 
-    // ✅ جلب الأطراف
+    //  جلب الأطراف
     $participants = Participant::where('court_case_id', $case->id)->get();
 
-    // ✅ جلب اسم القاضي من العلاقة
+    //  جلب اسم القاضي من العلاقة
     $judgeName = optional($case->judge)->full_name;
 
-    // ✅ إذا المستخدم طلب حفظ مذكرة التوقيف
+    //  إذا المستخدم طلب حفظ مذكرة التوقيف
     if ($request->has('save') && $request->save == true) {
         try {
-            // ✅ التحقق من الحقول المطلوبة للحفظ
+            //  التحقق من الحقول المطلوبة للحفظ
             $request->validate([
                 'detention_duration' => 'required|integer|min:1',
                 'detention_reason' => 'required|string',
                 'detention_center' => 'required|string',
-                'participant_name' => 'required|string', // ✅ مطلوب للحفظ
+                'participant_name' => 'required|string', 
             ]);
 
-            // ✅ حفظ مذكرة التوقيف
+            //  حفظ مذكرة التوقيف
             ArrestMemo::create([
                 'case_id'            => $case->id,
                 'judge_name'         => $judgeName,
-                'participant_name'   => $request->participant_name, // ✅ حفظ اسم الطرف
+                'participant_name'   => $request->participant_name, 
                 'detention_duration' => $request->detention_duration,
                 'detention_reason'   => $request->detention_reason,
                 'detention_center'   => $request->detention_center,
@@ -693,7 +681,7 @@ public function handleArrestMemo(Request $request)
 
             return response()->json(['message' => 'تم حفظ مذكرة التوقيف بنجاح']);
         } catch (\Exception $e) {
-            // ✅ تسجيل الخطأ في الـ log
+            //  تسجيل الخطأ في الـ log
             Log::error('خطأ أثناء حفظ مذكرة التوقيف', [
                 'case_number' => $request->case_number,
                 'judge_name'  => $judgeName,
@@ -705,7 +693,7 @@ public function handleArrestMemo(Request $request)
         }
     }
 
-    // ✅ عرض البيانات بدون حفظ
+    //  عرض البيانات بدون حفظ
     return response()->json([
         'case'              => $case,
         'participants'      => $participants,
@@ -725,11 +713,11 @@ public function handleArrestMemo(Request $request)
 //مذكرة تمديد توقيف
 public function extendArrestMemo(Request $request) 
 {
-    Log::info('📥 دخول الدالة extendArrestMemo', [
+    Log::info(' دخول الدالة extendArrestMemo', [
         'request' => $request->all()
     ]);
 
-    // ✅ تحقق مرن حسب نوع الطلب
+    //  تحقق مرن حسب نوع الطلب
     if ($request->has('save') && $request->save == true) {
         $request->validate([
             'case_number' => 'required',
@@ -750,14 +738,14 @@ public function extendArrestMemo(Request $request)
                      ->first();
 
     if (!$case) {
-        Log::warning('❌ القضية غير موجودة', [
+        Log::warning(' القضية غير موجودة', [
             'case_number' => $request->case_number,
             'request' => $request->all()
         ]);
         return response()->json(['error' => 'القضية غير موجودة'], 404);
     }
 
-    Log::info('✅ تم العثور على القضية', ['case_id' => $case->id]);
+    Log::info(' تم العثور على القضية', ['case_id' => $case->id]);
 
     $participants = Participant::where('court_case_id', $case->id)->get();
     $judgeName = optional($case->judge)->full_name;
@@ -767,7 +755,7 @@ public function extendArrestMemo(Request $request)
                       ->first();
 
     if (!$memo) {
-        Log::warning('❌ لا توجد مذكرة توقيف لهذه القضية', [
+        Log::warning(' لا توجد مذكرة توقيف لهذه القضية', [
             'case_id' => $case->id,
             'case_number' => $request->case_number,
             'request' => $request->all()
@@ -775,14 +763,15 @@ public function extendArrestMemo(Request $request)
         return response()->json(['error' => 'لا توجد مذكرة توقيف لهذه القضية'], 404);
     }
 
-    Log::info('✅ تم العثور على مذكرة التوقيف', ['memo_id' => $memo->id]);
+    Log::info(' تم العثور على مذكرة التوقيف', ['memo_id' => $memo->id]);
 
     if ($request->has('save') && $request->save == true) {
-        Log::info('💾 بدء عملية حفظ التمديد', [
+        Log::info(' بدء عملية حفظ التمديد', [
+            //تمديد الايام
             'memo_id' => $memo->id,
             'extension_days' => $request->extension_days
         ]);
-
+         // تحديث البيانات
         try {
             $memo->detention_duration += $request->extension_days;
             $memo->detention_reason = $request->detention_reason;
@@ -792,7 +781,7 @@ public function extendArrestMemo(Request $request)
             $memo->updated_at = now();
             $memo->save();
 
-            Log::info('✅ تم تمديد مذكرة التوقيف بنجاح', [
+            Log::info(' تم تمديد مذكرة التوقيف بنجاح', [
                 'case_id' => $case->id,
                 'memo_id' => $memo->id,
                 'new_duration' => $memo->detention_duration,
@@ -801,7 +790,7 @@ public function extendArrestMemo(Request $request)
 
             return response()->json(['message' => 'تم تمديد مدة التوقيف بنجاح']);
         } catch (\Exception $e) {
-            Log::error('❌ خطأ أثناء تمديد مذكرة التوقيف', [
+            Log::error(' خطأ أثناء تمديد مذكرة التوقيف', [
                 'case_number' => $request->case_number,
                 'judge_name'  => $judgeName,
                 'participant_name' => $request->participant_name,
@@ -814,7 +803,7 @@ public function extendArrestMemo(Request $request)
         }
     }
 
-    Log::info('📤 عرض بيانات القضية بدون حفظ', ['case_id' => $case->id]);
+    Log::info(' عرض بيانات القضية بدون حفظ', ['case_id' => $case->id]);
 
     return response()->json([
         'case'              => $case,
@@ -904,10 +893,10 @@ public function searchCivilRegistry(Request $request)
 }
 
 
-//مذكرة الإفراج عند الموقوفين
+//مذكرة إفراج للموقوفين
 public function storeReleaseMemo(Request $request)
 {
-    Log::info('📥 تم الوصول إلى دالة حفظ مذكرة الإفراج', [
+    Log::info(' تم الوصول إلى دالة حفظ مذكرة الإفراج', [
         'timestamp' => now()->toDateTimeString(),
         'request' => $request->all()
     ]);
@@ -921,19 +910,19 @@ public function storeReleaseMemo(Request $request)
     try {
         $cleanNumber = trim($validated['case_number']);
 
-        Log::debug('🔍 البحث عن القضية باستخدام رقم الدعوى:', [
+        Log::debug(' البحث عن القضية باستخدام رقم الدعوى:', [
             'رقم_الدعوى_المدخل' => $cleanNumber
         ]);
 
         $case = CourtCase::where('number', $cleanNumber)->with('judge')->first();
 
-        Log::debug('📄 نتيجة البحث عن القضية:', [
+        Log::debug(' نتيجة البحث عن القضية:', [
             'case_found' => $case ? true : false,
             'case_id' => $case->id ?? null
         ]);
 
         if (!$case) {
-            Log::error('❌ القضية غير موجودة في جدول court_cases', [
+            Log::error(' القضية غير موجودة في جدول court_cases', [
                 'رقم_الدعوى' => $cleanNumber,
                 'request' => $request->all()
             ]);
@@ -947,13 +936,13 @@ public function storeReleaseMemo(Request $request)
 
         $memo = ArrestMemo::where('case_id', $case->id)->latest()->first();
 
-        Log::debug('📄 نتيجة البحث عن مذكرة التوقيف:', [
+        Log::debug(' نتيجة البحث عن مذكرة التوقيف:', [
             'memo_found' => $memo ? true : false,
             'memo_id' => $memo->id ?? null
         ]);
 
         if (!$memo) {
-            Log::error('❌ لا توجد مذكرة توقيف لهذه القضية', [
+            Log::error(' لا توجد مذكرة توقيف لهذه القضية', [
                 'case_id' => $case->id,
                 'request' => $request->all()
             ]);
@@ -967,7 +956,7 @@ public function storeReleaseMemo(Request $request)
         $memo->updated_at = now();
         $memo->save();
 
-        Log::info('✅ تم حفظ مذكرة الإفراج بنجاح', [
+        Log::info(' تم حفظ مذكرة الإفراج بنجاح', [
             'case_number' => $cleanNumber,
             'memo_id' => $memo->id,
             'released_participants' => $validated['released_participants']
@@ -976,7 +965,7 @@ public function storeReleaseMemo(Request $request)
         return response()->json(['status' => 'success', 'memo_id' => $memo->id]);
 
     } catch (\Exception $e) {
-        Log::error('❌ خطأ غير متوقع أثناء حفظ مذكرة الإفراج', [
+        Log::error(' خطأ غير متوقع أثناء حفظ مذكرة الإفراج', [
             'error' => $e->getMessage(),
             'trace' => $e->getTraceAsString(),
             'request' => $request->all()
@@ -1018,19 +1007,23 @@ public function defaultInfo()
 
 
 
+
+
+
+
 //إدارة تباليغ الدعوى
 public function getCaseNotifications($caseNumber)
 {
     try {
 
-        // 1️⃣ جلب القضية بناءً على رقم الدعوى الحقيقي (number)
+        // 1 جلب القضية بناءً على رقم الدعوى الحقيقي (number)
         $case = CourtCase::with(['tribunal', 'department', 'judge'])->where('number', $caseNumber)->first();
 
         if (!$case) {
             return response()->json(['error' => 'رقم الدعوى غير موجود'], 404);
         }
 
-        // 2️⃣ جلب التباليغ المرتبطة بالقضية
+        // 2 جلب التباليغ المرتبطة بالقضية
         $notifications = Notification::query()
             ->where('notifications.case_id', $case->id)
             ->leftJoin('participants', function ($join) {
@@ -1057,10 +1050,10 @@ public function getCaseNotifications($caseNumber)
                 ];
             });
 
-        // 3️⃣ جلب الأطراف
+        // 3 جلب الأطراف
         $participants = Participant::where('court_case_id', $case->id)->get();
 
-        // 4️⃣ إرجاع البيانات كـ JSON
+        // 4إرجاع البيانات كـ JSON
         return response()->json([
             'case_number'   => $case->number,
             'case_court'    => $case->tribunal->number ?? '',
@@ -1074,7 +1067,7 @@ public function getCaseNotifications($caseNumber)
 
     } catch (\Exception $e) {
 
-        Log::error('❌ خطأ أثناء تحميل تباليغ الدعوى', [
+        Log::error(' خطأ أثناء تحميل تباليغ الدعوى', [
             'message' => $e->getMessage(),
             'line'    => $e->getLine(),
             'file'    => $e->getFile(),
@@ -1211,7 +1204,7 @@ public function storeRequest(Request $request)
             'session_time'   => $sessionDate->format('H:i'),
             'title'          => $request->type,
 
-            // ⭐⭐ القيمة التي طلبتِها ⭐⭐
+            // القيمة التي طلبتِها 
             'session_status' => 'محددة',
         ]);
 
@@ -1326,7 +1319,7 @@ public function storeRequestParties(Request $request)
 
     } catch (\Exception $e) {
 
-        Log::error('❌ خطأ حفظ الأطراف في الطلب', [
+        Log::error(' خطأ حفظ الأطراف في الطلب', [
             'message' => $e->getMessage(),
             'file'    => $e->getFile(),
             'line'    => $e->getLine(),
@@ -1354,7 +1347,7 @@ public function getNextJudgeForRequest()
 
     } catch (\Exception $e) {
 
-        Log::error('❌ خطأ في getNextJudgeForRequest', [
+        Log::error(' خطأ في getNextJudgeForRequest', [
             'message' => $e->getMessage(),
             'file'    => $e->getFile(),
             'line'    => $e->getLine(),

@@ -269,7 +269,9 @@
     text-align: center;
     margin-bottom: 20px;
 }
+/*   عناوين الحقول    */
 #registerCaseModal .form-label {
+  
     font-weight: 600;
     color: #333;
     margin-bottom: 5px;
@@ -280,6 +282,7 @@
     border-radius: 4px;
     padding: 8px 12px;
 }
+/* الاطراف  */
 #registerCaseModal .party-block {
     background: #f9f9f9;
     border: 2px solid #e0e0e0;
@@ -292,7 +295,7 @@
     position: absolute;
     top: 10px;
     left: 10px;
-    background: #dc3545;
+    background: #e82a11ff;
     color: white;
     border: none;
     border-radius: 50%;
@@ -301,6 +304,7 @@
     font-size: 18px;
     cursor: pointer;
 }
+/*  إضافة طرف  */
 #registerCaseModal .btn-add-party {
     background: black;
     color: white;
@@ -319,6 +323,7 @@
     justify-content: center;
     margin-top: 30px;
 }
+
 #registerCaseModal .action-buttons button {
     background: black;
     color: white;
@@ -523,6 +528,7 @@
     border-radius: 8px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
+/* معلومات الطلب و الاطراف*/
 #registerRequestModal .section-title {
     background: black;
     color: white;
@@ -533,6 +539,7 @@
     text-align: center;
     margin-bottom: 20px;
 }
+/* لون الخط*/
 #registerRequestModal .form-label {
     font-weight: 600;
     color: #333;
@@ -591,6 +598,7 @@
     justify-content: center;
     margin-top: 30px;
 }
+/* زر حفظ و مسح الكل */
 #registerRequestModal .action-buttons button {
     background: black;
     color: white;
@@ -977,7 +985,7 @@
     </div>
 </div>
 
-<!-- مودال جدول أعمال المحكمة -->
+<!-- جدول اعمال المحكمة -->
 <div class="modal fade" id="courtScheduleModal" tabindex="-1" aria-labelledby="courtScheduleLabel" aria-hidden="true">
   <div class="modal-dialog modal-xl modal-dialog-scrollable">
     <div class="modal-content">
@@ -1010,7 +1018,7 @@
 
         </div>
 
-        <!-- 🔹 جدول النتائج -->
+        <!-- جدول النتائج -->
         <div class="table-responsive">
           <table class="table table-bordered text-center">
             <thead class="table-light">
@@ -1039,7 +1047,7 @@
     </div>
   </div>
 </div>
-
+<!-- جدول اعمال المحكمة -->
 <script>
 
 // فتح المودال
@@ -1110,7 +1118,7 @@ function loadCourtSchedule() {
 
 </script>
 
-<!-- 🔶 مودال جدول أعمال القاضي -->
+<!--  جدول اعمال القاضي-->
 <div class="modal fade" id="judgeScheduleModal" tabindex="-1">
   <div class="modal-dialog modal-xl modal-dialog-scrollable">
     <div class="modal-content">
@@ -1122,7 +1130,7 @@ function loadCourtSchedule() {
 
       <div class="modal-body">
 
-        <!-- 🔹 فلاتر -->
+        <!--  فلاتر -->
         <div class="row mb-4">
 
           <!-- اختيار القاضي -->
@@ -1151,7 +1159,7 @@ function loadCourtSchedule() {
 
         </div>
 
-        <!-- 🔹 جدول النتائج -->
+        <!--  جدول النتائج -->
         <div class="table-responsive">
           <table class="table table-bordered text-center">
             <thead class="table-light">
@@ -1181,10 +1189,8 @@ function loadCourtSchedule() {
     </div>
   </div>
 </div>
+<!--   جدول اعمال القاضي-->
 <script>
-
-//جدول أعمال القاضي
-  //  تحميل القضاة من السيرفر
 
 function loadJudges() {
     fetch('/judges')
@@ -1272,7 +1278,7 @@ function openRequestScheduleModal() {
 
 </script>
 
-<!--  مودال جدول الدعوى -->
+<!--  جدول الدعوى -->
 <div class="modal fade" id="caseScheduleModal" tabindex="-1">
   <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
     <div class="modal-content">
@@ -1338,6 +1344,7 @@ function openRequestScheduleModal() {
     </div>
   </div>
 </div>
+<!--  جدول الدعوى -->
 <script>
 document.addEventListener('DOMContentLoaded', function () {
 
@@ -1409,7 +1416,7 @@ function closeCaseSchedule() {
   if (modal) modal.hide();
 }
 </script>
-
+<!--  جدول الدعوى -->
 <style>
   #caseScheduleModal .modal-body {
     max-height: 70vh;
@@ -1417,7 +1424,7 @@ function closeCaseSchedule() {
   }
 
   #caseScheduleModal .table th {
-    background-color: #f8f9fa;
+    background-color: #faf8f8ff;
     font-weight: 600;
     position: sticky;
     top: 0;
@@ -1495,13 +1502,13 @@ function closeCaseSchedule() {
 <!-- نافذة سحب دعوى من المدعي العام -->
 <style>
 #withdrawCaseModal .modal-content {
-    background: #fff;
+    background:   #f8f9fa;
     border-radius: 10px;
     box-shadow: 0 4px 10px rgba(0,0,0,0.1);
 }
 
 #withdrawCaseModal .modal-header {
-    background: #f8f9fa;
+    background: #faf8f8ff;
     border-bottom: 1px solid #dee2e6;
 }
 
@@ -1531,13 +1538,13 @@ function closeCaseSchedule() {
     font-weight: bold;
     cursor: pointer;
 }
-
+/* سحب دعوى  زر   */
 #withdrawCaseModal .withdraw-btn:hover {
     background-color: #333;
 }
-
+/*  زر خروج  */
 #withdrawCaseModal .exit-btn {
-    background-color: #e74c3c;
+    background-color: #e73c3cff;
     color: white;
     padding: 10px 30px;
     border: none;
@@ -1654,7 +1661,7 @@ function closeCaseSchedule() {
     padding: 8px;
     text-align: center;
 }
-
+/* رئس الجدول*/
 #pullPoliceCaseModal th {
     background-color: #f2f2f2;
     font-weight: bold;
@@ -1760,7 +1767,7 @@ function closeCaseSchedule() {
 
 
 
-<!-- مذكرة تبليغ مشتكي عليه -->
+<!--موعد جلسة مذكرة تبليغ مشتكي عليه -->
 <style>
 #notif-complainant-modal .modal-content {
     background: #fff;
@@ -1921,6 +1928,7 @@ function closeCaseSchedule() {
 }
 </style>
 
+<!-- مذكرة تبليغ مشتكي عليه -->
 <div class="modal fade" id="notif-complainant-modal" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-xl modal-dialog-centered">
     <div class="modal-content">
@@ -2155,7 +2163,7 @@ function closeCaseSchedule() {
     font-size: 11px;
 }
 </style>
-
+<!-- مذكرة تبليغ مشتكي موعد جلسة -->
 <div class="modal fade" id="notif-session-complainant-modal" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-xl modal-dialog-centered">
     <div class="modal-content">
@@ -2227,7 +2235,7 @@ function closeCaseSchedule() {
   </div>
 </div>
 
-<!-- مودال مذكرة تبليغ شاهد موعد جلسة -->
+<!-- مذكرة تبليغ شاهد موعد جلسة-->
 <div class="modal fade" id="notif-witness-modal" tabindex="-1">
   <div class="modal-dialog modal-xl">
     <div class="modal-content">
@@ -2320,7 +2328,7 @@ function closeCaseSchedule() {
     </div>
   </div>
 </div>
-
+<!-- مذكرة تبليغ شاهد موعد جلسة-->
 <style>
   #notif-witness-parties-table tbody tr {
     cursor: pointer;
@@ -2364,7 +2372,7 @@ function closeCaseSchedule() {
   }
 
   #notif-witness-modal .btn-exit {
-    background: #c81e1e;
+    background: #c81e6aff;
     color: #fff;
     padding: 10px 20px;
     border-radius: 6px;
@@ -2378,7 +2386,9 @@ function closeCaseSchedule() {
 
 <meta name="csrf-token" content="<?php echo e(csrf_token()); ?>">
 
-<!-- إدارة تباليغ الدعوى -->
+
+
+<!-- ادارة تباليغ الدعوى -->
 <style>
   #manage-notifications-modal .modal-content {
     background: #ffffff;
@@ -2494,7 +2504,7 @@ function closeCaseSchedule() {
     font-weight: bold;
   }
 </style>
-
+<!--   ادارة تباليغ الدعوى--->
 <div class="modal fade" id="manage-notifications-modal" tabindex="-1" aria-hidden="true">
   <div class="modal-dialog modal-xl modal-dialog-centered">
     <div class="modal-content">
@@ -2551,7 +2561,7 @@ function closeCaseSchedule() {
   </div>
 </div>
 
-<!-- مودال مذكرة تبليغ حكم -->
+<!-- مذكرة تبليغ حكم -->
 <div class="modal fade" id="notif-judgment-modal" tabindex="-1">
   <div class="modal-dialog modal-xl modal-dialog-centered">
     <div class="modal-content">
@@ -2649,7 +2659,7 @@ function closeCaseSchedule() {
     </div>
   </div>
 </div>
-
+<!--  مذكرة تبليغ حكم -->
 <style>
   #notif-judgment-modal .actions {
     display: flex;
@@ -2818,7 +2828,7 @@ function closeCaseSchedule() {
   margin-top: 18px;
   justify-content: center;
 }
-
+/*   زر حفظ و انهاء*/
 #arrest-memo-modal .btn-save {
   background: #1a7f24;
   color: #fff;
@@ -3462,7 +3472,7 @@ function closeCaseSchedule() {
 <?php echo $__env->yieldContent('chief-extra'); ?>
 <?php $__env->stopSection(); ?>
 <script>
-  //مذكرة الإفراج عن الموقوفين
+  //مذكرة إفراج للموقوفين
 document.addEventListener('DOMContentLoaded', () => {
 
   const modalId = "release-memo-modal";
@@ -3870,7 +3880,7 @@ document.addEventListener('DOMContentLoaded', () => {
 <script>
 //مذكرة تبليغ حكم
 document.addEventListener('DOMContentLoaded', () => {
-  console.log('🚀 مذكرة تبليغ حكم - Script loaded!');
+  console.log(' مذكرة تبليغ حكم - Script loaded!');
 
   const searchBtn = document.getElementById('notif-judgment-search');
   const notifyBtn = document.getElementById('notif-judgment-notify');
@@ -4402,7 +4412,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 <script>
-    //إدارة تباليغ الدعوى
+    //ادارة تباليغ الدعوى
 document.addEventListener("DOMContentLoaded", function () {
 
   const modalId = "manage-notifications-modal";
@@ -4557,9 +4567,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 <script>
-    // تبليغ مشتكي عليه
+    // مذكرة تبليغ مشتكي عليه
 document.addEventListener("DOMContentLoaded", function () {
-  console.log('🚀 تبليغ مشتكي عليه - Script loaded!');
+  console.log(' تبليغ مشتكي عليه - Script loaded!');
 
   const modalId = "notif-complainant-modal";
   const $ = id => document.getElementById(id);
@@ -4578,7 +4588,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const notifyBtn = $("notif-complainant-notify");
   const alertBox = $("notif-complainant-alert");
 
-  console.log('📦 Elements check:', {
+  console.log(' Elements check:', {
     caseSerial: !!caseSerial,
     searchBtn: !!searchBtn,
     saveBtn: !!saveBtn,
@@ -4614,7 +4624,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const value = caseSerial.value.trim();
     if (value.length !== 4) {
-      showAlert('⚠️ يجب إدخال 4 خانات', 'warning');
+      showAlert(' يجب إدخال 4 خانات', 'warning');
       return;
     }
 
@@ -4626,7 +4636,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // جلب البيانات من الخادم
     const fullCaseNumber = `${value}`;
     
-    showAlert("⏳ جاري جلب بيانات القضية...", "info");
+    showAlert(" جاري جلب بيانات القضية...", "info");
 
     const notificationType = "مذكرة تبليغ مشتكى عليه";
 
@@ -4647,7 +4657,7 @@ document.addEventListener("DOMContentLoaded", function () {
       .catch(err => {
         console.error(err);
         clearCaseDisplay();
-        showAlert(err.error ?? "❌ لا يوجد سجل", "danger");
+        showAlert(err.error ?? " لا يوجد سجل", "danger");
       });
   });
 
@@ -4661,7 +4671,7 @@ document.addEventListener("DOMContentLoaded", function () {
     tableBody.innerHTML = '';
     
     if (!data || data.length === 0) {
-      showAlert("⚠️ لا يوجد أطراف من نوع 'مشتكى عليه' في هذه القضية.", "warning");
+      showAlert(" لا يوجد أطراف من نوع 'مشتكى عليه' في هذه القضية.", "warning");
       return;
     }
 
@@ -4695,7 +4705,7 @@ document.addEventListener("DOMContentLoaded", function () {
         tr.classList.add('selected');
         selectedRow = tr;
         selectedParticipant = p;
-        console.log('✅ Participant selected:', selectedParticipant);
+        console.log(' Participant selected:', selectedParticipant);
       });
       
       // Stop propagation on select to avoid row selection when clicking dropdown
@@ -4705,7 +4715,7 @@ document.addEventListener("DOMContentLoaded", function () {
       });
       
       tr.addEventListener('click', () => {
-        console.log('📋 Row clicked:', p.name);
+        console.log(' Row clicked:', p.name);
         radio.click();
       });
       
@@ -4717,15 +4727,15 @@ document.addEventListener("DOMContentLoaded", function () {
   console.log('🔍 Notify button element:', notifyBtn);
   console.log('🔍 Notify button element:', notifyBtn);
   if (notifyBtn) {
-    console.log('✅ Adding click event listener to notify button');
+    console.log(' Adding click event listener to notify button');
     notifyBtn.addEventListener('click', () => {
-      console.log('🔔 Notify button clicked!');
+      console.log(' Notify button clicked!');
       console.log('Selected row:', selectedRow);
       console.log('Selected participant:', selectedParticipant);
       console.log('Current case ID:', currentCaseId);
 
       if (!selectedRow || !selectedParticipant) {
-        showAlert('⚠️ حدد طرفا من الجدول', 'warning');
+        showAlert(' حدد طرفا من الجدول', 'warning');
         return;
       }
 
@@ -4737,17 +4747,17 @@ document.addEventListener("DOMContentLoaded", function () {
       console.log('Selected method:', method);
 
       if (!method) {
-        showAlert('⚠️ اختر طريقة التبليغ من القائمة', 'warning');
+        showAlert(' اختر طريقة التبليغ من القائمة', 'warning');
         return;
       }
 
       if (!currentCaseId) {
-        showAlert('⚠️ لا يوجد معرف للقضية', 'warning');
+        showAlert(' لا يوجد معرف للقضية', 'warning');
         return;
       }
 
       // Send to database
-      console.log('📤 Sending notification:', {
+      console.log(' Sending notification:', {
         case_id: currentCaseId,
         participant_name: selectedParticipant.name,
         method: method
@@ -4776,11 +4786,11 @@ document.addEventListener("DOMContentLoaded", function () {
       })
       .then(data => {
         console.log(' Response:', data);
-        showAlert(`✅ تم حفظ التبليغ للطرف: ${selectedParticipant.name} بطريقة: ${method}`, 'success');
+        showAlert(` تم حفظ التبليغ للطرف: ${selectedParticipant.name} بطريقة: ${method}`, 'success');
       })
       .catch(err => {
         console.error(err);
-        showAlert('❌ حدث خطأ أثناء حفظ التبليغ', 'danger');
+        showAlert(' حدث خطأ أثناء حفظ التبليغ', 'danger');
       })
       .finally(() => {
         notifyBtn.disabled = false;
@@ -4793,7 +4803,7 @@ document.addEventListener("DOMContentLoaded", function () {
   if (saveBtn) {
     saveBtn.addEventListener('click', () => {
       if (!selectedParticipant) {
-        showAlert('⚠️ اختر طرفاً أولاً', 'warning');
+        showAlert(' اختر طرفاً أولاً', 'warning');
         return;
       }
 
@@ -4803,12 +4813,12 @@ document.addEventListener("DOMContentLoaded", function () {
       const method = methodSelect.value;
 
       if (!method) {
-        showAlert('⚠️ اختر طريقة التبليغ من القائمة', 'warning');
+        showAlert(' اختر طريقة التبليغ من القائمة', 'warning');
         return;
       }
 
       if (!currentCaseId) {
-        showAlert('⚠️ لا يوجد معرف للقضية', 'warning');
+        showAlert(' لا يوجد معرف للقضية', 'warning');
         return;
       }
       
@@ -4843,7 +4853,7 @@ document.addEventListener("DOMContentLoaded", function () {
       })
       .catch(err => {
         console.error(err);
-        showAlert('❌ حدث خطأ أثناء الحفظ', 'danger');
+        showAlert(' حدث خطأ أثناء الحفظ', 'danger');
       })
       .finally(() => {
         saveBtn.disabled = false;
@@ -4867,7 +4877,7 @@ document.addEventListener("DOMContentLoaded", function () {
 </script>
 
 <script>
-    // تبليغ مشتكي موعد جلسة
+    // مذكرة تبليغ مشتكي موعد جلسة
 document.addEventListener("DOMContentLoaded", function () {
 
   const modalId = "notif-session-complainant-modal";
@@ -5452,7 +5462,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const value = caseSerial.value.trim();
     if (value.length !== 4) {
-      showAlert('⚠️ يجب إدخال 4 خانات', 'warning');
+      showAlert(' يجب إدخال 4 خانات', 'warning');
       return;
     }
 
@@ -5462,7 +5472,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const fullCaseNumber = `${value}`;
     
-    showAlert("⏳ جاري جلب بيانات القضية...", "info");
+    showAlert(" جاري جلب بيانات القضية...", "info");
 
     const notificationType = "مذكرة تبليغ شاهد موعد جلسة";
 
@@ -5483,7 +5493,7 @@ document.addEventListener("DOMContentLoaded", function () {
       .catch(err => {
         console.error(err);
         clearCaseDisplay();
-        showAlert(err.error ?? "❌ لا يوجد سجل", "danger");
+        showAlert(err.error ?? " لا يوجد سجل", "danger");
       });
   });
 
@@ -5496,7 +5506,7 @@ document.addEventListener("DOMContentLoaded", function () {
     tableBody.innerHTML = '';
     
     if (!data || data.length === 0) {
-      showAlert("⚠️ لا يوجد أطراف من نوع 'شاهد' في هذه القضية.", "warning");
+      showAlert(" لا يوجد أطراف من نوع 'شاهد' في هذه القضية.", "warning");
       return;
     }
 
@@ -5540,7 +5550,7 @@ document.addEventListener("DOMContentLoaded", function () {
   if (notifyBtn) {
     notifyBtn.addEventListener('click', () => {
       if (!selectedRow || !selectedParticipant) {
-        showAlert('⚠️ حدد طرفا من الجدول', 'warning');
+        showAlert(' حدد طرفا من الجدول', 'warning');
         return;
       }
 
@@ -5549,12 +5559,12 @@ document.addEventListener("DOMContentLoaded", function () {
       const method = methodSelect.value;
 
       if (!method) {
-        showAlert('⚠️ اختر طريقة التبليغ من القائمة', 'warning');
+        showAlert(' اختر طريقة التبليغ من القائمة', 'warning');
         return;
       }
 
       if (!currentCaseId) {
-        showAlert('⚠️ لا يوجد معرف للقضية', 'warning');
+        showAlert(' لا يوجد معرف للقضية', 'warning');
         return;
       }
 
@@ -5581,11 +5591,11 @@ document.addEventListener("DOMContentLoaded", function () {
       })
       .then(data => {
         console.log(' Response:', data);
-        showAlert(`✅ تم حفظ التبليغ للطرف: ${selectedParticipant.name} بطريقة: ${method}`, 'success');
+        showAlert(` تم حفظ التبليغ للطرف: ${selectedParticipant.name} بطريقة: ${method}`, 'success');
       })
       .catch(err => {
         console.error(err);
-        showAlert('❌ حدث خطأ أثناء حفظ التبليغ', 'danger');
+        showAlert(' حدث خطأ أثناء حفظ التبليغ', 'danger');
       })
       .finally(() => {
         notifyBtn.disabled = false;
@@ -5597,7 +5607,7 @@ document.addEventListener("DOMContentLoaded", function () {
   if (saveBtn) {
     saveBtn.addEventListener('click', () => {
       if (!selectedParticipant) {
-        showAlert('⚠️ اختر طرفاً أولاً', 'warning');
+        showAlert(' اختر طرفاً أولاً', 'warning');
         return;
       }
 
@@ -5606,12 +5616,12 @@ document.addEventListener("DOMContentLoaded", function () {
       const method = methodSelect.value;
 
       if (!method) {
-        showAlert('⚠️ اختر طريقة التبليغ من القائمة', 'warning');
+        showAlert(' اختر طريقة التبليغ من القائمة', 'warning');
         return;
       }
 
       if (!currentCaseId) {
-        showAlert('⚠️ لا يوجد معرف للقضية', 'warning');
+        showAlert(' لا يوجد معرف للقضية', 'warning');
         return;
       }
       
@@ -5638,7 +5648,7 @@ document.addEventListener("DOMContentLoaded", function () {
       })
       .then(data => {
         console.log(' Response:', data);
-        showAlert('✅ تم الحفظ بنجاح', 'success');
+        showAlert(' تم الحفظ بنجاح', 'success');
         setTimeout(() => {
           const modal = bootstrap.Modal.getInstance(document.getElementById(modalId));
           if (modal) modal.hide();
@@ -5646,7 +5656,7 @@ document.addEventListener("DOMContentLoaded", function () {
       })
       .catch(err => {
         console.error(err);
-        showAlert('❌ حدث خطأ أثناء الحفظ', 'danger');
+        showAlert(' حدث خطأ أثناء الحفظ', 'danger');
       })
       .finally(() => {
         saveBtn.disabled = false;
@@ -5725,9 +5735,7 @@ document.addEventListener("DOMContentLoaded", function () {
     let selectedRow = null;
     let selectedCaseId = null;
 
-    // ----------------------
     // دالة عرض الرسائل
-    // ----------------------
     function showAlert(message, type = "info") {
         alertBox.innerHTML = `<div class="alert alert-${type}">${message}</div>`;
     }
@@ -5740,9 +5748,8 @@ document.addEventListener("DOMContentLoaded", function () {
         return date ? new Date(date).toLocaleDateString() : "-";
     }
 
-    // ----------------------
+  
     // اختيار الصف من الجدول
-    // ----------------------
     function selectRow(row, caseId) {
         if (selectedRow) {
             selectedRow.classList.remove('selected');
@@ -5753,16 +5760,15 @@ document.addEventListener("DOMContentLoaded", function () {
         pullBtn.disabled = false;
     }
 
-    // ----------------------
+  
     // عند الضغط على زر البحث
-    // ----------------------
     searchBtn.addEventListener("click", function () {
         clearAlert();
         tbody.innerHTML = '<tr><td colspan="5">جارٍ البحث...</td></tr>';
 
         const center = centerSelect.value.trim();
         if (!center) {
-            showAlert('⚠️ اختر المركز الأمني', 'warning');
+            showAlert(' اختر المركز الأمني', 'warning');
             tbody.innerHTML = '';
             return;
         }
@@ -5802,14 +5808,13 @@ document.addEventListener("DOMContentLoaded", function () {
             })
             .catch(err => {
                 console.error(err);
-                showAlert("❌ حدث خطأ أثناء جلب القضايا", "danger");
+                showAlert(" حدث خطأ أثناء جلب القضايا", "danger");
                 tbody.innerHTML = '';
             });
     });
 
-    // ----------------------
+
     // زر السحب
-    // ----------------------
     pullBtn.addEventListener("click", function () {
 
         if (!selectedCaseId) {
@@ -5828,7 +5833,7 @@ document.addEventListener("DOMContentLoaded", function () {
         })
             .then(res => res.json())
             .then(response => {
-                showAlert(response.message ?? "✅ تم سحب الدعوى بنجاح", "success");
+                showAlert(response.message ?? " تم سحب الدعوى بنجاح", "success");
 
                 // حذف الصف بعد السحب
                 if (selectedRow) {
@@ -5841,7 +5846,7 @@ document.addEventListener("DOMContentLoaded", function () {
             })
             .catch(err => {
                 console.error(err);
-                showAlert("❌ حدث خطأ أثناء سحب القضية", "danger");
+                showAlert(" حدث خطأ أثناء سحب القضية", "danger");
             })
             .finally(() => {
                 pullBtn.disabled = true;
@@ -6001,11 +6006,11 @@ function updateScheduleTable(sessions) {
     //نافذه المشاركين
 document.addEventListener("DOMContentLoaded", function () {
 
-    console.log("📌 participants JS Loaded");
+    console.log(" participants JS Loaded");
 
     window.searchCivilRegistry = function () {
 
-        console.log("📌 Starting Civil Registry Search...");
+        console.log(" Starting Civil Registry Search...");
 
         const params = {
             first_name: document.getElementById("first_name").value.trim(),
@@ -6242,18 +6247,11 @@ async function loadReportsList() {
 
 
 
-
-
-
-
-
-
-
-
 <script>
+  //تسجيل طلب
 document.addEventListener("DOMContentLoaded", () => {
 
-    console.log("📌 JS تسجيل الطلب يعمل...");
+    console.log(" JS تسجيل الطلب يعمل...");
 
     let currentRequestId = null;
 
@@ -6275,7 +6273,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // ⭐ توليد رقم الطلب
+    //  توليد رقم الطلب
     const requestNumberInput = document.getElementById("requestNumber");
     if (requestNumberInput) {
         requestNumberInput.addEventListener("keydown", async (e) => {
@@ -6286,7 +6284,7 @@ document.addEventListener("DOMContentLoaded", () => {
             const type = document.getElementById("requestType").value;
 
             if (!type) {
-                alert("❌ اختر نوع الطلب أولاً");
+                alert(" اختر نوع الطلب أولاً");
                 return;
             }
 
@@ -6307,7 +6305,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // ⭐ إضافة طرف
+    //  إضافة طرف
     const addPartyBtn = document.getElementById("addRequestParty");
     
     if (addPartyBtn) {
@@ -6317,7 +6315,7 @@ document.addEventListener("DOMContentLoaded", () => {
             const partiesContainer = document.getElementById("partiesContainer");
             
             if (!partyTemplate || !partiesContainer) {
-                console.error("❌ Template or container not found");
+                console.error(" Template or container not found");
                 return;
             }
 
@@ -6337,7 +6335,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // ⭐ مسح الكل
+    //  مسح الكل
     const clearBtn = document.getElementById("clearRequest");
     if (clearBtn) {
         clearBtn.addEventListener("click", () => {
@@ -6355,7 +6353,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // ⭐ حفظ ومتابعة
+    //  حفظ ومتابعة
     const saveBtn = document.getElementById("saveRequest");
     if (saveBtn) {
         saveBtn.addEventListener("click", async () => {
@@ -6363,7 +6361,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // ⭐ حفظ وإنهاء
+    //  حفظ وإنهاء
     const saveAndFinishBtn = document.getElementById("saveAndFinishRequest");
     if (saveAndFinishBtn) {
         saveAndFinishBtn.addEventListener("click", async () => {
@@ -6371,11 +6369,11 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // ⭐ دالة حفظ الطلب
+    //  دالة حفظ الطلب
     async function saveRequestData(closeModal = false) {
 
         if (!currentRequestId) {
-            alert("❌ اضغط Enter لتوليد رقم الطلب أولاً");
+            alert(" اضغط Enter لتوليد رقم الطلب أولاً");
             return;
         }
 
@@ -6399,7 +6397,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
 
         if (parties.length === 0) {
-            alert("❌ يجب إدخال طرف واحد على الأقل");
+            alert(" يجب إدخال طرف واحد على الأقل");
             return;
         }
 
@@ -6418,7 +6416,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         } catch (err) {
             console.error(err);
-            alert("❌ خطأ أثناء حفظ الأطراف");
+            alert(" خطأ أثناء حفظ الأطراف");
         }
     }
 
@@ -6437,13 +6435,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
 <script>
+  //المشاركين
 document.addEventListener('DOMContentLoaded', function () {
 
-    console.log("🔥 participants JS Loaded");
+    console.log(" participants JS Loaded");
 
-    /* ============================================================
-       🔍 وظيفة البحث بالأحوال المدنية
-    ============================================================ */
+  
+     //  وظيفة البحث بالأحوال المدنية
+   
     window.searchCivilRegistry = function () {
 
         const payload = {
@@ -6455,7 +6454,7 @@ document.addEventListener('DOMContentLoaded', function () {
             gender:         document.getElementById("gender").value,
             occupation:     document.getElementById("occupation").value,
             nationality:    document.getElementById("nationality").value,
-            // ✅ حذفنا birth_date من الـ payload
+            //  حذفنا birth_date من الـ payload
         };
 
         console.log("📤 Sending request → /civil-registry/search", payload);
@@ -6477,20 +6476,20 @@ document.addEventListener('DOMContentLoaded', function () {
       .then(data => {
         console.log(' Response:', data);
 
-            console.log("📥 Civil Registry Results:", data);
+            console.log(" Civil Registry Results:", data);
 
             const tbody = document.getElementById("civilResults");
             tbody.innerHTML = "";
 
             if (!data || data.length === 0) {
-                // ✅ عدد الأعمدة = 16 الآن (بدون عمود اختيار)
+                //  عدد الأعمدة = 16 الآن (بدون عمود اختيار)
                 tbody.innerHTML = `<tr><td colspan="16" class="text-danger text-center">لا توجد نتائج</td></tr>`;
                 return;
             }
 
             data.forEach(item => {
 
-                // ✅ تنسيق تاريخ الميلاد (قص أول 10 خانات فقط)
+                //  تنسيق تاريخ الميلاد (قص أول 10 خانات فقط)
                 let birthDate = '-';
                 if (item.birth_date) {
                     birthDate = item.birth_date.toString().substring(0, 10);
@@ -6514,14 +6513,14 @@ document.addEventListener('DOMContentLoaded', function () {
                         <td>${item.education_level   ?? '-'}</td>
                         <td>${item.phone_number      ?? '-'}</td>
                         <td>${item.record_location   ?? '-'}</td>
-                        <!-- ✅ حذفنا عمود اختيار -->
+                        <!--  حذفنا عمود اختيار -->
                     </tr>
                 `;
             });
 
         })
         .catch(err => {
-            console.error("❌ Civil Registry Error:", err);
+            console.error(" Civil Registry Error:", err);
             alert("حدث خطأ أثناء البحث في السجل المدني");
         });
 
@@ -6529,10 +6528,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
 
-    /* ============================================================
-       🟦 دالة selectCivil (موجودة احتياطًا لو احتجتيها لاحقًا)
-       — حاليًا ما في زر اختيار في الجدول
-    ============================================================ */
     window.selectCivil = function (item) {
 
         console.log("✔ Selected Civil Person:", item);
@@ -6572,24 +6567,24 @@ document.addEventListener('DOMContentLoaded', function () {
     const menu = document.getElementById('writer-case-options');
     const trigger = document.getElementById('trigger-cases'); // من layouts.app
 
-    console.log("📌 Writer page loaded");
+    console.log(" Writer page loaded");
 
-    if (!menu) console.warn("⚠️ القائمة غير موجودة!");
-    if (!trigger) console.warn("⚠️ trigger-cases غير موجود في الصفحة!");
+    if (!menu) console.warn(" القائمة غير موجودة!");
+    if (!trigger) console.warn(" trigger-cases غير موجود في الصفحة!");
 
     if (!menu || !trigger) return;
 
-    /* 📌 إظهار القائمة عندما يرسل layouts.event الإشارة */
+    /*  إظهار القائمة عندما يرسل layouts.event الإشارة */
     document.addEventListener('showWriterCasesMenu', () => {
 
         const rect = trigger.getBoundingClientRect();
 
-        // ⭐ وضع القائمة تحت الكلمة في RTL
+        //  وضع القائمة تحت الكلمة في RTL
         menu.style.top = rect.bottom + window.scrollY + "px";
         menu.style.right = (window.innerWidth - rect.right) + "px";
 
         menu.style.display = "block";
-        console.log("📌 القائمة ظهرت الآن");
+        console.log(" القائمة ظهرت الآن");
     });
 
     /* 📌 إخفاء القائمة */
@@ -6603,7 +6598,7 @@ document.addEventListener('DOMContentLoaded', function () {
     //     }, 150);
     // });
 
-    /* 📌 إخفاء عند خروج الماوس */
+    /*  إخفاء عند خروج الماوس */
     menu.addEventListener('mouseleave', () => {
         if (!trigger.matches(':hover')) {
             menu.style.display = "none";
@@ -6614,9 +6609,10 @@ document.addEventListener('DOMContentLoaded', function () {
 </script>
 
 <script>
+  //تسجيل دعوى
 document.addEventListener("DOMContentLoaded", () => {
 
-    console.log("📌 JS تسجيل الدعوى يعمل...");
+    console.log(" JS تسجيل الدعوى يعمل...");
 
     let currentCaseId = null;
 
@@ -6631,7 +6627,7 @@ document.addEventListener("DOMContentLoaded", () => {
             currentCaseId = null;
         });
 
-        // ✅ تنظيف الـ backdrop عند إغلاق النافذة
+        //  تنظيف الـ backdrop عند إغلاق النافذة
         caseModalEl.addEventListener('hidden.bs.modal', () => {
             const backdrops = document.querySelectorAll('.modal-backdrop');
             backdrops.forEach(backdrop => backdrop.remove());
@@ -6641,7 +6637,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // ⭐ توليد رقم الدعوى
+    //  توليد رقم الدعوى
     const caseNumberInput = document.getElementById("caseNumber");
     if (caseNumberInput) {
         caseNumberInput.addEventListener("keydown", async (e) => {
@@ -6651,7 +6647,7 @@ document.addEventListener("DOMContentLoaded", () => {
             const type = document.getElementById("caseType").value;
 
             if (!type) {
-                alert("❌ اختر نوع الدعوى أولاً");
+                alert(" اختر نوع الدعوى أولاً");
                 return;
             }
 
@@ -6673,13 +6669,13 @@ document.addEventListener("DOMContentLoaded", () => {
                 document.getElementById("session_date").value = d.session_date;
 
             } catch (err) {
-                console.error("❌ خطأ:", err);
-                alert("❌ خطأ أثناء توليد رقم الدعوى");
+                console.error(" خطأ:", err);
+                alert(" خطأ أثناء توليد رقم الدعوى");
             }
         });
     }
 
-    // ⭐ إضافة طرف للدعوى
+    //  إضافة طرف للدعوى
     const addCasePartyBtn = document.getElementById("addCaseParty");
     
     if (addCasePartyBtn) {
@@ -6689,7 +6685,7 @@ document.addEventListener("DOMContentLoaded", () => {
             const partiesContainerCase = document.getElementById("partiesContainerCase");
             
             if (!casePartyTemplate || !partiesContainerCase) {
-                console.error("❌ Template or container not found");
+                console.error(" Template or container not found");
                 return;
             }
 
@@ -6708,7 +6704,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // ⭐ مسح الكل
+    //  مسح الكل
     const clearCaseBtn = document.getElementById("clearCase");
     if (clearCaseBtn) {
         clearCaseBtn.addEventListener("click", () => {
@@ -6727,7 +6723,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // ⭐ حفظ وإنهاء
+    //  حفظ وإنهاء
     const saveAndFinishCaseBtn = document.getElementById("saveAndFinishCase");
     if (saveAndFinishCaseBtn) {
         saveAndFinishCaseBtn.addEventListener("click", async () => {
@@ -6735,11 +6731,11 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // ⭐ دالة حفظ الدعوى
+    //  دالة حفظ الدعوى
     async function saveCaseData(closeModal = false) {
 
         if (!currentCaseId) {
-            alert("❌ اضغط Enter لتوليد رقم الدعوى أولاً");
+            alert(" اضغط Enter لتوليد رقم الدعوى أولاً");
             return;
         }
 
@@ -6764,7 +6760,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
 
         if (parties.length === 0) {
-            alert("❌ يجب إدخال طرف واحد على الأقل");
+            alert(" يجب إدخال طرف واحد على الأقل");
             return;
         }
 
@@ -6790,7 +6786,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 if (modal) {
                     modal.hide();
                     
-                    // ✅ تنظيف الـ backdrop مباشرة بعد الإغلاق
+                    //  تنظيف الـ backdrop مباشرة بعد الإغلاق
                     setTimeout(() => {
                         const backdrops = document.querySelectorAll('.modal-backdrop');
                         backdrops.forEach(backdrop => backdrop.remove());
@@ -6802,8 +6798,8 @@ document.addEventListener("DOMContentLoaded", () => {
             }
 
         } catch (err) {
-            console.error("❌ خطأ:", err);
-            alert("❌ خطأ أثناء حفظ الدعوى");
+            console.error(" خطأ:", err);
+            alert(" خطأ أثناء حفظ الدعوى");
         }
     }
 

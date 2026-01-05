@@ -335,9 +335,8 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 });
 
-// =======================
+
 // فتح نافذة تفاصيل الطلب
-// =======================
 function openRequestDetails(requestNumber) {
 
     const modalEl = document.getElementById("requestDetailsModal");
@@ -350,9 +349,7 @@ function openRequestDetails(requestNumber) {
     loadRequestDetails(requestNumber);
 }
 
-// =======================
 // جلب تفاصيل الطلب
-// =======================
 async function loadRequestDetails(requestNumber) {
 
     const body = document.getElementById("requestDetailsBody");

@@ -34,7 +34,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 });
 
-// ⭐ تحميل الكتاب (دالة عامة)
+//  تحميل الكتاب (دالة عامة)
 function loadWriters() {  
     axios.get("/chief/employees?role=writer")  
     .then(res => {  
@@ -52,7 +52,7 @@ function loadWriters() {
     });
 }
 
-// ⭐ تحميل الطابعات (دالة عامة)
+//  تحميل الطابعات (دالة عامة)
 function loadTypists() {  
     axios.get("/chief/employees?role=typist")  
     .then(res => {  
@@ -153,7 +153,7 @@ document.addEventListener("DOMContentLoaded", function () {
 </script>
 
 
-<!-- ⭐ نافذة تحويل الدعوى -->
+<!--  نافذة تحويل الدعوى -->
 <style>
 #transferCaseModal label {
     font-weight: bold;
@@ -622,7 +622,7 @@ document.addEventListener("DOMContentLoaded", function () {
             });
     }
 
-    // 🔵 تحميل الجدول عند فتح الصفحة
+    //  تحميل الجدول عند فتح الصفحة
     loadDetainedTable();
 
 });

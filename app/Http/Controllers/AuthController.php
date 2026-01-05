@@ -174,21 +174,17 @@ public function enable2FA(Request $request)
     $request->validate(['totp_code' => 'required|string']);
     $user = auth()->user();
 
-    $google2fa = new Google2FA();
+    $google2fa = new Google2FA();//إنشاء object تحسب الرمز الصحيح اعتمادا ع المفتاح السري 
+//و الوقت الحالي
     $isValid = $google2fa->verifyKey($user->two_factor_secret, trim($request->totp_code));
 
     if (!$isValid) {
         return back()->withErrors(['totp_code' => 'الرمز غير صحيح']);
     }
 
-    // توليد رموز احتياطية
-    $recovery = [];
-    for ($i = 0; $i < 8; $i++) {
-        $recovery[] = Str::upper(Str::random(10));
-    }
+
 
     $user->two_factor_enabled = true;
-    $user->two_factor_recovery_codes = $recovery;
     $user->save();
 
     return redirect()->route('2fa.setup')->with('success', 'تم تفعيل المصادقة الثنائية.');
@@ -199,9 +195,8 @@ public function disable2FA()
 {
     $user = auth()->user();
 
-    $user->two_factor_enabled = false;
+    $user->two_factor_enabled = false;//النظام يتوقف عن طلب رمز عند تسجيل الدخول
     $user->two_factor_secret = null;
-    $user->two_factor_recovery_codes = null;
     $user->save();
 
     return back()->with('success', 'تم تعطيل المصادقة الثنائية.');
@@ -209,7 +204,8 @@ public function disable2FA()
 
 public function show2FAVerify()
 {
-    if (!session('pending_2fa_user')) {
+    if (!session('pending_2fa_user'))//تم التحقق من كلمه المرور بعدين مرحله 2fa
+    {
         return redirect('/')->withErrors(['error' => 'جلسة التحقق غير صالحة.']);
     }
     return view('auth.2fa-verify');
@@ -227,7 +223,7 @@ public function verify2FA(Request $request)
         return redirect('/')->withErrors(['error' => 'جلسة التحقق غير صالحة.']);
     }
 
-    $google2fa = new \PragmaRX\Google2FA\Google2FA();
+    $google2fa = new \PragmaRX\Google2FA\Google2FA();//ينشئ object جديد يحتوي ع totp
     $code = strtoupper(trim($request->totp_code));
     $isValid = $google2fa->verifyKey($user->two_factor_secret, $code);
 

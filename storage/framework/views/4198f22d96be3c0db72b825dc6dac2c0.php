@@ -1262,7 +1262,7 @@ function closeCaseSchedule() {
 
 
 <style>
-  /* 🔹 تحسين الترتيب */
+  /* تحسين الترتيب */
   #caseScheduleModal .modal-body {
     max-height: 70vh;
     overflow-y: auto;
@@ -1273,12 +1273,7 @@ function closeCaseSchedule() {
 </style>
 
 
-<!-- نافذة الأحكام -->
-<!-- نافذة أحكام الدعوى -->
-
-<!-- =========================== -->
-<!-- 🔶 نافذة أحكام الدعوى -->
-<!-- =========================== -->
+<!--  أحكام الدعوى -->
 <style>
   .judgment-modal .modal-body {
     background-color: #f4f6f8;
@@ -1307,7 +1302,7 @@ function closeCaseSchedule() {
     transition: 0.3s;
     border: none;
   }
-  
+  /*   عند التنقل*/
   .judgment-modal .tab.active, .judgment-modal .sub-tab.active {
     background-color: #000;
     color: white;
@@ -1364,7 +1359,7 @@ function closeCaseSchedule() {
     border-radius: 6px;
     box-sizing: border-box;
   }
-  
+  /* زر حفظ الحكم و اغلاق*/
   .judgment-modal .modal-footer button {
     font-family: "Cairo", sans-serif;
     padding: 8px 16px;
@@ -1373,7 +1368,7 @@ function closeCaseSchedule() {
     cursor: pointer;
     font-size: 14px;
     transition: 0.2s;
-    background-color: #000;
+    background-color: #080000ff;
     color: white;
   }
   
@@ -1381,7 +1376,7 @@ function closeCaseSchedule() {
     background-color: #333;
   }
 </style>
-
+<!--احكام الدعوى -->
 <div class="modal fade judgment-modal" id="judgmentModal" tabindex="-1" aria-labelledby="judgmentModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-xl">
     <div class="modal-content">
@@ -1553,10 +1548,8 @@ function closeCaseSchedule() {
 </div>
 
 <input type="hidden" id="courtCaseId">
+<!--احكام الدعوى -->
 <script>
-// ===========================
-// 🔥 تهيئة سلوك التبويبات الرئيسية
-// ===========================
 const tabs = document.querySelectorAll('.judgment-modal .tab');
 const contents = document.querySelectorAll('.judgment-modal .tab-content');
 tabs.forEach(tab => {
@@ -1568,9 +1561,7 @@ tabs.forEach(tab => {
   });
 });
 
-// ===========================
-// 🔥 تهيئة التبويبات الفرعية
-// ===========================
+//  تهيئة التبويبات الفرعية
 const subTabs = document.querySelectorAll('.judgment-modal .sub-tab');
 const subContents = document.querySelectorAll('.judgment-modal .sub-tab-content');
 subTabs.forEach(tab => {
@@ -1588,9 +1579,7 @@ subTabs.forEach(tab => {
   });
 });
 
-// ===========================
-// 🔥 جلب بيانات الدعوى
-// ===========================
+//  جلب بيانات الدعوى
 function fetchCaseData(caseNumber) {
     fetch(`/judgment/${caseNumber}`)
         .then(res => res.json())
@@ -1611,9 +1600,8 @@ function fetchCaseData(caseNumber) {
         });
 }
 
-// ===========================
-// 🔥 زر البحث
-// ===========================
+
+//  زر البحث
 function fetchCaseDataFromInput() {
     const caseNumber = document.getElementById('caseNumberInputJudgment').value.trim();
     if (!caseNumber) {
@@ -1623,9 +1611,9 @@ function fetchCaseDataFromInput() {
     fetchCaseData(caseNumber);
 }
 
-// ===========================
-// 🔥 اختيار طرف → التهمة
-// ===========================
+
+//  اختيار طرف → التهمة
+
 document.addEventListener("change", function(e) {
     if (e.target.id === "participantAgainst") {
         const id = e.target.value;
@@ -1634,9 +1622,7 @@ document.addEventListener("change", function(e) {
     }
 });
 
-// ===========================
-// 🔥 زر الحفظ النهائي
-// ===========================
+//  زر الحفظ النهائي
 function saveJudgment() {
     const payload = {
         court_case_id: document.getElementById('courtCaseId').value,
@@ -1671,12 +1657,11 @@ function saveJudgment() {
             alert(data.message || "تم الحفظ بنجاح");
         }
     })
-    .catch(() => alert("❌ فشل الحفظ"));
+    .catch(() => alert(" فشل الحفظ"));
 }
 
-// ===========================
+
 // Enter لتحميل الدعوى
-// ===========================
 document.getElementById('caseNumberInputJudgment').addEventListener("keydown", function(e) {
     if (e.key === "Enter") fetchCaseDataFromInput();
 });

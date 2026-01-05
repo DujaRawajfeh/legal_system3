@@ -145,7 +145,7 @@ th, td {
   text-align: right;
   border-bottom: 1px solid #ddd;
 }
-
+/* راس الجدول*/
 th {
   font-size: 12px;
   background-color: #000;
@@ -155,7 +155,7 @@ th {
 tr:hover {
   background-color: #f1f1f1;
 }
-
+/* زر المحضر */
 button, .btn {
   font-size: 10px;
   font-family: "Cairo", sans-serif;
@@ -360,7 +360,6 @@ button:hover, .btn:hover {
             <th>عنوان الطلب</th>
             <th>التاريخ الأصلي</th>
             <th>وقت الجلسة</th>
-            <th>نوع الجلسة</th>
             <th>حالة الجلسة</th>
             <th>سبب التأجيل</th>
           </tr>
@@ -417,7 +416,7 @@ async function loadTodayRequests() {
         console.log("🔹 Calling: {{ route('judge.requests.today') }}");
 
         const response = await axios.get("{{ route('judge.requests.today') }}");
-        console.log("✅ Today Requests Response:", response);
+        console.log(" Today Requests Response:", response);
 
         const data = response.data.requests || [];
 
@@ -434,7 +433,6 @@ async function loadTodayRequests() {
                     <td>${r.title || '-'}</td>
                     <td>${(r.created_at || '').toString().substring(0,10) || '-'}</td>
                     <td>${r.session_time || '-'}</td>
-                    <td>${r.session_type || '-'}</td>
                     <td>${r.session_status || '-'}</td>
                     <td>${r.session_reason || '-'}</td>
                 </tr>
